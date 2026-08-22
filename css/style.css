@@ -1,0 +1,123 @@
+/* MyWattUp — Feuille de style principale */
+
+:root {
+  --color-bg: #0D1117;
+  --color-surface: #161B22;
+  --color-border: #2D333B;
+  --color-text: #F5F5F0;
+  --color-text-muted: #9CA3AF;
+  --color-text-faint: #6B7280;
+  --color-green: #1DB954;
+  --color-amber: #FFB800;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  --font-main: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px 16px 90px;
+}
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+input, select, textarea {
+  background: var(--color-bg);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  color: var(--color-text);
+  font-size: 13px;
+  font-family: var(--font-main);
+  width: 100%;
+}
+
+button {
+  font-family: var(--font-main);
+  cursor: pointer;
+}
+
+.btn-primary {
+  width: 100%;
+  background: var(--color-amber);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-secondary {
+  width: 100%;
+  background: var(--color-surface);
+  border: 0.5px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+}
+
+/* Barre de navigation basse */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border-top: 0.5px solid var(--color-border);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+  color: var(--color-text-faint);
+  font-size: 10px;
+}
+
+.bottom-nav a.active {
+  color: var(--color-green);
+}
+
+.bottom-nav i {
+  font-size: 20px;
+}

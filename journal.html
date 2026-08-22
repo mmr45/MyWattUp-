@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp — Journal du jour</title>
+<style>
+  :root {
+    --vert: #1DB954; --ambre: #FFB800; --fond: #0D1117;
+    --fond-card: #161B22; --blanc: #F5F5F0; --gris: #8B949E;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--fond); color: var(--blanc);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 20px 40px;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; }
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .back { color: var(--gris); text-decoration: none; font-size: 20px; }
+  h1 { font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+
+  .section {
+    background: var(--fond-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .section-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+  label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 14px; }
+  label:first-of-type { margin-top: 0; }
+
+  input[type="number"], select {
+    width: 100%; padding: 11px 14px; background: var(--fond);
+    border: 1px solid rgba(255,255,255,0.10); border-radius: 10px;
+    color: var(--blanc); font-size: 14px; outline: none; font-family: inherit;
+  }
+  input:focus, select:focus { border-color: var(--vert); }
+
+  .quality-btns, .meal-btns { display: flex; gap: 8px; }
+  .qbtn {
+    flex: 1; padding: 10px; text-align: center; border-radius: 9px;
+    background: var(--fond); border: 1px solid rgba(255,255,255,0.10);
+    font-size: 12px; cursor: pointer; color: var(--gris);
+  }
+  .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(29,185,84,0.08); }
+
+  .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+  input[type="range"] { flex: 1; accent-color: var(--vert); }
+  .slider-value { font-weight: 700; min-width: 28px; text-align: center; color: var(--vert); }
+
+  .meal-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+  .meal-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .meal-name { font-size: 14px; }
+  .toggle {
+    width: 44px; height: 24px; border-radius: 12px; background: var(--fond);
+    border: 1px solid rgba(255,255,255,0.15); position: relative; cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .toggle.on { background: var(--vert); border-color: var(--vert); }
+  .toggle-dot {
+    width: 18px; height: 18px; border-radius: 50%; background: var(--blanc);
+    position: absolute; top: 2px; left: 2px; transition: left 0.15s ease;
+  }
+  .toggle.on .toggle-dot { left: 22px; }
+
+  button[type="submit"] {
+    width: 100%; padding: 14px; background: var(--vert); color: #04170C;
+    border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
+    margin-top: 4px;
+  }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+  .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; }
+  .msg.error { color: #FF6B6B; }
+  .msg.success { color: var(--vert); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <a href="/dashboard.html" class="back">←</a>
+    <h1>Journal du jour</h1>
+  </div>
+
+  <form id="journalForm">
+    <div class="section">
+      <div class="section-title">🌙 Sommeil</div>
+      <label for="sleepHours">Heures dormies</label>
+      <input type="number" id="sleepHours" min="0" max="14" step="0.5" placeholder="ex. 7.5" required />
+
+      <label>Qualité perçue</label>
+      <div class="quality-btns" id="sleepQuality">
+        <div class="qbtn" data-value="bonne">Bonne</div>
+        <div class="qbtn" data-value="moyenne">Moyenne</div>
+        <div class="qbtn" data-value="mauvaise">Mauvaise</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🔥 Activité</div>
+      <label for="activityType">Type de séance</label>
+      <select id="activityType" required>
+        <option value="" disabled selected>Choisis</option>
+        <option value="force">Force</option>
+        <option value="endurance">Endurance</option>
+        <option value="repos">Repos</option>
+      </select>
+
+      <label for="activityDuration">Durée (minutes)</label>
+      <input type="number" id="activityDuration" min="0" max="600" placeholder="ex. 45" />
+
+      <label>Intensité ressentie</label>
+      <div class="slider-row">
+        <input type="range" id="activityIntensity" min="1" max="10" value="5" />
+        <div class="slider-value" id="intensityValue">5</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💪 Forme ressentie</div>
+      <label>De 1 à 10</label>
+      <div class="slider-row">
+        <input type="range" id="moodScore" min="1" max="10" value="5" />
+        <div class="slider-value" id="moodValue">5</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🍽️ Repas suivis</div>
+      <div class="meal-row">
+        <span class="meal-name">Petit-déjeuner</span>
+        <div class="toggle" data-target="breakfastDone"><div class="toggle-dot"></div></div>
+      </div>
+      <div class="meal-row">
+        <span class="meal-name">Déjeuner</span>
+        <div class="toggle" data-target="lunchDone"><div class="toggle-dot"></div></div>
+      </div>
+      <div class="meal-row">
+        <span class="meal-name">Dîner</span>
+        <div class="toggle" data-target="dinnerDone"><div class="toggle-dot"></div></div>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn">Enregistrer ma journée</button>
+    <p class="msg" id="msg"></p>
+  </form>
+</div>
+
+<script type="module">
+  import { supabase } from './supabaseClient.js';
+  import { getCurrentUser } from './auth.js';
+
+  const user = await getCurrentUser();
+  if (!user) window.location.href = '/login.html';
+
+  // --- Interactions UI ---
+  let selectedQuality = null;
+  document.querySelectorAll('#sleepQuality .qbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedQuality = btn.dataset.value;
+    });
+  });
+
+  const intensityInput = document.getElementById('activityIntensity');
+  intensityInput.addEventListener('input', () => {
+    document.getElementById('intensityValue').textContent = intensityInput.value;
+  });
+
+  const moodInput = document.getElementById('moodScore');
+  moodInput.addEventListener('input', () => {
+    document.getElementById('moodValue').textContent = moodInput.value;
+  });
+
+  const toggles = {};
+  document.querySelectorAll('.toggle').forEach(t => {
+    toggles[t.dataset.target] = false;
+    t.addEventListener('click', () => {
+      t.classList.toggle('on');
+      toggles[t.dataset.target] = t.classList.contains('on');
+    });
+  });
+
+  // --- Calcul simple du score du jour ---
+  // sleep_score : basé sur heures dormies (0-100, optimum ~8h) + bonus qualité
+  // activity_score : basé sur intensité et durée
+  // daily_score : moyenne des deux, ajustée par la forme ressentie
+  function computeScores({ sleepHours, sleepQuality, intensity, duration, mood }) {
+    let sleepScore = Math.max(0, 100 - Math.abs(8 - sleepHours) * 15);
+    if (sleepQuality === 'bonne') sleepScore = Math.min(100, sleepScore + 10);
+    if (sleepQuality === 'mauvaise') sleepScore = Math.max(0, sleepScore - 10);
+    sleepScore = Math.round(Math.min(100, Math.max(0, sleepScore)));
+
+    let activityScore = Math.round(Math.min(100, (intensity * 6) + (duration ? Math.min(duration, 60) / 60 * 40 : 0)));
+
+    let dailyScore = Math.round((sleepScore * 0.4) + (activityScore * 0.4) + (mood * 10 * 0.2));
+    dailyScore = Math.min(100, Math.max(0, dailyScore));
+
+    return { sleepScore, activityScore, dailyScore };
+  }
+
+  // --- Soumission ---
+  const form = document.getElementById('journalForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const msg = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!selectedQuality) {
+      msg.textContent = "Sélectionne la qualité de ton sommeil.";
+      msg.className = 'msg error';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    msg.textContent = '';
+    msg.className = 'msg';
+
+    const sleepHours = parseFloat(document.getElementById('sleepHours').value);
+    const activityType = document.getElementById('activityType').value;
+    const activityDuration = parseInt(document.getElementById('activityDuration').value) || 0;
+    const activityIntensity = parseInt(intensityInput.value);
+    const moodScore = parseInt(moodInput.value);
+
+    const { sleepScore, activityScore, dailyScore } = computeScores({
+      sleepHours, sleepQuality: selectedQuality,
+      intensity: activityIntensity, duration: activityDuration, mood: moodScore
+    });
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const { error } = await supabase
+      .from('daily_logs')
+      .upsert({
+        user_id: user.id,
+        log_date: today,
+        sleep_hours: sleepHours,
+        sleep_quality: selectedQuality,
+        sleep_score: sleepScore,
+        activity_type: activityType,
+        activity_duration_min: activityDuration,
+        activity_intensity: activityIntensity,
+        activity_score: activityScore,
+        mood_score: moodScore,
+        breakfast_done: toggles.breakfastDone,
+        lunch_done: toggles.lunchDone,
+        dinner_done: toggles.dinnerDone,
+        daily_score: dailyScore,
+        // ai_recommendation : laissé null, sera généré par l'IA Claude (à venir)
+      }, { onConflict: 'user_id,log_date' });
+
+    if (error) {
+      console.error(error);
+      msg.textContent = "Erreur : " + error.message;
+      msg.classList.add('error');
+      submitBtn.disabled = false;
+      return;
+    }
+
+    msg.textContent = "Journée enregistrée !";
+    msg.classList.add('success');
+    setTimeout(() => window.location.href = '/dashboard.html', 700);
+  });
+</script>
+
+</body>
+</html>

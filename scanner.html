@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp — Scanner</title>
+<style>
+  :root { --vert:#1DB954; --ambre:#FFB800; --fond:#0D1117; --fond-card:#161B22; --blanc:#F5F5F0; --gris:#8B949E; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; background:var(--fond); color:var(--blanc);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:24px 20px 100px; }
+  .wrap { max-width:480px; margin:0 auto; }
+  .topbar { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+  .back { color:var(--gris); text-decoration:none; font-size:20px; }
+  h1 { font-size:19px; margin:0; }
+
+  .scan-box { background:var(--fond-card); border:1px solid rgba(255,255,255,0.06); border-radius:16px;
+    padding:24px; margin-bottom:20px; }
+  .scan-box label { display:block; font-size:12px; color:var(--gris); margin-bottom:8px; }
+  .scan-row { display:flex; gap:8px; }
+  input[type="text"] { flex:1; padding:12px 14px; background:var(--fond); border:1px solid rgba(255,255,255,0.10);
+    border-radius:10px; color:var(--blanc); font-size:14px; outline:none; }
+  input:focus { border-color:var(--vert); }
+  .scan-btn { padding:12px 18px; background:var(--vert); color:#04170C; border:none; border-radius:10px;
+    font-weight:700; cursor:pointer; font-size:14px; }
+  .scan-btn:disabled { opacity:0.6; cursor:not-allowed; }
+  .hint { font-size:11px; color:var(--gris); margin-top:10px; }
+
+  .result-card { background:var(--fond-card); border:1px solid rgba(255,255,255,0.06); border-radius:16px;
+    padding:20px; margin-bottom:20px; display:none; }
+  .result-name { font-size:16px; font-weight:700; margin-bottom:4px; }
+  .result-score { display:inline-block; padding:6px 14px; border-radius:20px; font-weight:800; font-size:13px; margin:8px 0; }
+  .score-good { background:rgba(29,185,84,0.15); color:var(--vert); }
+  .score-mid { background:rgba(255,184,0,0.15); color:var(--ambre); }
+  .score-bad { background:rgba(255,107,107,0.15); color:#FF6B6B; }
+  .result-justif { font-size:13px; color:var(--gris); }
+
+  .history-title { font-size:13px; color:var(--gris); text-transform:uppercase; letter-spacing:0.05em; margin:24px 0 12px; }
+  .history-item { display:flex; justify-content:space-between; align-items:center; background:var(--fond-card);
+    border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:14px; margin-bottom:8px; }
+  .history-name { font-size:13px; }
+  .history-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .empty-state { text-align:center; color:var(--gris); font-size:13px; padding:20px 0; }
+
+  .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--fond-card);
+    border-top:1px solid rgba(255,255,255,0.06); display:flex; padding:10px 0 max(10px, env(safe-area-inset-bottom)); }
+  .nav-item { flex:1; text-align:center; color:var(--gris); font-size:10px; text-decoration:none;
+    display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .nav-item.active { color:var(--vert); }
+  .nav-icon { font-size:18px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <a href="/dashboard.html" class="back">←</a>
+    <h1>Scanner produit</h1>
+  </div>
+
+  <div class="scan-box">
+    <label for="barcodeInput">Code-barres du produit</label>
+    <div class="scan-row">
+      <input type="text" id="barcodeInput" placeholder="ex. 3017620422003" inputmode="numeric" />
+      <button class="scan-btn" id="scanBtn">Scanner</button>
+    </div>
+    <div class="hint">📷 Scan par appareil photo prévu en Phase 2. Pour l'instant, saisis le code-barres manuellement.</div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-name" id="resultName"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-justif" id="resultJustif"></div>
+  </div>
+
+  <div class="history-title">Historique des scans</div>
+  <div id="historyList"><p class="empty-state">Chargement…</p></div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/dashboard.html" class="nav-item"><span class="nav-icon">🏠</span>Accueil</a>
+  <a href="/journal.html" class="nav-item"><span class="nav-icon">📓</span>Journal</a>
+  <a href="/repas.html" class="nav-item"><span class="nav-icon">🍽️</span>Repas</a>
+  <a href="/scanner.html" class="nav-item active"><span class="nav-icon">📷</span>Scanner</a>
+</nav>
+
+<script type="module">
+  import { supabase } from './supabaseClient.js';
+  import { getCurrentUser } from './auth.js';
+
+  const user = await getCurrentUser();
+  if (!user) window.location.href = '/login.html';
+
+  const barcodeInput = document.getElementById('barcodeInput');
+  const scanBtn = document.getElementById('scanBtn');
+  const resultCard = document.getElementById('resultCard');
+
+  // ============================================
+  // Score personnalisé simplifié (MVP)
+  // basé sur nutriscore OpenFoodFacts + profil sportif
+  // À affiner plus tard avec une vraie logique nutritionnelle par profil
+  // ============================================
+  function computePersonalizedScore(product, sportType) {
+    const nutriscoreMap = { a: 90, b: 75, c: 55, d: 35, e: 15 };
+    let base = nutriscoreMap[product.nutriscore_grade] ?? 50;
+
+    // Petit ajustement selon profil (exemple simple, à raffiner avec l'IA plus tard)
+    const proteins = product.nutriments?.proteins_100g ?? 0;
+    if (sportType === 'force' && proteins > 15) base = Math.min(100, base + 10);
+    if (sportType === 'endurance' && (product.nutriments?.carbohydrates_100g ?? 0) > 40) base = Math.min(100, base + 5);
+
+    return Math.round(Math.max(0, Math.min(100, base)));
+  }
+
+  function scoreClass(score) {
+    if (score >= 65) return 'score-good';
+    if (score >= 40) return 'score-mid';
+    return 'score-bad';
+  }
+
+  scanBtn.addEventListener('click', async () => {
+    const barcode = barcodeInput.value.trim();
+    if (!barcode) return;
+
+    scanBtn.disabled = true;
+    scanBtn.textContent = '...';
+
+    try {
+      // Appel à l'API publique OpenFoodFacts
+      const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
+      const data = await res.json();
+
+      if (data.status !== 1) {
+        alert("Produit introuvable dans OpenFoodFacts.");
+        return;
+      }
+
+      const product = data.product;
+      const productName = product.product_name || "Produit sans nom";
+
+      // Récupérer le profil pour personnaliser le score
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('sport_type')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      const score = computePersonalizedScore(product, profile?.sport_type);
+
+      document.getElementById('resultName').textContent = productName;
+      const scoreEl = document.getElementById('resultScore');
+      scoreEl.textContent = `Score : ${score}/100`;
+      scoreEl.className = 'result-score ' + scoreClass(score);
+      document.getElementById('resultJustif').textContent =
+        `Nutri-score ${product.nutriscore_grade?.toUpperCase() || '?'} ajusté selon ton profil ${profile?.sport_type || 'général'}.`;
+      resultCard.style.display = 'block';
+
+      // Enregistrer dans l'historique
+      await supabase.from('scanned_products').insert({
+        user_id: user.id,
+        barcode,
+        product_name: productName,
+        personalized_score: score,
+      });
+
+      loadHistory();
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors du scan : " + err.message);
+    } finally {
+      scanBtn.disabled = false;
+      scanBtn.textContent = 'Scanner';
+    }
+  });
+
+  async function loadHistory() {
+    const historyList = document.getElementById('historyList');
+    const { data, error } = await supabase
+      .from('scanned_products')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('scanned_at', { ascending: false })
+      .limit(20);
+
+    if (error || !data || data.length === 0) {
+      historyList.innerHTML = '<p class="empty-state">Aucun scan pour l\'instant.</p>';
+      return;
+    }
+
+    historyList.innerHTML = '';
+    data.forEach(item => {
+      const dotColor = item.personalized_score >= 65 ? 'var(--vert)' : item.personalized_score >= 40 ? 'var(--ambre)' : '#FF6B6B';
+      const row = document.createElement('div');
+      row.className = 'history-item';
+      row.innerHTML = `
+        <span class="history-name">${item.product_name || item.barcode}</span>
+        <div class="history-dot" style="background:${dotColor}"></div>
+      `;
+      historyList.appendChild(row);
+    });
+  }
+
+  loadHistory();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp</title>
+<link rel="manifest" href="/manifest.json" />
+<style>
+  body { margin:0; min-height:100vh; background:#0D1117; display:flex; align-items:center; justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .loader { color:#8B949E; font-size:14px; }
+</style>
+</head>
+<body>
+  <div class="loader">Chargement…</div>
+
+  <script type="module">
+    import { getCurrentUser } from './auth.js';
+    import { hasProfile } from './auth.js';
+
+    const user = await getCurrentUser();
+    if (!user) {
+      window.location.href = '/login.html';
+    } else {
+      const profileExists = await hasProfile(user.id);
+      window.location.href = profileExists ? '/dashboard.html' : '/onboarding.html';
+    }
+  </script>
+</body>
+</html>
