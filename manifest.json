@@ -2,7 +2,7 @@
   "name": "MyWattUp",
   "short_name": "MyWattUp",
   "description": "Ton énergie, ton équilibre. Application santé, sport & nutrition.",
-  "start_url": "/index.html",
+  "start_url": "/app.html"
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
