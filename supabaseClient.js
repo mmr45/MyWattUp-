@@ -6,7 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // ⚠️ Remplace ces valeurs par celles de ton projet Supabase
 // (Project Settings > API dans le dashboard Supabase)
 const SUPABASE_URL = "https://vwodpdoloavliccnnenh.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_Y2RJWLROM9glPStk9TxVCw_DnkBM...";
+const SUPABASE_ANON_KEY = "sb_publishable_Y2RJWLROM9glPStk9TxVCw_DnkBMXQN";
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Helper : récupère l'utilisateur connecté, redirige vers /index.html sinon
