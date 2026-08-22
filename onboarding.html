@@ -204,6 +204,17 @@
       <textarea name="allergies" placeholder="ex. arachides, lactose, sans gluten..."></textarea>
     </fieldset>
 
+    <fieldset>
+      <label class="option" style="align-items:flex-start;">
+        <input type="checkbox" id="consentCheck" required style="margin-top:3px; accent-color:var(--vert);" />
+        <span style="font-size:12.5px; line-height:1.5;">
+          J'accepte que mes données de santé (sommeil, activité, alimentation) soient traitées
+          par MyWattUp pour générer mes recommandations personnalisées, conformément à la
+          <a href="/politique-confidentialite.html" target="_blank" style="color:var(--vert);">politique de confidentialité</a>.
+        </span>
+      </label>
+    </fieldset>
+
     <button type="submit" id="submitBtn">Valider mon profil</button>
     <p class="msg" id="msg"></p>
   </form>
@@ -236,6 +247,7 @@
         sportType: formData.get('sportType'),
         objective: formData.get('objective'),
         allergies: formData.get('allergies'),
+        consentGiven: document.getElementById('consentCheck').checked,
       });
       window.location.href = '/dashboard.html';
     } catch (err) {

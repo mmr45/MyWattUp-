@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp — Politique de confidentialité</title>
+<style>
+  :root { --vert:#1DB954; --ambre:#FFB800; --fond:#0D1117; --fond-card:#161B22; --blanc:#F5F5F0; --gris:#8B949E; }
+  * { box-sizing: border-box; }
+  body { margin:0; min-height:100vh; background:var(--fond); color:var(--blanc);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:24px 20px 60px; }
+  .wrap { max-width:640px; margin:0 auto; }
+  .topbar { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+  .back { color:var(--gris); text-decoration:none; font-size:20px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .updated { color:var(--gris); font-size:12px; margin-bottom:28px; }
+
+  h2 { font-size:15px; color:var(--vert); margin:28px 0 10px; }
+  p, li { font-size:13.5px; line-height:1.6; color:#D6D6D0; }
+  ul { padding-left:20px; }
+  a { color:var(--ambre); }
+
+  .contact-box {
+    background:var(--fond-card); border:1px solid rgba(255,255,255,0.06);
+    border-radius:12px; padding:16px; margin-top:24px; font-size:13px; color:var(--gris);
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <a href="javascript:history.back()" class="back">←</a>
+    <h1>Politique de confidentialité</h1>
+  </div>
+  <p class="updated">Dernière mise à jour : 22 août 2026</p>
+
+  <p>MyWattUp ("nous") accorde une attention particulière à la protection de vos données personnelles,
+  notamment vos données de santé, considérées comme sensibles au sens du Règlement Général sur la
+  Protection des Données (RGPD).</p>
+
+  <h2>1. Données collectées</h2>
+  <ul>
+    <li>Données de compte : email, mot de passe (chiffré par Supabase Auth).</li>
+    <li>Données de profil : type de sport, objectif, allergies et contraintes alimentaires.</li>
+    <li>Données de santé quotidiennes : sommeil, activité physique, forme ressentie, repas suivis.</li>
+    <li>Historique de scans de produits alimentaires.</li>
+  </ul>
+
+  <h2>2. Finalité du traitement</h2>
+  <p>Ces données sont utilisées exclusivement pour :</p>
+  <ul>
+    <li>Calculer votre score quotidien personnalisé.</li>
+    <li>Générer des recommandations nutritionnelles et sportives adaptées à votre profil (via l'API Claude d'Anthropic).</li>
+    <li>Afficher votre historique et vos statistiques d'évolution.</li>
+  </ul>
+
+  <h2>3. Base légale</h2>
+  <p>Le traitement de vos données repose sur votre <strong>consentement explicite</strong>, recueilli lors
+  de votre inscription. Vous pouvez retirer ce consentement à tout moment en supprimant votre compte.</p>
+
+  <h2>4. Hébergement et sous-traitants</h2>
+  <ul>
+    <li><strong>Supabase</strong> (base de données et authentification).</li>
+    <li><strong>Vercel</strong> (hébergement de l'application).</li>
+    <li><strong>Anthropic</strong> (génération des recommandations IA — les données envoyées ne sont pas utilisées pour entraîner leurs modèles dans le cadre de l'API).</li>
+    <li><strong>OpenFoodFacts</strong> (base de données produits, consultée sans transmission de vos données personnelles).</li>
+  </ul>
+
+  <h2>5. Durée de conservation</h2>
+  <p>Vos données sont conservées tant que votre compte est actif. En cas de suppression de compte,
+  vos données sont supprimées sous 30 jours.</p>
+
+  <h2>6. Vos droits</h2>
+  <p>Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, de
+  limitation et de portabilité de vos données. Vous pouvez exercer ces droits en nous contactant
+  à l'adresse ci-dessous.</p>
+
+  <h2>7. Sécurité</h2>
+  <p>Toutes les tables contenant vos données personnelles sont protégées par des règles de sécurité
+  au niveau des lignes (Row Level Security) : seul vous pouvez accéder à vos propres données.</p>
+
+  <h2>8. Avertissement santé</h2>
+  <p>Les recommandations générées par MyWattUp, y compris celles issues de l'intelligence artificielle,
+  sont fournies à titre informatif et ne remplacent en aucun cas l'avis d'un professionnel de santé,
+  d'un médecin ou d'un diététicien. Consultez un professionnel avant tout changement important
+  d'alimentation ou d'entraînement, en particulier en cas de pathologie.</p>
+
+  <div class="contact-box">
+    Pour toute question relative à vos données personnelles, contactez-nous à :
+    <strong>contact@mywattup.app</strong> (adresse à personnaliser).
+  </div>
+</div>
+
+</body>
+</html>

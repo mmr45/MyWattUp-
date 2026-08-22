@@ -5,11 +5,15 @@ import { getCurrentUser } from './auth.js';
 // ============================================
 // CRÉER LE PROFIL (appelé à la fin de l'onboarding)
 // ============================================
-export async function createProfile({ sportType, objective, allergies }) {
+export async function createProfile({ sportType, objective, allergies, consentGiven }) {
   const user = await getCurrentUser();
 
   if (!user) {
     throw new Error("Aucun utilisateur connecté. Redirection vers /login.html requise.");
+  }
+
+  if (!consentGiven) {
+    throw new Error("Le consentement à la politique de confidentialité est requis pour continuer.");
   }
 
   const { data, error } = await supabase
@@ -19,6 +23,8 @@ export async function createProfile({ sportType, objective, allergies }) {
       sport_type: sportType,     // 'force' | 'endurance' | 'general'
       objective: objective,      // 'perte_de_poids' | 'prise_de_masse' | 'performance' | 'maintien' | 'recuperation'
       allergies: allergies || null,
+      consent_given: true,
+      consent_date: new Date().toISOString(),
     })
     .select()
     .single();
