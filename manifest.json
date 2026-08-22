@@ -1,16 +1,37 @@
 {
   "name": "MyWattUp",
   "short_name": "MyWattUp",
-  "description": "Ton énergie, ton équilibre.",
+  "description": "Ton énergie, ton équilibre. Application santé, sport & nutrition.",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0D1117",
-  "theme_color": "#0D1117",
+  "orientation": "portrait",
+  "background_color": "#14161a",
+  "theme_color": "#14161a",
   "icons": [
     {
-      "src": "/icon-512.png",
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
