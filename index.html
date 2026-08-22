@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyWattUp — Ton énergie, ton équilibre.</title>
+<meta name="description" content="MyWattUp connecte ton sommeil, ton activité et ton alimentation dans un coach quotidien simple. Installe l'app sur ton téléphone.">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="/js/shared-head.js"></script>
+<style>
+  :root {
+    --bg-0: #0b0c0f;
+    --bg-1: #14161a;
+    --bg-2: #1c2128;
+    --line: #262b33;
+    --green-bright: #8af0b3;
+    --green: #2ecc71;
+    --green-deep: #178a4c;
+    --text-0: #f4f6f5;
+    --text-1: #c9ccd3;
+    --text-muted: #8b949e;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: var(--body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- nav ---------- */
+  header.nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(11, 12, 15, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+  }
+  .brand svg { width: 28px; height: 28px; }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-1);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    padding: 8px 16px;
+    border-radius: 100px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .nav-cta:hover { border-color: var(--green); color: var(--green-bright); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 88px 0 64px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-bright);
+    margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(34px, 5vw, 52px);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+  }
+  h1 .accent {
+    background: linear-gradient(100deg, var(--green-bright), var(--green) 55%, var(--green-deep));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-1);
+    max-width: 46ch;
+    margin: 0 0 32px;
+  }
+  .cta-row {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    font-family: var(--body);
+    font-weight: 600;
+    font-size: 15px;
+    color: #06110a;
+    background: linear-gradient(100deg, var(--green-bright), var(--green));
+    border: none;
+    padding: 14px 26px;
+    border-radius: 100px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 0 0 rgba(46, 204, 113, 0);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px -8px rgba(46, 204, 113, 0.5);
+  }
+  .link-secondary {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .link-secondary:hover { color: var(--green-bright); border-color: var(--green); }
+
+  /* ---------- pulse signature graphic ---------- */
+  .pulse-frame {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: radial-gradient(120% 120% at 30% 20%, var(--bg-2), var(--bg-1));
+    padding: 28px 20px;
+    overflow: hidden;
+  }
+  .pulse-frame .readout {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+  }
+  .pulse-frame svg { display: block; width: 100%; height: auto; }
+  .pulse-line {
+    fill: none;
+    stroke: url(#pulseGrad);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 900;
+    stroke-dashoffset: 900;
+    animation: draw 2.4s ease-out forwards 0.3s;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .pulse-frame .tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green-bright);
+    background: rgba(46, 204, 113, 0.08);
+    border: 1px solid rgba(46, 204, 113, 0.25);
+    padding: 5px 10px;
+    border-radius: 100px;
+  }
+
+  /* ---------- modules ---------- */
+  section.modules { padding: 64px 0; border-top: 1px solid var(--line); }
+  .section-head { max-width: 56ch; margin-bottom: 40px; }
+  .section-head h2 {
+    font-family: var(--display);
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 10px;
+  }
+  .section-head p { color: var(--text-1); margin: 0; font-size: 15px; }
+
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .module-card {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px 22px;
+    background: var(--bg-1);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .module-card.in-view { opacity: 1; transform: translateY(0); }
+  .module-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--green-bright);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: inline-block;
+  }
+  .module-card h3 {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .module-card p {
+    color: var(--text-1);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* ---------- install ---------- */
+  section.install {
+    padding: 64px 0 96px;
+    border-top: 1px solid var(--line);
+  }
+  .install-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .install-card {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px 24px;
+    background: linear-gradient(160deg, var(--bg-1), var(--bg-0));
+  }
+  .install-card.recommended { border-color: var(--green); box-shadow: 0 0 0 1px rgba(46,204,113,0.15) inset; }
+  .install-card h3 {
+    font-family: var(--display);
+    font-size: 17px;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #06110a;
+    background: var(--green);
+    padding: 3px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+  }
+  .install-card ol {
+    margin: 16px 0 0;
+    padding-left: 20px;
+    color: var(--text-1);
+    font-size: 14px;
+  }
+  .install-card li { margin-bottom: 8px; }
+  .install-card li:last-child { margin-bottom: 0; }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 0;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .footer-brand svg { width: 16px; height: 16px; }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; padding-top: 56px; }
+    .module-grid { grid-template-columns: 1fr; }
+    .install-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-line { animation: none; stroke-dashoffset: 0; }
+    .module-card { transition: none; opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1024" height="1024" rx="220" fill="#14161a"/>
+        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#2ecc71" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 546 452 L 486 560 L 528 560 L 484 660" fill="none" stroke="#eafff2" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      MyWattUp
+    </div>
+    <a class="nav-cta" href="/app.html">Se connecter</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Santé · Sport · Nutrition</p>
+      <h1>Ton énergie,<br><span class="accent">ton équilibre.</span></h1>
+      <p class="hero-sub">MyWattUp relie ton sommeil, ton activité et ton alimentation dans un coach quotidien simple — pensé pour vivre dans ta poche, pas dans un onglet de navigateur.</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="#installer">Installer l'app →</a>
+        <a class="link-secondary" href="/app.html">Déjà un compte ? Se connecter</a>
+      </div>
+    </div>
+
+    <div class="pulse-frame">
+      <div class="readout">
+        <span>SCORE DU JOUR</span>
+        <span>EN DIRECT</span>
+      </div>
+      <svg viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8af0b3"/>
+            <stop offset="55%" stop-color="#2ecc71"/>
+            <stop offset="100%" stop-color="#178a4c"/>
+          </linearGradient>
+        </defs>
+        <path class="pulse-line" d="M0,50 L40,50 L55,20 L70,80 L85,50 L110,50 L125,35 L140,65 L150,50 L320,50" />
+      </svg>
+      <div class="tags">
+        <span class="tag">Sommeil</span>
+        <span class="tag">Activité</span>
+        <span class="tag">Forme ressentie</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="modules">
+    <div class="section-head">
+      <h2>Trois modules, un seul réflexe quotidien</h2>
+      <p>Pas de tableurs, pas de calculs à la main. Tu ouvres l'app, tu suis ton score, tu manges en fonction de ton objectif.</p>
+    </div>
+    <div class="module-grid">
+      <div class="module-card">
+        <span class="module-tag">Coach IA</span>
+        <h3>Un score, une recommandation</h3>
+        <p>Onboarding sport et objectif, saisie quotidienne du sommeil et de la forme ressentie, score du jour et conseils personnalisés.</p>
+      </div>
+      <div class="module-card">
+        <span class="module-tag">Repas</span>
+        <h3>Manger sans réfléchir</h3>
+        <p>Des repas générés selon ton objectif et tes allergies, navigables jour par jour, avec la justification de chaque choix.</p>
+      </div>
+      <div class="module-card">
+        <span class="module-tag">Scanner</span>
+        <h3>Un produit, un verdict</h3>
+        <p>Scanne un code-barres, obtiens un score ajusté à ton profil sportif, retrouve l'historique de tout ce que tu as scanné.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="installer">
+    <div class="section-head">
+      <h2>MyWattUp vit sur ton téléphone</h2>
+      <p>Pas de store, pas de téléchargement lourd : l'app s'installe en 10 secondes directement depuis ton navigateur.</p>
+    </div>
+    <div class="install-grid">
+      <div class="install-card" id="card-android">
+        <h3>Android <span class="badge">Chrome</span></h3>
+        <ol>
+          <li>Ouvre ce site dans Chrome</li>
+          <li>Appuie sur l'icône ⊕ dans la barre d'adresse, ou menu ⋮ → « Installer l'application »</li>
+          <li>Confirme — l'icône MyWattUp apparaît sur ton écran d'accueil</li>
+        </ol>
+      </div>
+      <div class="install-card" id="card-ios">
+        <h3>iPhone <span class="badge">Safari</span></h3>
+        <ol>
+          <li>Ouvre ce site dans Safari</li>
+          <li>Appuie sur le bouton Partager (le carré avec la flèche)</li>
+          <li>Choisis « Sur l'écran d'accueil »</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <rect width="1024" height="1024" rx="220" fill="#14161a"/>
+        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#2ecc71" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      MyWattUp — © 2026
+    </div>
+    <a class="link-secondary" href="/app.html">Se connecter</a>
+  </div>
+</footer>
+
+<script>
+  // Highlight la carte d'installation correspondant à l'appareil du visiteur
+  (function () {
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/.test(ua);
+    var isAndroid = /Android/.test(ua);
+    if (isIOS) document.getElementById('card-ios').classList.add('recommended');
+    else if (isAndroid) document.getElementById('card-android').classList.add('recommended');
+  })();
+
+  // Révèle les cartes modules au scroll
+  (function () {
+    var cards = document.querySelectorAll('.module-card');
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(function (c) { c.classList.add('in-view'); });
+      return;
+    }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    cards.forEach(function (c) { obs.observe(c); });
+  })();
+</script>
+
+</body>
+</html>
