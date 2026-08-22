@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp — Connexion</title>
+<style>
+  :root {
+    --vert: #1DB954;
+    --ambre: #FFB800;
+    --fond: #0D1117;
+    --fond-card: #161B22;
+    --blanc: #F5F5F0;
+    --gris: #8B949E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--fond);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(29,185,84,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,184,0,0.08), transparent 40%);
+    color: var(--blanc);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--fond-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 36px 32px;
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--fond);
+    border: 2px solid var(--ambre);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 26px;
+    color: var(--vert);
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 22px;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .tagline {
+    text-align: center;
+    color: var(--gris);
+    font-size: 13px;
+    margin: 0 0 28px;
+    font-style: italic;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--fond);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 24px;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 9px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--gris);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .tab.active {
+    background: var(--vert);
+    color: #04170C;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--gris);
+    margin-bottom: 6px;
+    margin-top: 16px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--fond);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    color: var(--blanc);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  input:focus {
+    border-color: var(--vert);
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    margin-top: 26px;
+    padding: 13px;
+    background: var(--vert);
+    color: #04170C;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+
+  button[type="submit"]:hover { filter: brightness(1.08); }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 16px;
+    font-size: 13px;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  .msg.error { color: #FF6B6B; }
+  .msg.success { color: var(--vert); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">⚡</div>
+  <h1>MyWattUp</h1>
+  <p class="tagline">Ton énergie, ton équilibre.</p>
+
+  <div class="tabs">
+    <div class="tab active" data-mode="login">Connexion</div>
+    <div class="tab" data-mode="signup">Inscription</div>
+  </div>
+
+  <form id="authForm">
+    <label for="email">Email</label>
+    <input type="email" id="email" required autocomplete="email" />
+
+    <label for="password">Mot de passe</label>
+    <input type="password" id="password" required autocomplete="current-password" minlength="6" />
+
+    <button type="submit" id="submitBtn">Se connecter</button>
+  </form>
+
+  <p class="msg" id="msg"></p>
+</div>
+
+<script type="module">
+  import { signIn, signUp, hasProfile } from './auth.js';
+
+  let mode = 'login';
+  const tabs = document.querySelectorAll('.tab');
+  const submitBtn = document.getElementById('submitBtn');
+  const msg = document.getElementById('msg');
+  const form = document.getElementById('authForm');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      mode = tab.dataset.mode;
+      submitBtn.textContent = mode === 'login' ? 'Se connecter' : 'Créer mon compte';
+      msg.textContent = '';
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    submitBtn.disabled = true;
+    msg.textContent = '';
+    msg.className = 'msg';
+
+    try {
+      if (mode === 'login') {
+        const user = await signIn(email, password);
+        const profileExists = await hasProfile(user.id);
+        window.location.href = profileExists ? '/dashboard.html' : '/onboarding.html';
+      } else {
+        await signUp(email, password);
+        msg.textContent = "Compte créé ! Vérifie ta boîte mail si une confirmation est requise, puis connecte-toi.";
+        msg.classList.add('success');
+        tabs[0].click();
+      }
+    } catch (err) {
+      msg.textContent = err.message || "Une erreur est survenue.";
+      msg.classList.add('error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>

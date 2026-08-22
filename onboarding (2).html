@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MyWattUp — Ton profil</title>
+<style>
+  :root {
+    --vert: #1DB954;
+    --ambre: #FFB800;
+    --fond: #0D1117;
+    --fond-card: #161B22;
+    --blanc: #F5F5F0;
+    --gris: #8B949E;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--fond);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(29,185,84,0.10), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,184,0,0.08), transparent 40%);
+    color: var(--blanc);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--fond-card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 36px 32px;
+  }
+
+  .step-indicator {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.10);
+    transition: background 0.2s ease;
+  }
+
+  .step-dot.done { background: var(--vert); }
+
+  h1 {
+    font-size: 20px;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .sub {
+    color: var(--gris);
+    font-size: 13px;
+    margin: 0 0 24px;
+  }
+
+  fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 28px;
+  }
+
+  legend {
+    font-size: 12px;
+    color: var(--gris);
+    margin-bottom: 10px;
+    padding: 0;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+    background: var(--fond);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+    font-size: 14px;
+  }
+
+  .option:has(input:checked) {
+    border-color: var(--vert);
+    background: rgba(29,185,84,0.08);
+  }
+
+  .option input {
+    accent-color: var(--vert);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--fond);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    color: var(--blanc);
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    resize: vertical;
+  }
+
+  select:focus, textarea:focus { border-color: var(--vert); }
+
+  textarea { min-height: 70px; }
+
+  button[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    background: var(--vert);
+    color: #04170C;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+
+  button[type="submit"]:hover { filter: brightness(1.08); }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 14px;
+    font-size: 13px;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  .msg.error { color: #FF6B6B; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="step-indicator">
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+    <div class="step-dot done"></div>
+  </div>
+
+  <h1>Bienvenue sur MyWattUp ⚡</h1>
+  <p class="sub">Trois infos rapides pour personnaliser tes recommandations.</p>
+
+  <form id="onboardingForm">
+    <fieldset>
+      <legend>Ton sport</legend>
+      <div class="options">
+        <label class="option">
+          <input type="radio" name="sportType" value="force" required />
+          Force (musculation, powerlifting)
+        </label>
+        <label class="option">
+          <input type="radio" name="sportType" value="endurance" />
+          Endurance (course, cyclisme, triathlon)
+        </label>
+        <label class="option">
+          <input type="radio" name="sportType" value="general" />
+          Fitness général
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Ton objectif</legend>
+      <select name="objective" required>
+        <option value="" disabled selected>Choisis ton objectif</option>
+        <option value="perte_de_poids">Perte de poids</option>
+        <option value="prise_de_masse">Prise de masse</option>
+        <option value="performance">Performance</option>
+        <option value="maintien">Maintien</option>
+        <option value="recuperation">Récupération</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <legend>Allergies / contraintes alimentaires (optionnel)</legend>
+      <textarea name="allergies" placeholder="ex. arachides, lactose, sans gluten..."></textarea>
+    </fieldset>
+
+    <button type="submit" id="submitBtn">Valider mon profil</button>
+    <p class="msg" id="msg"></p>
+  </form>
+</div>
+
+<script type="module">
+  import { createProfile } from './onboarding.js';
+  import { getCurrentUser } from './auth.js';
+
+  // Si pas connecté, on renvoie vers login
+  const user = await getCurrentUser();
+  if (!user) {
+    window.location.href = '/login.html';
+  }
+
+  const form = document.getElementById('onboardingForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const msg = document.getElementById('msg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+
+    submitBtn.disabled = true;
+    msg.textContent = '';
+    msg.className = 'msg';
+
+    try {
+      await createProfile({
+        sportType: formData.get('sportType'),
+        objective: formData.get('objective'),
+        allergies: formData.get('allergies'),
+      });
+      window.location.href = '/dashboard.html';
+    } catch (err) {
+      msg.textContent = err.message || "Une erreur est survenue.";
+      msg.classList.add('error');
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
