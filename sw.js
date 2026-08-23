@@ -1,66 +1,52 @@
-// MyWattUp — Service Worker
-// Gère le cache pour l'installation PWA et un fonctionnement minimal hors-ligne
+// sw.js — Service worker MyWattUp
+// À servir depuis la racine du site (https://tondomaine.com/sw.js)
+// pour pouvoir contrôler toutes les pages de l'app.
 
-const CACHE_NAME = "mywattup-cache-v1";
-
-// Fichiers statiques mis en cache dès l'installation
-const PRECACHE_ASSETS = [
-  "/",
-  "/index.html",
-  "/dashboard.html",
-  "/journal.html",
-  "/repas.html",
-  "/scanner.html",
-  "/profil.html",
-  "/css/style.css",
-  "/js/supabaseClient.js",
-  "/manifest.json",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
-];
-
-// Installation : mise en cache des fichiers de base
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    })
-  );
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
-// Activation : nettoyage des anciens caches
-self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      );
-    })
-  );
-  self.clients.claim();
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
 });
 
-// Stratégie : network first, fallback sur le cache si hors-ligne
-// (les données Supabase ont besoin du réseau, mais l'app reste affichable hors-ligne)
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
+// Réception d'une notification push envoyée par l'Edge Function
+self.addEventListener('push', (event) => {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (e) {
+    payload = { title: 'MyWattUp', body: event.data ? event.data.text() : '' };
+  }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match("/index.html");
-        });
-      })
+  const title = payload.title || 'MyWattUp';
+  const options = {
+    body: payload.body || '',
+    icon: payload.icon || '/icons/apple-touch-icon.png',
+    badge: payload.badge || '/icons/favicon-32.png',
+    data: { url: payload.url || '/#dashboard' },
+    tag: payload.tag || 'mywattup-notification',
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Clic sur la notification : ouvre ou refocus l'app
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const targetUrl = (event.notification.data && event.notification.data.url) || '/#dashboard';
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ('focus' in client) {
+          client.navigate(targetUrl);
+          return client.focus();
+        }
+      }
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetUrl);
+      }
+    })
   );
 });
