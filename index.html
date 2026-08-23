@@ -469,6 +469,21 @@
   #view-app .mini-card.forme .mini-value { color: #4FD8E0; }
   #view-app .mini-card.repas .mini-value { color: var(--blanc); }
 
+  #view-app .streak-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 20px; }
+  #view-app .streak-main { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  #view-app .streak-flame { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,159,28,0.12); color: var(--ambre); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  #view-app .streak-flame svg { width: 22px; height: 22px; }
+  #view-app .streak-flame.off { background: rgba(255,255,255,0.05); color: var(--gris); }
+  #view-app .streak-value { font-size: 17px; font-weight: 700; color: var(--blanc); }
+  #view-app .streak-best { font-size: 12px; color: var(--gris); margin-top: 2px; }
+  #view-app .badge-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  #view-app .badge-chip { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border-radius: 12px; background: var(--fond); border: 1px solid rgba(255,255,255,0.06); text-align: center; }
+  #view-app .badge-chip .badge-icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: rgba(255,255,255,0.05); }
+  #view-app .badge-chip .badge-icon svg { width: 16px; height: 16px; }
+  #view-app .badge-chip .badge-label { font-size: 10.5px; color: var(--gris); line-height: 1.3; }
+  #view-app .badge-chip.unlocked .badge-icon { color: #0E1410; background: var(--ambre); }
+  #view-app .badge-chip.unlocked .badge-label { color: var(--blanc); font-weight: 600; }
+
   #view-app .trend-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px 18px 14px; margin-bottom: 20px; }
   #view-app .trend-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   #view-app .trend-title { font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ambre); }
@@ -1361,6 +1376,19 @@
         </div>
         <p class="mini-why-text" id="miniWhyText"></p>
         <p class="mini-why-sources" id="miniWhySources"></p>
+      </div>
+
+      <div class="streak-card" id="streakCard">
+        <div class="streak-main">
+          <div class="streak-flame" id="streakFlameWrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c0-1-.5-2-1-3 2 1 3 3.5 3 6a6 6 0 0 1-12 0c0-4 2-5 4-10Z"/></svg>
+          </div>
+          <div class="streak-text">
+            <div class="streak-value" id="streakValue">-- jour</div>
+            <div class="streak-best" id="streakBest"></div>
+          </div>
+        </div>
+        <div class="badge-row" id="badgeRow"></div>
       </div>
 
       <div class="trend-card" id="trendCard">
@@ -2360,6 +2388,13 @@
   let trendLogsAll = [];
   let currentTrendRange = 7;
 
+  const BADGE_DEFS = [
+    { key: 'streak3', label: '3 jours', type: 'streak', threshold: 3 },
+    { key: 'streak7', label: '1 semaine', type: 'streak', threshold: 7 },
+    { key: 'streak30', label: '1 mois', type: 'streak', threshold: 30 },
+    { key: 'quality7', label: 'Score d\'or 7j', type: 'quality', threshold: 7 },
+  ];
+
   const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
   const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
 
@@ -2596,6 +2631,80 @@
     renderTrendRange(currentTrendRange);
   }
 
+  // Calcule la série en cours et le record, sur les logs (fournir daily_score et log_date)
+  function computeStreaksAndBadges(logs) {
+    if (!logs.length) return { currentStreak: 0, bestStreak: 0, bestQualityStreak: 0 };
+
+    let bestStreak = 1, runStreak = 1;
+    let runQuality = logs[0].daily_score >= 70 ? 1 : 0;
+    let bestQualityStreak = runQuality;
+
+    for (let i = 1; i < logs.length; i++) {
+      const prevDate = new Date(logs[i - 1].log_date + 'T00:00:00');
+      const curDate = new Date(logs[i].log_date + 'T00:00:00');
+      const diff = Math.round((curDate - prevDate) / 86400000);
+
+      runStreak = diff === 1 ? runStreak + 1 : 1;
+      bestStreak = Math.max(bestStreak, runStreak);
+
+      const isGood = logs[i].daily_score >= 70;
+      runQuality = (diff === 1 && isGood && logs[i - 1].daily_score >= 70) ? runQuality + 1 : (isGood ? 1 : 0);
+      bestQualityStreak = Math.max(bestQualityStreak, runQuality);
+    }
+
+    // La série "en cours" ne compte que si le dernier log est d'aujourd'hui ou d'hier
+    const lastDate = new Date(logs[logs.length - 1].log_date + 'T00:00:00');
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const daysSinceLast = Math.round((today - lastDate) / 86400000);
+    const currentStreak = daysSinceLast <= 1 ? runStreak : 0;
+
+    return { currentStreak, bestStreak, bestQualityStreak };
+  }
+
+  function renderStreaksAndBadges(stats) {
+    const flameWrap = document.getElementById('streakFlameWrap');
+    const valueEl = document.getElementById('streakValue');
+    const bestEl = document.getElementById('streakBest');
+    const badgeRow = document.getElementById('badgeRow');
+    if (!valueEl || !flameWrap || !bestEl || !badgeRow) return;
+
+    const { currentStreak, bestStreak, bestQualityStreak } = stats;
+
+    if (currentStreak > 0) {
+      flameWrap.classList.remove('off');
+      valueEl.textContent = `${currentStreak} jour${currentStreak > 1 ? 's' : ''} d'affilée`;
+    } else {
+      flameWrap.classList.add('off');
+      valueEl.textContent = 'Aucune série en cours';
+    }
+    bestEl.textContent = bestStreak > 0 ? `Record : ${bestStreak} jour${bestStreak > 1 ? 's' : ''}` : '';
+
+    const badgeIconSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4M17 5h3a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4"/></svg>';
+
+    badgeRow.innerHTML = BADGE_DEFS.map((b) => {
+      const achieved = b.type === 'streak' ? bestStreak >= b.threshold : bestQualityStreak >= b.threshold;
+      return `<div class="badge-chip${achieved ? ' unlocked' : ''}"><div class="badge-icon">${badgeIconSvg}</div><div class="badge-label">${b.label}</div></div>`;
+    }).join('');
+  }
+
+  // Récupère tout l'historique de logs de l'utilisateur pour calculer séries et badges
+  async function loadStreaksData() {
+    const { data, error } = await supabase
+      .from('daily_logs')
+      .select('log_date, daily_score')
+      .eq('user_id', user.id)
+      .order('log_date', { ascending: true });
+
+    if (error) {
+      console.error('Erreur récupération des séries :', error.message);
+      return;
+    }
+
+    const logs = (data || []).filter((d) => d.daily_score != null);
+    renderStreaksAndBadges(computeStreaksAndBadges(logs));
+  }
+
   async function initDashboard() {
     if (!dashboardBound) {
       dashboardBound = true;
@@ -2625,6 +2734,7 @@
     if (refreshBtn) refreshBtn.classList.add('spinning');
 
     loadTrendData();
+    loadStreaksData();
 
     const today = new Date().toISOString().split('T')[0];
 
