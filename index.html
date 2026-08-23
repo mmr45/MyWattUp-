@@ -509,8 +509,9 @@
   #view-app .section-desc { font-size: 12.5px; color: var(--gris); margin: 0 0 16px; line-height: 1.5; }
   #view-app label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 14px; }
   #view-app label:first-of-type { margin-top: 0; }
-  #view-app input[type="number"], #view-app select, #view-app input[type="text"], #view-app input[type="password"], #view-app textarea { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; resize: vertical; }
+  #view-app input[type="number"], #view-app select, #view-app input[type="text"], #view-app input[type="password"], #view-app input[type="time"], #view-app textarea { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; resize: vertical; color-scheme: dark; }
   #view-app input:focus, #view-app select:focus, #view-app textarea:focus { border-color: var(--vert); }
+  #view-app input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(1.6); cursor: pointer; }
 
   /* ---- Carte profil (avatar + pseudo) ---- */
   #view-app .profile-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 28px 24px; }
