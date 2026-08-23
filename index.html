@@ -512,6 +512,8 @@
   #view-app .toast.show { opacity: 1; transform: translateY(0); }
   #view-app .toast.info { border-color: rgba(255,159,28,0.3); }
   #view-app .toast.error { border-color: rgba(255,107,107,0.3); }
+  #view-app .toast.success { border-color: rgba(53,180,131,0.4); }
+  #view-app .toast.success svg { color: var(--vert, #35b483); }
   #view-app .toast svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--ambre); }
   #view-app .toast.error svg { color: #FF6B6B; }
   @media (prefers-reduced-motion: reduce) { #view-app .refresh-btn.spinning svg { animation: none; } }
@@ -2218,6 +2220,8 @@
       msg.textContent = text;
       msg.className = 'msg ' + (isError ? 'error' : 'success');
       setTimeout(() => { msg.textContent = ''; msg.className = 'msg'; }, 3000);
+      // Bulle flottante (visible même si le haut de la page n'est plus à l'écran).
+      showToast(text, isError ? 'error' : 'success');
     }
 
     // ---- Avatar & pseudo ----
@@ -2267,14 +2271,18 @@
           .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
         if (uploadErr) throw uploadErr;
 
-        const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
-        const publicUrl = pub.publicUrl;
+        const { data: pub, error: pubError } = supabase.storage.from('avatars').getPublicUrl(path);
+        if (pubError) throw pubError;
+        const publicUrl = pub?.publicUrl;
+        if (!publicUrl) throw new Error("URL publique introuvable après l'upload.");
 
         const { error } = await supabase
           .from('profiles')
           .upsert({ user_id: user.id, avatar_url: publicUrl }, { onConflict: 'user_id' });
         if (error) throw error;
 
+        // Force le rafraîchissement visuel même si l'URL est identique (cache navigateur).
+        avatarImg.src = '';
         avatarImg.src = publicUrl + '?t=' + Date.now();
         flash('Photo de profil mise à jour.', false);
       } catch (e) {
@@ -2385,23 +2393,30 @@
     document.getElementById('cropCancelBtn').addEventListener('click', closeCropModal);
 
     document.getElementById('cropConfirmBtn').addEventListener('click', () => {
-      const outSize = 512;
-      const outCanvas = document.createElement('canvas');
-      outCanvas.width = outSize;
-      outCanvas.height = outSize;
-      const outCtx = outCanvas.getContext('2d');
-      const ratio = outSize / cropCanvas.width;
-      const w = cropImg.width * cropState.scale * ratio;
-      const h = cropImg.height * cropState.scale * ratio;
-      const x = (outSize - w) / 2 + cropState.offX * ratio;
-      const y = (outSize - h) / 2 + cropState.offY * ratio;
-      outCtx.drawImage(cropImg, x, y, w, h);
+      if (!cropImg) { flash('Aucune image à recadrer.', true); return; }
+      try {
+        const outSize = 512;
+        const outCanvas = document.createElement('canvas');
+        outCanvas.width = outSize;
+        outCanvas.height = outSize;
+        const outCtx = outCanvas.getContext('2d');
+        const ratio = outSize / cropCanvas.width;
+        const w = cropImg.width * cropState.scale * ratio;
+        const h = cropImg.height * cropState.scale * ratio;
+        const x = (outSize - w) / 2 + cropState.offX * ratio;
+        const y = (outSize - h) / 2 + cropState.offY * ratio;
+        outCtx.drawImage(cropImg, x, y, w, h);
 
-      outCanvas.toBlob(async (blob) => {
-        if (!blob) { flash('Erreur lors du recadrage.', true); return; }
-        closeCropModal();
-        await uploadCroppedAvatar(blob);
-      }, 'image/jpeg', 0.9);
+        const imgForUpload = cropImg;
+        outCanvas.toBlob(async (blob) => {
+          if (!blob) { flash('Erreur lors du recadrage.', true); return; }
+          closeCropModal();
+          await uploadCroppedAvatar(blob);
+        }, 'image/jpeg', 0.9);
+      } catch (e) {
+        console.error('Erreur recadrage:', e);
+        flash('Erreur lors du recadrage de la photo.', true);
+      }
     });
 
     usernameSaveBtn.addEventListener('click', async () => {
