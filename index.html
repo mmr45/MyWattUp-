@@ -357,6 +357,8 @@
   #view-app .skeleton-line.w-90 { width: 90%; }
   #view-app .skeleton-row { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
   #view-app .skeleton-row .skeleton-line { flex: 1; margin: 0; }
+  #view-app .mini-skeleton { border-radius: 14px; padding: 16px 10px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #view-app .mini-skeleton .skeleton-line { width: 60%; }
   #view-app .skeleton-dot { width: 10px; height: 10px; border-radius: 50%; margin-left: 12px; flex-shrink: 0; background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.13) 37%, rgba(255,255,255,0.06) 63%); background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; }
   @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
   @media (prefers-reduced-motion: reduce) { #view-app .skeleton-line, #view-app .skeleton-dot { animation: none; opacity: 0.5; } }
@@ -444,6 +446,50 @@
   }
   #view-app .nav-item:focus-visible { outline: 2px solid var(--ambre); outline-offset: -4px; border-radius: 10px; }
 
+  /* bouton refresh */
+  #view-app .refresh-btn svg { transition: transform 0.5s ease; }
+  #view-app .refresh-btn.spinning svg { animation: refresh-spin 0.8s linear infinite; }
+  @keyframes refresh-spin { to { transform: rotate(360deg); } }
+
+  /* badge "mis à jour" sur le score */
+  #view-app .score-badge {
+    position: absolute; top: 14px; right: 14px; display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--vert); background: rgba(31,138,99,0.16); border: 1px solid rgba(31,138,99,0.3);
+    padding: 4px 9px; border-radius: 100px; opacity: 0; transform: translateY(-4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #view-app .score-badge.show { opacity: 1; transform: translateY(0); }
+  #view-app .score-badge svg { width: 10px; height: 10px; }
+
+  /* bannière hors-ligne */
+  #view-app .offline-banner {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20; text-align: center;
+    background: rgba(255,159,28,0.16); color: var(--ambre); border-bottom: 1px solid rgba(255,159,28,0.3);
+    font-size: 12.5px; font-weight: 600; padding: 10px 16px; transform: translateY(-100%);
+    transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  #view-app .offline-banner.show { transform: translateY(0); }
+  #view-app .offline-banner svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* toasts */
+  #view-app .toast-container {
+    position: fixed; left: 0; right: 0; bottom: max(78px, calc(70px + env(safe-area-inset-bottom)));
+    z-index: 30; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 20px; pointer-events: none;
+  }
+  #view-app .toast {
+    max-width: 440px; width: 100%; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 12px 16px; font-size: 13px; color: var(--blanc); box-shadow: 0 14px 30px -14px rgba(0,0,0,0.6);
+    display: flex; align-items: center; gap: 10px; opacity: 0; transform: translateY(10px); transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: auto;
+  }
+  #view-app .toast.show { opacity: 1; transform: translateY(0); }
+  #view-app .toast.info { border-color: rgba(255,159,28,0.3); }
+  #view-app .toast.error { border-color: rgba(255,107,107,0.3); }
+  #view-app .toast svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--ambre); }
+  #view-app .toast.error svg { color: #FF6B6B; }
+  @media (prefers-reduced-motion: reduce) { #view-app .refresh-btn.spinning svg { animation: none; } }
+
   /* repas */
   #view-app .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
   #view-app .day-chip { flex: 0 0 auto; padding: 9px 16px; border-radius: 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: var(--gris); cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
@@ -497,7 +543,9 @@
   #view-app .score-mid { background: rgba(255,159,28,0.18); color: var(--ambre); }
   #view-app .score-bad { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .result-justif { font-size: 13px; color: var(--gris); }
-  #view-app .history-title { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin: 24px 0 12px; }
+  #view-app .history-title { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin: 24px 0 12px; display: flex; align-items: center; justify-content: space-between; }
+  #view-app .history-title .icon-btn { width: 26px; height: 26px; }
+  #view-app .history-title .icon-btn svg { width: 13px; height: 13px; }
   #view-app .history-item { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s ease; }
   #view-app .history-item:hover { border-color: rgba(255,255,255,0.14); }
   #view-app .history-item-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -702,7 +750,7 @@
       <button type="submit" id="authSubmitBtn">Se connecter</button>
     </form>
 
-    <p class="msg" id="authMsg"></p>
+    <p class="msg" id="authMsg" role="status" aria-live="polite"></p>
 
     <p style="text-align:center; font-size:11px; color:var(--gris); margin-top:20px;">
       En continuant, tu acceptes notre
@@ -777,7 +825,7 @@
       </fieldset>
 
       <button type="submit" id="onboardingSubmitBtn">Valider mon profil</button>
-      <p class="msg" id="onboardingMsg"></p>
+      <p class="msg" id="onboardingMsg" role="status" aria-live="polite"></p>
     </form>
   </div>
 </div>
@@ -799,6 +847,9 @@
           <div class="brand-name">MyWattUp</div>
         </div>
         <div class="topbar-actions">
+          <button type="button" class="icon-btn refresh-btn" id="btnRefreshDashboard" aria-label="Actualiser">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+          </button>
           <a href="#parametres" class="icon-btn" id="btnGoSettings" aria-label="Paramètres">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
           </a>
@@ -809,6 +860,7 @@
       <p class="dash-greeting">Voici ton bilan du jour.</p>
 
       <div class="score-card">
+        <span class="score-badge" id="scoreBadge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mis à jour</span>
         <div class="ring-wrap">
           <svg width="180" height="180" viewBox="0 0 180 180">
             <circle class="ring-bg" cx="90" cy="90" r="78" />
@@ -822,7 +874,7 @@
         <div class="score-date" id="scoreDate"></div>
       </div>
 
-      <div class="mini-grid">
+      <div class="mini-grid" id="miniGrid">
         <div class="mini-card sommeil">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></div>
           <div class="mini-value" id="sleepValue">--</div>
@@ -839,13 +891,23 @@
           <div class="mini-label">Repas suivis</div>
         </div>
       </div>
+      <div class="mini-grid" id="miniGridSkeleton" style="display:none;">
+        <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
+        <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
+        <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
+      </div>
 
-      <div class="advice-card">
+      <div class="advice-card" id="adviceCard">
         <div class="advice-eyebrow">Conseil du jour</div>
         <div class="advice-text" id="adviceText">
           Remplis ton journal du jour pour recevoir ton premier conseil personnalisé.
         </div>
         <span class="advice-placeholder-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg> Texte statique — IA Claude à brancher</span>
+      </div>
+      <div class="advice-card" id="adviceSkeleton" style="display:none;">
+        <div class="skeleton-line w-40" style="margin-bottom:12px;"></div>
+        <div class="skeleton-line w-90"></div>
+        <div class="skeleton-line w-70"></div>
       </div>
 
       <a href="#journal" class="journal-btn">Remplir mon journal du jour</a>
@@ -918,7 +980,7 @@
         </div>
 
         <button type="submit" id="submitBtn">Enregistrer ma journée</button>
-        <p class="msg" id="msg"></p>
+        <p class="msg" id="msg" role="status" aria-live="polite"></p>
       </form>
     </section>
 
@@ -959,7 +1021,7 @@
           <p class="camera-hint">Vise le code-barres, il est détecté automatiquement.</p>
         </div>
 
-        <p class="scan-error" id="scanError"></p>
+        <p class="scan-error" id="scanError" role="alert" aria-live="assertive"></p>
       </div>
 
       <div class="result-card" id="resultCard">
@@ -968,7 +1030,12 @@
         <div class="result-justif" id="resultJustif"></div>
       </div>
 
-      <div class="history-title">Historique des scans</div>
+      <div class="history-title">
+        <span>Historique des scans</span>
+        <button type="button" class="icon-btn refresh-btn" id="btnRefreshHistory" aria-label="Actualiser l'historique">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+        </button>
+      </div>
       <div id="historyList">
         <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
         <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
@@ -1041,7 +1108,7 @@
 
       <p class="settings-note">D'autres réglages arriveront avec le temps.</p>
 
-      <p class="msg" id="settingsMsg"></p>
+      <p class="msg" id="settingsMsg" role="status" aria-live="polite"></p>
     </section>
 
   </div>
@@ -1053,6 +1120,12 @@
     <a href="#repas" class="nav-item" data-nav="repas"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>Repas</a>
     <a href="#scanner" class="nav-item" data-nav="scanner"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></span>Scanner</a>
   </nav>
+
+  <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l22 22"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+    <span>Connexion instable — certaines actions peuvent échouer.</span>
+  </div>
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 </div>
 <!-- fin #view-app -->
 
@@ -1066,6 +1139,40 @@
   const viewLogin = document.getElementById('view-login');
   const viewOnboarding = document.getElementById('view-onboarding');
   const viewApp = document.getElementById('view-app');
+
+  // -------------------------------------------------------------
+  // Toasts unifiés (remplace les alert() et sert aux notifs globales)
+  // -------------------------------------------------------------
+  function showToast(text, type) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast' + (type ? ' ' + type : '');
+    toast.setAttribute('role', 'status');
+    const iconPath = type === 'error'
+      ? '<circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>'
+      : '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/>';
+    toast.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${iconPath}</svg><span></span>`;
+    toast.querySelector('span').textContent = text;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+
+  // -------------------------------------------------------------
+  // Bannière hors-ligne / connexion instable
+  // -------------------------------------------------------------
+  const offlineBanner = document.getElementById('offlineBanner');
+  function updateOfflineBanner() {
+    if (!offlineBanner) return;
+    offlineBanner.classList.toggle('show', !navigator.onLine);
+  }
+  window.addEventListener('online', updateOfflineBanner);
+  window.addEventListener('offline', updateOfflineBanner);
+  updateOfflineBanner();
 
   // -------------------------------------------------------------
   // Bascule entre les 4 vues : vitrine / login / onboarding / app
@@ -1260,7 +1367,29 @@
   // -------------------------------------------------------------
   // DASHBOARD
   // -------------------------------------------------------------
+  let dashboardBound = false;
+  let dashboardLoaded = false;
+
   async function initDashboard() {
+    if (!dashboardBound) {
+      dashboardBound = true;
+      document.getElementById('btnRefreshDashboard').addEventListener('click', () => initDashboard());
+    }
+
+    const miniGrid = document.getElementById('miniGrid');
+    const miniGridSkeleton = document.getElementById('miniGridSkeleton');
+    const adviceCard = document.getElementById('adviceCard');
+    const adviceSkeleton = document.getElementById('adviceSkeleton');
+    const refreshBtn = document.getElementById('btnRefreshDashboard');
+
+    if (!dashboardLoaded) {
+      miniGrid.style.display = 'none';
+      miniGridSkeleton.style.display = 'grid';
+      adviceCard.style.display = 'none';
+      adviceSkeleton.style.display = 'block';
+    }
+    if (refreshBtn) refreshBtn.classList.add('spinning');
+
     const today = new Date().toISOString().split('T')[0];
 
     const { data: log, error } = await supabase
@@ -1270,7 +1399,17 @@
       .eq('log_date', today)
       .maybeSingle();
 
-    if (error) console.error("Erreur récupération du log du jour :", error.message);
+    if (error) {
+      console.error("Erreur récupération du log du jour :", error.message);
+      showToast("Impossible de charger ton bilan du jour — vérifie ta connexion.", 'error');
+    }
+
+    if (refreshBtn) refreshBtn.classList.remove('spinning');
+    miniGrid.style.display = 'grid';
+    miniGridSkeleton.style.display = 'none';
+    adviceCard.style.display = 'block';
+    adviceSkeleton.style.display = 'none';
+    dashboardLoaded = true;
 
     document.getElementById('scoreDate').textContent = new Date().toLocaleDateString('fr-FR', {
       weekday: 'long', day: 'numeric', month: 'long'
@@ -1280,6 +1419,7 @@
     const ringFgEl = document.getElementById('ringFg');
     const ringBgEl = document.querySelector('#view-app .ring-bg');
     const ringLabelEl = document.querySelector('#view-app .ring-label');
+    const scoreBadgeEl = document.getElementById('scoreBadge');
 
     function scoreClassFor(score) {
       if (score < 50) return 'score-low';
@@ -1310,6 +1450,13 @@
       adviceText.textContent = log.ai_recommendation
         ? log.ai_recommendation
         : "Ton score du jour est calculé. Le conseil personnalisé par l'IA arrivera bientôt ici.";
+
+      // Badge "Mis à jour" affiché juste après l'enregistrement du journal
+      if (scoreBadgeEl && sessionStorage.getItem('mywattup_just_updated') === '1') {
+        sessionStorage.removeItem('mywattup_just_updated');
+        scoreBadgeEl.classList.add('show');
+        setTimeout(() => scoreBadgeEl.classList.remove('show'), 3000);
+      }
     } else {
       const circumference = 2 * Math.PI * 78;
       ringFgEl.style.strokeDashoffset = circumference;
@@ -1453,6 +1600,7 @@
       document.querySelectorAll('#panel-journal .app-section').forEach(section => {
         section.classList.add('card-flash');
       });
+      sessionStorage.setItem('mywattup_just_updated', '1');
       setTimeout(() => { location.hash = '#dashboard'; }, 700);
     });
   }
@@ -1489,10 +1637,10 @@
       repasDaysBuilt = true;
 
       document.getElementById('generateBtn').addEventListener('click', () => {
-        alert("La génération de repas via l'IA Claude n'est pas encore branchée. Elle arrivera dans une prochaine étape (Module 2 du cahier des charges).");
+        showToast("La génération de repas via l'IA Claude n'est pas encore branchée. Elle arrivera dans une prochaine étape (Module 2 du cahier des charges).", 'info');
       });
       document.getElementById('groceryBtn').addEventListener('click', () => {
-        alert("La liste de courses automatique sera générée en même temps que le plan de repas (Module 2).");
+        showToast("La liste de courses automatique sera générée en même temps que le plan de repas (Module 2).", 'info');
       });
     }
 
@@ -1525,19 +1673,14 @@
     </div>`;
   }
 
-  async function loadMealsForDay() {
+  // Cache mémoire du plan de repas courant : le plan ne dépend pas du jour
+  // sélectionné, inutile de refaire l'aller-retour Supabase à chaque clic
+  // sur un day-chip.
+  let mealsCache = null; // null = pas encore chargé | { type: 'none' | 'empty' | 'data', meals? }
+
+  function renderMealsFromCache() {
     const mealsList = document.getElementById('mealsList');
-    mealsList.innerHTML = mealSkeletonHTML();
-
-    const { data: plan } = await supabase
-      .from('meal_plans')
-      .select('id')
-      .eq('user_id', user.id)
-      .order('week_start', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (!plan) {
+    if (!mealsCache || mealsCache.type === 'none') {
       mealsList.innerHTML = emptyStateHTML(
         '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
         'Aucun plan de repas pour l\'instant',
@@ -1545,13 +1688,7 @@
       );
       return;
     }
-
-    const { data: meals } = await supabase
-      .from('meals')
-      .select('*')
-      .eq('meal_plan_id', plan.id);
-
-    if (!meals || meals.length === 0) {
+    if (mealsCache.type === 'empty') {
       mealsList.innerHTML = emptyStateHTML(
         '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
         'Aucun repas généré pour ce plan',
@@ -1559,10 +1696,9 @@
       );
       return;
     }
-
     mealsList.innerHTML = '';
     const typeLabels = { petit_dejeuner: 'Petit-déjeuner', dejeuner: 'Déjeuner', diner: 'Dîner', collation: 'Collation' };
-    meals.forEach(m => {
+    mealsCache.meals.forEach(m => {
       const card = document.createElement('div');
       card.className = 'meal-card';
       card.innerHTML = `
@@ -1572,6 +1708,41 @@
       `;
       mealsList.appendChild(card);
     });
+  }
+
+  async function loadMealsForDay() {
+    const mealsList = document.getElementById('mealsList');
+
+    if (mealsCache) {
+      renderMealsFromCache();
+      return;
+    }
+
+    mealsList.innerHTML = mealSkeletonHTML();
+
+    const { data: plan, error: planError } = await supabase
+      .from('meal_plans')
+      .select('id')
+      .eq('user_id', user.id)
+      .order('week_start', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (planError) showToast('Impossible de charger ton plan de repas — vérifie ta connexion.', 'error');
+
+    if (!plan) {
+      mealsCache = { type: 'none' };
+      renderMealsFromCache();
+      return;
+    }
+
+    const { data: meals } = await supabase
+      .from('meals')
+      .select('*')
+      .eq('meal_plan_id', plan.id);
+
+    mealsCache = (meals && meals.length > 0) ? { type: 'data', meals } : { type: 'empty' };
+    renderMealsFromCache();
   }
 
   // -------------------------------------------------------------
@@ -1714,9 +1885,15 @@
       }
 
       scanBtn.addEventListener('click', () => runScan(barcodeInput.value.trim()));
+      barcodeInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); runScan(barcodeInput.value.trim()); }
+      });
+
+      let scanInFlight = false;
 
       async function runScan(barcode) {
-        if (!barcode) return;
+        if (!barcode || scanInFlight) return;
+        scanInFlight = true;
 
         scanBtn.disabled = true;
         scanBtn.textContent = '...';
@@ -1767,6 +1944,7 @@
           console.error(err);
           showScanError("Erreur lors du scan — vérifie ta connexion et réessaie.");
         } finally {
+          scanInFlight = false;
           scanBtn.disabled = false;
           scanBtn.textContent = 'Scanner';
         }
@@ -1840,6 +2018,8 @@
       cameraCloseBtn.addEventListener('click', stopCamera);
       window.__stopMyWattUpCamera = stopCamera;
 
+      document.getElementById('btnRefreshHistory').addEventListener('click', () => loadHistory());
+
       scannerBound = true;
     }
 
@@ -1848,6 +2028,8 @@
 
   async function loadHistory() {
     const historyList = document.getElementById('historyList');
+    const refreshBtn = document.getElementById('btnRefreshHistory');
+    if (refreshBtn) refreshBtn.classList.add('spinning');
     historyList.innerHTML = `
       <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
       <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
@@ -1861,6 +2043,8 @@
       .limit(20);
 
     if (error || !data || data.length === 0) {
+      if (refreshBtn) refreshBtn.classList.remove('spinning');
+      if (error) showToast("Impossible de charger l'historique — vérifie ta connexion.", 'error');
       historyList.innerHTML = emptyStateHTML(
         '<path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/>',
         'Aucun scan pour l\'instant',
@@ -1936,6 +2120,8 @@
       historyList.appendChild(row);
       historyList.appendChild(detail);
     });
+
+    if (refreshBtn) refreshBtn.classList.remove('spinning');
   }
 
   // -------------------------------------------------------------
