@@ -582,6 +582,82 @@
   }
   @keyframes check-pop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); } }
 
+  /* ---------- Journal : aperçu du score en direct ---------- */
+  #view-app .journal-score-preview {
+    display: flex; align-items: center; gap: 14px; background: var(--fond-card);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px;
+    box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55);
+  }
+  #view-app .jsp-ring-wrap { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
+  #view-app .jsp-ring-wrap svg { transform: rotate(-90deg); }
+  #view-app .jsp-ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 6; }
+  #view-app .jsp-ring-fg { fill: none; stroke: var(--gris); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease, stroke 0.3s ease; }
+  #view-app .jsp-ring-fg.score-low { stroke: #FF6B6B; }
+  #view-app .jsp-ring-fg.score-mid { stroke: var(--ambre); }
+  #view-app .jsp-ring-fg.score-good { stroke: var(--vert); }
+  #view-app .jsp-ring-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #view-app .jsp-ring-score { font-family: var(--display); font-weight: 800; font-size: 17px; }
+  #view-app .jsp-text { flex: 1; min-width: 0; }
+  #view-app .jsp-label { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris); margin-bottom: 3px; }
+  #view-app .jsp-detail { font-size: 12.5px; color: var(--blanc); line-height: 1.4; }
+
+  /* ---------- Journal : pré-remplissage intelligent ---------- */
+  #view-app .prefill-btn {
+    display: none; width: 100%; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 14px; margin-bottom: 18px; border-radius: 12px; cursor: pointer;
+    background: rgba(31,138,99,0.08); border: 1px dashed rgba(31,138,99,0.4); color: var(--vert);
+    font-family: inherit; font-size: 12.5px; font-weight: 600; text-align: center; line-height: 1.4;
+  }
+  #view-app .prefill-btn.show { display: flex; }
+  #view-app .prefill-btn:hover { background: rgba(31,138,99,0.14); }
+  #view-app .prefill-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* ---------- Journal : barre de progression du wizard ---------- */
+  #view-app .wizard-progress { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
+  #view-app .wizard-dot { flex: 1; height: 4px; border-radius: 3px; background: rgba(255,255,255,0.08); transition: background 0.2s ease; }
+  #view-app .wizard-dot.done { background: var(--vert); }
+  #view-app .wizard-dot.active { background: var(--ambre); }
+  #view-app .wizard-step-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+  #view-app .wizard-step-label strong { color: var(--ambre); }
+
+  /* ---------- Journal : navigation du wizard (sticky) ---------- */
+  #view-app .wizard-nav {
+    position: sticky; bottom: max(84px, calc(76px + env(safe-area-inset-bottom))); z-index: 4;
+    display: flex; gap: 10px; padding: 10px; margin: 4px -10px 0; border-radius: 16px;
+    background: rgba(26,23,20,0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 -8px 20px -16px rgba(0,0,0,0.6);
+  }
+  #view-app .wizard-btn-prev {
+    flex: 0 0 auto; padding: 14px 18px; background: var(--fond); color: var(--gris); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  #view-app .wizard-btn-prev:hover { color: var(--blanc); border-color: rgba(255,255,255,0.24); }
+  #view-app .wizard-btn-prev[hidden], #view-app .wizard-btn-next[hidden], #view-app .wizard-btn-submit[hidden] { display: none; }
+  #view-app .wizard-btn-next, #view-app .wizard-btn-submit {
+    flex: 1; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  #view-app .wizard-btn-next:hover, #view-app .wizard-btn-submit:hover { filter: brightness(1.08); }
+  #view-app .wizard-btn-next:active, #view-app .wizard-btn-submit:active { transform: scale(0.98); }
+  #view-app .wizard-btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  #view-app .wizard-step { animation: wizardStepIn 0.2s ease; }
+  @keyframes wizardStepIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { #view-app .wizard-step { animation: none; } }
+  #view-app .field-error { border-color: #FF6B6B !important; }
+
+  /* ---------- Journal : repas en chips compactes ---------- */
+  #view-app .meal-chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  #view-app .meal-chip {
+    flex: 1 1 30%; min-width: 90px; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 14px 8px; border-radius: 12px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10);
+    color: var(--gris); font-size: 12px; font-weight: 600; cursor: pointer; text-align: center;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  #view-app .meal-chip svg { width: 18px; height: 18px; }
+  #view-app .meal-chip.on { background: rgba(31,138,99,0.14); border-color: var(--vert); color: var(--vert); }
+  #view-app .meal-chip .chip-check { width: 14px; height: 14px; opacity: 0; transition: opacity 0.15s ease; margin-top: -2px; }
+  #view-app .meal-chip.on .chip-check { opacity: 1; }
+
   /* micro-feedback : flash de succès sur une carte */
   #view-app .card-flash { animation: card-flash 0.9s ease; }
   @keyframes card-flash {
@@ -1283,8 +1359,38 @@
         <h1 class="app-h1">Journal du jour</h1>
       </div>
 
+      <!-- Aperçu du score en temps réel -->
+      <div class="journal-score-preview">
+        <div class="jsp-ring-wrap">
+          <svg width="60" height="60" viewBox="0 0 60 60">
+            <circle class="jsp-ring-bg" cx="30" cy="30" r="27" />
+            <circle class="jsp-ring-fg" id="jspRingFg" cx="30" cy="30" r="27" stroke-dasharray="170" stroke-dashoffset="170" />
+          </svg>
+          <div class="jsp-ring-center"><div class="jsp-ring-score" id="jspScore">--</div></div>
+        </div>
+        <div class="jsp-text">
+          <div class="jsp-label">Score en construction</div>
+          <div class="jsp-detail" id="jspDetail">Renseigne ton sommeil pour démarrer.</div>
+        </div>
+      </div>
+
+      <!-- Pré-remplissage intelligent -->
+      <button type="button" class="prefill-btn" id="prefillBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+        <span id="prefillBtnLabel">Reprendre hier</span>
+      </button>
+
+      <!-- Barre de progression du wizard -->
+      <div class="wizard-progress" id="wizardProgress">
+        <div class="wizard-dot" data-step="0"></div>
+        <div class="wizard-dot" data-step="1"></div>
+        <div class="wizard-dot" data-step="2"></div>
+        <div class="wizard-dot" data-step="3"></div>
+      </div>
+      <div class="wizard-step-label" id="wizardStepLabel">Étape <strong>1/4</strong> — Sommeil</div>
+
       <form id="journalForm">
-        <div class="app-section">
+        <div class="app-section wizard-step" data-step="0">
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg> Sommeil</div>
           <label for="sleepHours">Heures dormies</label>
           <input type="number" id="sleepHours" min="0" max="14" step="0.5" placeholder="ex. 7.5" required />
@@ -1297,7 +1403,7 @@
           </div>
         </div>
 
-        <div class="app-section">
+        <div class="app-section wizard-step" data-step="1" hidden>
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg> Activité</div>
           <label for="activityType">Type de séance</label>
           <select id="activityType" required>
@@ -1317,7 +1423,7 @@
           </div>
         </div>
 
-        <div class="app-section">
+        <div class="app-section wizard-step" data-step="2" hidden>
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-4 2-8 6-9 1 1.5.5 3-1 4 2-1 5-1 6 2 1-1 3-.5 3 1.5 0 4-3 7-7 8-3 .8-6-1-7-4Z"/><path d="M9 15c1.5 1 4 1 6-1"/></svg> Forme ressentie</div>
           <label>De 1 à 10</label>
           <div class="slider-row">
@@ -1326,23 +1432,32 @@
           </div>
         </div>
 
-        <div class="app-section">
+        <div class="app-section wizard-step" data-step="3" hidden>
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg> Repas suivis</div>
-          <div class="meal-row">
-            <span class="meal-name-toggle" id="labelBreakfast">Petit-déjeuner</span>
-            <div class="toggle" data-target="breakfastDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelBreakfast"><div class="toggle-dot"></div></div>
-          </div>
-          <div class="meal-row">
-            <span class="meal-name-toggle" id="labelLunch">Déjeuner</span>
-            <div class="toggle" data-target="lunchDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelLunch"><div class="toggle-dot"></div></div>
-          </div>
-          <div class="meal-row">
-            <span class="meal-name-toggle" id="labelDinner">Dîner</span>
-            <div class="toggle" data-target="dinnerDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelDinner"><div class="toggle-dot"></div></div>
+          <div class="meal-chip-row">
+            <div class="meal-chip" data-target="breakfastDone" tabindex="0" role="switch" aria-checked="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M4 11a8 8 0 0 1 16 0v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 6V4M16 6V4"/></svg>
+              <span>Petit-déj</span>
+              <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div class="meal-chip" data-target="lunchDone" tabindex="0" role="switch" aria-checked="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+              <span>Déjeuner</span>
+              <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div class="meal-chip" data-target="dinnerDone" tabindex="0" role="switch" aria-checked="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg>
+              <span>Dîner</span>
+              <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
           </div>
         </div>
 
-        <button type="submit" id="submitBtn">Enregistrer ma journée</button>
+        <div class="wizard-nav">
+          <button type="button" class="wizard-btn-prev" id="wizardPrev" hidden>Précédent</button>
+          <button type="button" class="wizard-btn-next" id="wizardNext">Suivant</button>
+          <button type="submit" class="wizard-btn-submit" id="submitBtn" hidden>Enregistrer ma journée</button>
+        </div>
         <p class="msg" id="msg" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -2478,15 +2593,23 @@
   // -------------------------------------------------------------
   function initJournal() {
     let selectedQuality = null;
+    const STEP_LABELS = ['Sommeil', 'Activité', 'Forme ressentie', 'Repas suivis'];
+
+    const sleepHoursInput = document.getElementById('sleepHours');
+    const activityTypeSelect = document.getElementById('activityType');
+    const activityDurationInput = document.getElementById('activityDuration');
+    const intensityInput = document.getElementById('activityIntensity');
+    const moodInput = document.getElementById('moodScore');
+
+    function selectQuality(value) {
+      document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.toggle('selected', b.dataset.value === value));
+      selectedQuality = value;
+      updateLivePreview();
+    }
     document.querySelectorAll('#sleepQuality .qbtn').forEach(btn => {
-      const selectQuality = () => {
-        document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedQuality = btn.dataset.value;
-      };
-      btn.addEventListener('click', selectQuality);
+      btn.addEventListener('click', () => selectQuality(btn.dataset.value));
       btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectQuality(); }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectQuality(btn.dataset.value); }
       });
     });
 
@@ -2496,23 +2619,26 @@
       input.style.background = `linear-gradient(to right, var(--vert) ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
     };
 
-    const intensityInput = document.getElementById('activityIntensity');
     fillSlider(intensityInput);
     intensityInput.addEventListener('input', () => {
       document.getElementById('intensityValue').textContent = intensityInput.value;
       fillSlider(intensityInput);
+      updateLivePreview();
     });
 
-    const moodInput = document.getElementById('moodScore');
     fillSlider(moodInput);
     moodInput.addEventListener('input', () => {
       document.getElementById('moodValue').textContent = moodInput.value;
       fillSlider(moodInput);
+      updateLivePreview();
     });
 
-    const toggles = {};
-    document.querySelectorAll('.toggle').forEach(t => {
-      toggles[t.dataset.target] = false;
+    sleepHoursInput.addEventListener('input', updateLivePreview);
+    activityTypeSelect.addEventListener('change', updateLivePreview);
+    activityDurationInput.addEventListener('input', updateLivePreview);
+
+    const toggles = { breakfastDone: false, lunchDone: false, dinnerDone: false };
+    document.querySelectorAll('.meal-chip').forEach(t => {
       const flip = () => {
         t.classList.toggle('on');
         const isOn = t.classList.contains('on');
@@ -2561,26 +2687,243 @@
       return { sleepScore, activityScore, dailyScore };
     }
 
+    // ---------------------------------------------------------------
+    // Aperçu du score en temps réel : se recalcule à chaque saisie,
+    // en pondérant seulement les éléments déjà renseignés (le reste
+    // se rééquilibre automatiquement une fois complété).
+    // ---------------------------------------------------------------
+    const jspScoreEl = document.getElementById('jspScore');
+    const jspRingFgEl = document.getElementById('jspRingFg');
+    const jspDetailEl = document.getElementById('jspDetail');
+    const jspCircumference = 2 * Math.PI * 27;
+
+    function jspScoreClassFor(score) {
+      if (score < 50) return 'score-low';
+      if (score < 75) return 'score-mid';
+      return 'score-good';
+    }
+
+    function updateLivePreview() {
+      const sleepHours = parseFloat(sleepHoursInput.value);
+      const activityType = activityTypeSelect.value;
+      const moodScore = parseInt(moodInput.value);
+
+      const parts = [];
+      let sleepScore = null, activityScore = null;
+
+      if (!isNaN(sleepHours) && sleepHours > 0) {
+        ({ sleepScore } = computeScores({
+          sleepHours, sleepQuality: selectedQuality || 'moyenne',
+          activityType: 'repos', intensity: 5, duration: 0, mood: 5,
+        }));
+        parts.push({ score: sleepScore, weight: 0.35 });
+      }
+      if (activityType) {
+        const duration = parseInt(activityDurationInput.value) || 0;
+        const intensity = parseInt(intensityInput.value);
+        ({ activityScore } = computeScores({
+          sleepHours: 8, sleepQuality: 'moyenne', activityType,
+          intensity, duration, mood: 5,
+        }));
+        parts.push({ score: activityScore, weight: 0.35 });
+      }
+      // La forme ressentie a toujours une valeur (curseur par défaut à 5),
+      // elle compte donc dès le départ dans l'aperçu.
+      parts.push({ score: moodScore * 10, weight: 0.30 });
+
+      if (parts.length === 1) {
+        jspScoreEl.textContent = '--';
+        jspRingFgEl.style.strokeDashoffset = jspCircumference;
+        jspRingFgEl.classList.remove('score-low', 'score-mid', 'score-good');
+        jspDetailEl.textContent = 'Renseigne ton sommeil pour démarrer.';
+        return;
+      }
+
+      const totalWeight = parts.reduce((s, p) => s + p.weight, 0);
+      const provisional = Math.round(parts.reduce((s, p) => s + p.score * p.weight, 0) / totalWeight);
+
+      jspScoreEl.textContent = provisional;
+      const offset = jspCircumference - (provisional / 100) * jspCircumference;
+      jspRingFgEl.style.strokeDashoffset = offset;
+      jspRingFgEl.classList.remove('score-low', 'score-mid', 'score-good');
+      jspRingFgEl.classList.add(jspScoreClassFor(provisional));
+
+      const complete = sleepScore !== null && activityScore !== null;
+      jspDetailEl.textContent = complete
+        ? `Score du jour : ${provisional}/100`
+        : `Score provisoire : ${provisional}/100 — complète les étapes restantes.`;
+    }
+
+    // ---------------------------------------------------------------
+    // Pré-remplissage intelligent : reprend hier si dispo, sinon
+    // propose la moyenne des 7 derniers jours.
+    // ---------------------------------------------------------------
+    const prefillBtn = document.getElementById('prefillBtn');
+    const prefillBtnLabel = document.getElementById('prefillBtnLabel');
+    let prefillPayload = null;
+
+    function average(arr) { return arr.reduce((a, b) => a + b, 0) / arr.length; }
+    function mode(arr) {
+      const counts = {};
+      arr.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+      return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+    }
+    function majorityBool(arr) { return arr.filter(Boolean).length >= arr.length / 2; }
+
+    async function setupPrefill() {
+      const today = new Date();
+      const todayStr = today.toISOString().split('T')[0];
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      const { data: logs, error } = await supabase
+        .from('daily_logs')
+        .select('*')
+        .eq('user_id', user.id)
+        .lt('log_date', todayStr)
+        .order('log_date', { ascending: false })
+        .limit(7);
+
+      if (error || !logs || logs.length === 0) return;
+
+      if (logs[0].log_date === yesterdayStr) {
+        prefillPayload = { mode: 'yesterday', log: logs[0] };
+        prefillBtnLabel.textContent = `Reprendre hier (${formatSleepDuration(logs[0].sleep_hours)}, ${ACTIVITY_TYPE_LABEL[logs[0].activity_type] || logs[0].activity_type})`;
+      } else {
+        prefillPayload = {
+          mode: 'average',
+          sleepHours: Math.round(average(logs.map(l => l.sleep_hours)) * 2) / 2,
+          sleepQuality: mode(logs.map(l => l.sleep_quality)),
+          activityType: mode(logs.map(l => l.activity_type)),
+          activityDuration: Math.round(average(logs.filter(l => l.activity_type !== 'repos').map(l => l.activity_duration_min || 0)) || 0),
+          activityIntensity: Math.round(average(logs.map(l => l.activity_intensity || 5))),
+          moodScore: Math.round(average(logs.map(l => l.mood_score || 5))),
+          breakfastDone: majorityBool(logs.map(l => l.breakfast_done)),
+          lunchDone: majorityBool(logs.map(l => l.lunch_done)),
+          dinnerDone: majorityBool(logs.map(l => l.dinner_done)),
+        };
+        prefillBtnLabel.textContent = 'Pré-remplir avec ma moyenne des 7 derniers jours';
+      }
+      prefillBtn.classList.add('show');
+    }
+
+    prefillBtn.addEventListener('click', () => {
+      if (!prefillPayload) return;
+      const d = prefillPayload.mode === 'yesterday' ? {
+        sleepHours: prefillPayload.log.sleep_hours,
+        sleepQuality: prefillPayload.log.sleep_quality,
+        activityType: prefillPayload.log.activity_type,
+        activityDuration: prefillPayload.log.activity_duration_min || 0,
+        activityIntensity: prefillPayload.log.activity_intensity || 5,
+        moodScore: prefillPayload.log.mood_score || 5,
+        breakfastDone: prefillPayload.log.breakfast_done,
+        lunchDone: prefillPayload.log.lunch_done,
+        dinnerDone: prefillPayload.log.dinner_done,
+      } : prefillPayload;
+
+      sleepHoursInput.value = d.sleepHours;
+      selectQuality(d.sleepQuality);
+      activityTypeSelect.value = d.activityType;
+      activityDurationInput.value = d.activityDuration || '';
+      intensityInput.value = d.activityIntensity;
+      document.getElementById('intensityValue').textContent = d.activityIntensity;
+      fillSlider(intensityInput);
+      moodInput.value = d.moodScore;
+      document.getElementById('moodValue').textContent = d.moodScore;
+      fillSlider(moodInput);
+
+      document.querySelectorAll('.meal-chip').forEach(chip => {
+        const isOn = !!d[chip.dataset.target];
+        chip.classList.toggle('on', isOn);
+        chip.setAttribute('aria-checked', String(isOn));
+        toggles[chip.dataset.target] = isOn;
+      });
+
+      updateLivePreview();
+      msg.textContent = 'Journal pré-rempli — vérifie et ajuste si besoin.';
+      msg.className = 'msg success';
+      prefillBtn.classList.remove('show');
+    });
+
+    setupPrefill();
+
+    // ---------------------------------------------------------------
+    // Navigation du wizard (une question à la fois)
+    // ---------------------------------------------------------------
+    const steps = Array.from(document.querySelectorAll('#journalForm .wizard-step'));
+    const dots = Array.from(document.querySelectorAll('.wizard-dot'));
+    const stepLabelEl = document.getElementById('wizardStepLabel');
+    const prevBtn = document.getElementById('wizardPrev');
+    const nextBtn = document.getElementById('wizardNext');
     const form = document.getElementById('journalForm');
     const submitBtn = document.getElementById('submitBtn');
     const msg = document.getElementById('msg');
+    let currentStep = 0;
+
+    function validateStep(i) {
+      msg.textContent = '';
+      msg.className = 'msg';
+      if (i === 0) {
+        if (!sleepHoursInput.value) {
+          sleepHoursInput.classList.add('field-error');
+          msg.textContent = 'Indique combien d\'heures tu as dormi.';
+          msg.className = 'msg error';
+          return false;
+        }
+        sleepHoursInput.classList.remove('field-error');
+        if (!selectedQuality) {
+          msg.textContent = 'Sélectionne la qualité de ton sommeil.';
+          msg.className = 'msg error';
+          return false;
+        }
+      }
+      if (i === 1 && !activityTypeSelect.value) {
+        msg.textContent = 'Choisis le type de séance du jour.';
+        msg.className = 'msg error';
+        return false;
+      }
+      return true;
+    }
+
+    function renderStep() {
+      steps.forEach(s => { s.hidden = Number(s.dataset.step) !== currentStep; });
+      dots.forEach(d => {
+        const n = Number(d.dataset.step);
+        d.classList.toggle('done', n < currentStep);
+        d.classList.toggle('active', n === currentStep);
+      });
+      stepLabelEl.innerHTML = `Étape <strong>${currentStep + 1}/4</strong> — ${STEP_LABELS[currentStep]}`;
+      prevBtn.hidden = currentStep === 0;
+      const isLast = currentStep === steps.length - 1;
+      nextBtn.hidden = isLast;
+      submitBtn.hidden = !isLast;
+      msg.textContent = '';
+      msg.className = 'msg';
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) { currentStep -= 1; renderStep(); }
+    });
+    nextBtn.addEventListener('click', () => {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < steps.length - 1) { currentStep += 1; renderStep(); }
+    });
+
+    renderStep();
+    updateLivePreview();
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-
-      if (!selectedQuality) {
-        msg.textContent = "Sélectionne la qualité de ton sommeil.";
-        msg.className = 'msg error';
-        return;
-      }
+      if (!validateStep(0) || !validateStep(1)) return;
 
       submitBtn.disabled = true;
       msg.textContent = '';
       msg.className = 'msg';
 
-      const sleepHours = parseFloat(document.getElementById('sleepHours').value);
-      const activityType = document.getElementById('activityType').value;
-      const activityDuration = parseInt(document.getElementById('activityDuration').value) || 0;
+      const sleepHours = parseFloat(sleepHoursInput.value);
+      const activityType = activityTypeSelect.value;
+      const activityDuration = parseInt(activityDurationInput.value) || 0;
       const activityIntensity = parseInt(intensityInput.value);
       const moodScore = parseInt(moodInput.value);
 
