@@ -339,9 +339,13 @@
   #view-onboarding .option { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; cursor: pointer; transition: border-color 0.15s ease; font-size: 14px; }
   #view-onboarding .option:has(input:checked) { border-color: var(--vert); background: rgba(31,138,99,0.12); }
   #view-onboarding .option input { accent-color: var(--vert); width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
-  #view-onboarding select, #view-onboarding textarea { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; resize: vertical; }
-  #view-onboarding select:focus, #view-onboarding textarea:focus { border-color: var(--vert); }
+  #view-onboarding select, #view-onboarding textarea, #view-onboarding input[type="number"] { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; resize: vertical; }
+  #view-onboarding select:focus, #view-onboarding textarea:focus, #view-onboarding input[type="number"]:focus { border-color: var(--vert); }
   #view-onboarding textarea { min-height: 70px; }
+  #view-onboarding .field-row { display: flex; gap: 12px; }
+  #view-onboarding .field-row > div { flex: 1; }
+  #view-onboarding .field-row label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; }
+  #view-onboarding .field-hint { font-size: 11.5px; color: var(--gris); margin: 8px 0 0; line-height: 1.5; }
   #view-onboarding button[type="submit"] { width: 100%; padding: 13px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
   #view-onboarding button[type="submit"]:hover { filter: brightness(1.08); }
   #view-onboarding button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -1250,6 +1254,45 @@
       </fieldset>
 
       <fieldset>
+        <legend>Tes mesures</legend>
+        <div class="field-row">
+          <div>
+            <label for="onbHeight">Taille (cm)</label>
+            <input type="number" id="onbHeight" name="heightCm" min="120" max="230" step="1" placeholder="175" required />
+          </div>
+          <div>
+            <label for="onbWeight">Poids (kg)</label>
+            <input type="number" id="onbWeight" name="weightKg" min="30" max="300" step="0.1" placeholder="70" required />
+          </div>
+        </div>
+        <div class="field-row" style="margin-top:14px;">
+          <div>
+            <label for="onbBirthYear">Année de naissance</label>
+            <input type="number" id="onbBirthYear" name="birthYear" min="1920" max="2015" step="1" placeholder="1995" required />
+          </div>
+          <div>
+            <label for="onbSex">Sexe</label>
+            <select id="onbSex" name="sex" required>
+              <option value="" disabled selected>Choisis</option>
+              <option value="homme">Homme</option>
+              <option value="femme">Femme</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <label for="onbActivityLevel" style="display:block; margin-top:14px;">Niveau d'activité au quotidien</label>
+        <select id="onbActivityLevel" name="activityLevel" required>
+          <option value="" disabled selected>Choisis ton niveau</option>
+          <option value="sedentaire">Sédentaire (bureau, peu de marche)</option>
+          <option value="leger">Léger (1-3 séances/semaine)</option>
+          <option value="modere">Modéré (3-5 séances/semaine)</option>
+          <option value="actif">Actif (6-7 séances/semaine)</option>
+          <option value="tres_actif">Très actif (sport intense quotidien ou métier physique)</option>
+        </select>
+        <p class="field-hint">Ces informations servent uniquement à calculer une estimation de tes besoins caloriques journaliers. Tu peux les modifier à tout moment dans Paramètres → Ma pratique.</p>
+      </fieldset>
+
+      <fieldset>
         <legend>Allergies / contraintes alimentaires (optionnel)</legend>
         <textarea name="allergies" placeholder="ex. arachides, lactose, sans gluten..."></textarea>
       </fieldset>
@@ -1731,6 +1774,47 @@
 
         <label style="margin-top:18px;">Allergies / contraintes alimentaires</label>
         <textarea id="settingsAllergies" rows="2" placeholder="ex. arachides, lactose, sans gluten..."></textarea>
+
+        <div class="section-title" style="margin-top:22px; font-size:13px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+          Mes mesures
+        </div>
+        <p class="section-desc">Utilisées pour estimer ta cible calorique quotidienne.</p>
+
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1;">
+            <label for="settingsHeight">Taille (cm)</label>
+            <input type="number" id="settingsHeight" min="120" max="230" step="1" />
+          </div>
+          <div style="flex:1;">
+            <label for="settingsWeight">Poids (kg)</label>
+            <input type="number" id="settingsWeight" min="30" max="300" step="0.1" />
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <div style="flex:1;">
+            <label for="settingsBirthYear">Année de naissance</label>
+            <input type="number" id="settingsBirthYear" min="1920" max="2015" step="1" />
+          </div>
+          <div style="flex:1;">
+            <label for="settingsSex">Sexe</label>
+            <select id="settingsSex">
+              <option value="" disabled>Choisis</option>
+              <option value="homme">Homme</option>
+              <option value="femme">Femme</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+        </div>
+        <label for="settingsActivityLevel" style="margin-top:14px;">Niveau d'activité au quotidien</label>
+        <select id="settingsActivityLevel">
+          <option value="" disabled>Choisis ton niveau</option>
+          <option value="sedentaire">Sédentaire (bureau, peu de marche)</option>
+          <option value="leger">Léger (1-3 séances/semaine)</option>
+          <option value="modere">Modéré (3-5 séances/semaine)</option>
+          <option value="actif">Actif (6-7 séances/semaine)</option>
+          <option value="tres_actif">Très actif (sport intense quotidien ou métier physique)</option>
+        </select>
 
         <button type="button" class="app-cta secondary" id="settingsPracticeSave" style="margin-top:16px;">Enregistrer ma pratique</button>
       </div>
@@ -2311,6 +2395,19 @@
       msg.textContent = '';
       msg.className = 'msg';
 
+      const heightCm = parseFloat(formData.get('heightCm'));
+      const weightKg = parseFloat(formData.get('weightKg'));
+      const birthYear = parseInt(formData.get('birthYear'), 10);
+      const sex = formData.get('sex');
+      const activityLevel = formData.get('activityLevel');
+
+      if (!heightCm || !weightKg || !birthYear || !sex || !activityLevel) {
+        msg.textContent = "Merci de renseigner toutes tes mesures.";
+        msg.classList.add('error');
+        submitBtn.disabled = false;
+        return;
+      }
+
       try {
         await ensureProfile(user); // garantit avatar + pseudo par défaut avant l'upsert des infos sportives
         await createProfile({
@@ -2319,6 +2416,22 @@
           allergies: formData.get('allergies'),
           consentGiven: document.getElementById('onboardingConsentCheck').checked,
         });
+
+        // Mesures utilisées pour le calcul de la cible calorique (Mifflin-St Jeor).
+        // Séparé de createProfile() pour ne pas modifier onboarding.js : upsert direct,
+        // même pattern que dans Paramètres → Ma pratique.
+        const { error: measurementsError } = await supabase
+          .from('profiles')
+          .upsert({
+            user_id: user.id,
+            height_cm: heightCm,
+            weight_kg: weightKg,
+            birth_year: birthYear,
+            sex: sex,
+            activity_level: activityLevel,
+          }, { onConflict: 'user_id' });
+        if (measurementsError) throw measurementsError;
+
         showApp();
       } catch (err) {
         msg.textContent = err.message || "Une erreur est survenue.";
@@ -4090,10 +4203,15 @@
     const objectiveSelect = document.getElementById('settingsObjective');
     const allergiesInput = document.getElementById('settingsAllergies');
     const practiceSaveBtn = document.getElementById('settingsPracticeSave');
+    const heightInput = document.getElementById('settingsHeight');
+    const weightInput = document.getElementById('settingsWeight');
+    const birthYearInput = document.getElementById('settingsBirthYear');
+    const sexSelect = document.getElementById('settingsSex');
+    const activityLevelSelect = document.getElementById('settingsActivityLevel');
 
     let { data: acctProfile } = await supabase
       .from('profiles')
-      .select('username, avatar_seed, avatar_url, sport_type, objective, allergies')
+      .select('username, avatar_seed, avatar_url, sport_type, objective, allergies, height_cm, weight_kg, birth_year, sex, activity_level')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -4122,9 +4240,21 @@
     });
     objectiveSelect.value = acctProfile.objective || '';
     allergiesInput.value = acctProfile.allergies || '';
+    heightInput.value = acctProfile.height_cm ?? '';
+    weightInput.value = acctProfile.weight_kg ?? '';
+    birthYearInput.value = acctProfile.birth_year ?? '';
+    sexSelect.value = acctProfile.sex || '';
+    activityLevelSelect.value = acctProfile.activity_level || '';
 
     practiceSaveBtn.addEventListener('click', async () => {
       const sportType = sportTypeGroup.querySelector('.segmented-opt.active')?.dataset.value || null;
+
+      const heightCm = heightInput.value ? parseFloat(heightInput.value) : null;
+      const weightKg = weightInput.value ? parseFloat(weightInput.value) : null;
+      const birthYear = birthYearInput.value ? parseInt(birthYearInput.value, 10) : null;
+      const sex = sexSelect.value || null;
+      const activityLevel = activityLevelSelect.value || null;
+
       practiceSaveBtn.disabled = true;
       const { error } = await supabase
         .from('profiles')
@@ -4133,6 +4263,11 @@
           sport_type: sportType,
           objective: objectiveSelect.value || null,
           allergies: allergiesInput.value.trim() || null,
+          height_cm: heightCm,
+          weight_kg: weightKg,
+          birth_year: birthYear,
+          sex: sex,
+          activity_level: activityLevel,
         }, { onConflict: 'user_id' });
       practiceSaveBtn.disabled = false;
 
