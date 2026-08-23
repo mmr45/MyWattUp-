@@ -383,6 +383,24 @@
   #view-app .icon-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; }
   #view-app .icon-btn:hover { color: var(--ambre); border-color: var(--ambre); }
   #view-app .icon-btn svg { width: 16px; height: 16px; }
+
+  #view-app .user-menu { position: relative; }
+  #view-app .user-menu-trigger { display: flex; align-items: center; gap: 6px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 100px; padding: 5px 6px 5px 12px; cursor: pointer; color: var(--gris); transition: border-color 0.15s ease; -webkit-tap-highlight-color: transparent; }
+  #view-app .user-menu-trigger:hover, #view-app .user-menu-trigger[aria-expanded="true"] { border-color: var(--ambre); }
+  #view-app .user-menu-trigger .plan-pill { pointer-events: none; }
+  #view-app .user-menu-chevron { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.2s ease; }
+  #view-app .user-menu-trigger[aria-expanded="true"] .user-menu-chevron { transform: rotate(180deg); }
+  #view-app .user-menu-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 190px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 6px; box-shadow: 0 20px 40px -16px rgba(0,0,0,0.7); z-index: 30; }
+  #view-app .user-menu-dropdown.open { display: block; animation: userMenuIn 0.15s ease; }
+  @keyframes userMenuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  #view-app .user-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 10px; border-radius: 9px; background: none; border: none; color: var(--blanc); font-family: inherit; font-size: 13.5px; text-align: left; text-decoration: none; cursor: pointer; }
+  #view-app .user-menu-item:hover { background: rgba(255,255,255,0.06); }
+  #view-app .user-menu-item svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gris); }
+  #view-app .user-menu-item.danger { color: #FF6B6B; }
+  #view-app .user-menu-item.danger svg { color: #FF6B6B; }
+  #view-app .user-menu-item.refresh-btn svg { transition: transform 0.5s ease; }
+  #view-app .user-menu-item.refresh-btn.spinning svg { animation: refresh-spin 0.8s linear infinite; }
+  #view-app .user-menu-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 6px 4px; }
   #view-app .topbar { display: flex; align-items: center; gap: 14px; }
   #view-app .topbar.dashboard-topbar { justify-content: space-between; }
   #view-app .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
@@ -409,9 +427,30 @@
   #view-app .ring-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
   #view-app .score-date { color: var(--gris); font-size: 13px; }
 
-  #view-app .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-  #view-app .mini-card { border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease; }
+  #view-app .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+  #view-app .mini-card { border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease, border-color 0.15s ease; font-family: inherit; cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; }
   #view-app .mini-card:active { transform: scale(0.97); }
+  #view-app .mini-card:hover { border-color: rgba(255,255,255,0.16); }
+  #view-app .mini-card[aria-expanded="true"] { border-color: rgba(255,255,255,0.3); }
+  #view-app .mini-card .mini-label { display: flex; align-items: center; justify-content: center; gap: 3px; }
+  #view-app .mini-chevron { width: 11px; height: 11px; flex-shrink: 0; transition: transform 0.2s ease; opacity: 0.7; }
+  #view-app .mini-card[aria-expanded="true"] .mini-chevron { transform: rotate(180deg); }
+
+  #view-app .mini-why { display: none; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px; margin-bottom: 20px; }
+  #view-app .mini-why.open { display: block; animation: miniWhyIn 0.18s ease; }
+  @keyframes miniWhyIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  #view-app .mini-why-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  #view-app .mini-why-badge { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 100px; font-weight: 700; flex-shrink: 0; }
+  #view-app .mini-why-badge.badge-good { background: rgba(31,138,99,0.18); color: var(--vert); }
+  #view-app .mini-why-badge.badge-mid { background: rgba(255,184,0,0.16); color: var(--ambre); }
+  #view-app .mini-why-badge.badge-low { background: rgba(255,107,107,0.16); color: #FF6B6B; }
+  #view-app .mini-why-badge.badge-neutral { background: rgba(255,255,255,0.08); color: var(--gris); }
+  #view-app .mini-why-title { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--blanc); flex: 1; }
+  #view-app .mini-why-close { background: none; border: none; color: var(--gris); cursor: pointer; padding: 4px; margin: -4px; flex-shrink: 0; }
+  #view-app .mini-why-close svg { width: 16px; height: 16px; display: block; }
+  #view-app .mini-why-close:hover { color: var(--blanc); }
+  #view-app .mini-why-text { font-size: 13px; line-height: 1.6; color: var(--gris-clair, #cfcfd6); margin: 0 0 10px; }
+  #view-app .mini-why-sources { font-family: var(--mono); font-size: 10.5px; line-height: 1.6; color: var(--gris); margin: 0; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.06); }
   #view-app .mini-icon { margin-bottom: 8px; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; margin-left: auto; margin-right: auto; }
   #view-app .mini-icon svg { width: 16px; height: 16px; }
   #view-app .mini-card.sommeil { background: rgba(255,159,28,0.08); border-color: rgba(255,159,28,0.18); }
@@ -1131,14 +1170,31 @@
           <div class="brand-name">MyWattUp</div>
         </div>
         <div class="topbar-actions">
-          <a href="#abonnement" class="plan-pill free" id="dashboardPlanPill">Gratuit</a>
-          <button type="button" class="icon-btn refresh-btn" id="btnRefreshDashboard" aria-label="Actualiser">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
-          </button>
-          <a href="#parametres" class="icon-btn" id="btnGoSettings" aria-label="Paramètres">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
-          </a>
-          <button class="logout" id="logoutBtn">Déconnexion</button>
+          <div class="user-menu" id="userMenu">
+            <button type="button" class="user-menu-trigger" id="userMenuTrigger" aria-haspopup="true" aria-expanded="false">
+              <span class="plan-pill free" id="dashboardPlanPill">Gratuit</span>
+              <svg class="user-menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="user-menu-dropdown" id="userMenuDropdown">
+              <a href="#abonnement" class="user-menu-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+                Passer Pro
+              </a>
+              <button type="button" class="user-menu-item refresh-btn" id="btnRefreshDashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+                Actualiser
+              </button>
+              <a href="#parametres" class="user-menu-item" id="btnGoSettings">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+                Paramètres
+              </a>
+              <div class="user-menu-divider"></div>
+              <button type="button" class="user-menu-item danger" id="logoutBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+                Déconnexion
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1160,36 +1216,48 @@
       </div>
 
       <div class="mini-grid" id="miniGrid">
-        <div class="mini-card sommeil">
+        <button type="button" class="mini-card sommeil" data-mini="sommeil" aria-expanded="false">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></div>
           <div class="mini-value" id="sleepValue">--</div>
           <div class="mini-detail" id="sleepDetail"></div>
-          <div class="mini-label">Sommeil</div>
-        </div>
-        <div class="mini-card activite">
+          <div class="mini-label">Sommeil<svg class="mini-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </button>
+        <button type="button" class="mini-card activite" data-mini="activite" aria-expanded="false">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg></div>
           <div class="mini-value" id="activityValue">--</div>
           <div class="mini-detail" id="activityDetail"></div>
-          <div class="mini-label">Activité</div>
-        </div>
-        <div class="mini-card forme">
+          <div class="mini-label">Activité<svg class="mini-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </button>
+        <button type="button" class="mini-card forme" data-mini="forme" aria-expanded="false">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-4 2-8 6-9 1 1.5.5 3-1 4 2-1 5-1 6 2 1-1 3-.5 3 1.5 0 4-3 7-7 8-3 .8-6-1-7-4Z"/><path d="M9 15c1.5 1 4 1 6-1"/></svg></div>
           <div class="mini-value" id="formeValue">--</div>
           <div class="mini-detail" id="formeDetail"></div>
-          <div class="mini-label">Forme</div>
-        </div>
-        <div class="mini-card repas">
+          <div class="mini-label">Forme<svg class="mini-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </button>
+        <button type="button" class="mini-card repas" data-mini="repas" aria-expanded="false">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></div>
           <div class="mini-value" id="mealsValue">--</div>
           <div class="mini-detail" id="mealsDetail"></div>
-          <div class="mini-label">Repas suivis</div>
-        </div>
+          <div class="mini-label">Repas suivis<svg class="mini-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+        </button>
       </div>
       <div class="mini-grid" id="miniGridSkeleton" style="display:none;">
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
+      </div>
+
+      <div class="mini-why" id="miniWhy">
+        <div class="mini-why-head">
+          <span class="mini-why-badge" id="miniWhyBadge">--</span>
+          <span class="mini-why-title" id="miniWhyTitle"></span>
+          <button type="button" class="mini-why-close" id="miniWhyClose" aria-label="Fermer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <p class="mini-why-text" id="miniWhyText"></p>
+        <p class="mini-why-sources" id="miniWhySources"></p>
       </div>
 
       <div class="advice-card" id="adviceCard">
@@ -1927,6 +1995,27 @@
     window.addEventListener('resize', () => { if (window.innerWidth > 720) closeNavDropdown(); });
   }
 
+  // ---- Menu déroulant utilisateur (app, topbar dashboard) ----
+  const userMenuTrigger = document.getElementById('userMenuTrigger');
+  const userMenuDropdown = document.getElementById('userMenuDropdown');
+  if (userMenuTrigger && userMenuDropdown) {
+    const closeUserMenu = () => {
+      userMenuDropdown.classList.remove('open');
+      userMenuTrigger.setAttribute('aria-expanded', 'false');
+    };
+    userMenuTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = userMenuDropdown.classList.toggle('open');
+      userMenuTrigger.setAttribute('aria-expanded', String(isOpen));
+    });
+    userMenuDropdown.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeUserMenu));
+    document.addEventListener('click', (e) => {
+      if (!userMenuDropdown.classList.contains('open')) return;
+      if (!userMenuDropdown.contains(e.target) && !userMenuTrigger.contains(e.target)) closeUserMenu();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUserMenu(); });
+  }
+
   document.getElementById('btnInstall').addEventListener('click', showLogin);
   document.getElementById('btnBackToVitrine').addEventListener('click', showVitrine);
 
@@ -2091,11 +2180,162 @@
   // -------------------------------------------------------------
   let dashboardBound = false;
   let dashboardLoaded = false;
+  let lastDashboardLog = null;
+
+  const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
+  const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
+
+  function formatSleepDuration(hours) {
+    if (hours == null) return '--';
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    return m > 0 ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`;
+  }
+
+  // Contenu "pourquoi" des mini-cartes, basé sur des repères de santé publique
+  // reconnus (OMS, Inserm, Santé publique France, ANSES/PNNS). Ce sont des
+  // repères éducatifs généraux, pas un diagnostic individuel.
+  function buildMiniWhy(key, log) {
+    if (key === 'sommeil') {
+      const hours = log ? log.sleep_hours : null;
+      const quality = log ? log.sleep_quality : null;
+      const sourceLine = 'Sources : Inserm — dossier Sommeil · OMS/Santé publique France (repère 7-9h pour les 18-64 ans) · National Sleep Foundation.';
+      if (hours == null) {
+        return { badge: 'neutral', badgeLabel: 'Pas de donnée', title: 'Sommeil non renseigné',
+          text: "Aucune durée de sommeil n'a encore été saisie aujourd'hui. Pour un adulte de 18 à 64 ans, les repères de santé publique (Inserm, OMS) situent le besoin autour de 7 à 9 heures par nuit, avec une marge individuelle : certaines personnes se sentent bien avec un peu moins, d'autres ont besoin d'un peu plus.",
+          sources: sourceLine };
+      }
+      let badge, badgeLabel, verdict;
+      if (hours < 6) { badge = 'low'; badgeLabel = 'Sous le repère'; verdict = `Avec ${formatSleepDuration(hours)}, tu es en dessous des 7 heures considérées comme le minimum habituel chez l'adulte.`; }
+      else if (hours < 7) { badge = 'mid'; badgeLabel = 'Un peu court'; verdict = `Avec ${formatSleepDuration(hours)}, tu es juste en dessous de la fourchette de 7 à 9 heures recommandée pour un adulte.`; }
+      else if (hours <= 9) { badge = 'good'; badgeLabel = 'Dans le repère'; verdict = `Avec ${formatSleepDuration(hours)}, tu es dans la fourchette de 7 à 9 heures recommandée pour un adulte de 18 à 64 ans.`; }
+      else { badge = 'mid'; badgeLabel = 'Au-dessus du repère'; verdict = `Avec ${formatSleepDuration(hours)}, tu dépasses la fourchette habituelle de 7 à 9 heures. Une nuit occasionnelle plus longue n'a rien d'inquiétant (récupération après une dette de sommeil, par exemple), mais si cela devient systématique, c'est un point à mentionner à un médecin.`; }
+      let text = verdict + ' ' + 'Dormir régulièrement moins de 6 heures est associé, selon l\'Inserm, à un risque accru de maladies cardiovasculaires, de diabète de type 2, de troubles de l\'humeur et à une récupération cognitive incomplète.';
+      if (quality === 'mauvaise') text += " Ta qualité de sommeil perçue est notée « mauvaise » aujourd'hui : la qualité du sommeil (peu de réveils, sommeil profond suffisant) compte au moins autant que sa durée totale.";
+      else if (quality === 'bonne') text += " Ta qualité de sommeil perçue est notée « bonne » aujourd'hui, ce qui est aussi important que la durée : un sommeil peu fragmenté récupère mieux qu'un sommeil long mais interrompu.";
+      return { badge, badgeLabel, title: `Sommeil — ${formatSleepDuration(hours)}`, text, sources: sourceLine };
+    }
+
+    if (key === 'activite') {
+      const sourceLine = "Sources : OMS — Lignes directrices sur l'activité physique et la sédentarité (2020) · ANSES.";
+      if (!log || !log.activity_type) {
+        return { badge: 'neutral', badgeLabel: 'Pas de donnée', title: 'Activité non renseignée',
+          text: "Aucune activité n'a encore été saisie aujourd'hui. L'OMS recommande, pour un adulte, 150 à 300 minutes d'activité d'intensité modérée par semaine (ou 75 à 150 minutes d'intensité soutenue), plus du renforcement musculaire au moins 2 fois par semaine.",
+          sources: sourceLine };
+      }
+      if (log.activity_type === 'repos') {
+        return { badge: 'good', badgeLabel: 'Jour de récupération', title: 'Repos',
+          text: "Un jour de repos n'est pas un jour « perdu » : c'est pendant la récupération que les muscles se réparent et s'adaptent à l'effort, ce qui réduit le risque de blessure et de surentraînement. L'OMS ne demande pas d'activité intense tous les jours, mais un volume hebdomadaire de 150 à 300 minutes réparti sur la semaine — pense simplement à alterner repos et séances actives sur les prochains jours.",
+          sources: sourceLine };
+      }
+      const dur = log.activity_duration_min;
+      const intensity = log.activity_intensity;
+      const typeLabel = ACTIVITY_TYPE_LABEL[log.activity_type] || 'Séance';
+      let badge = 'good', badgeLabel = 'Bonne séance';
+      let text = `Séance de type ${typeLabel.toLowerCase()}${dur ? `, ${dur} minutes` : ''}${intensity != null ? `, intensité ressentie ${intensity}/10` : ''}. `;
+      if (dur != null) {
+        if (dur < 15) { badge = 'mid'; badgeLabel = 'Séance courte'; text += "C'est une séance courte : elle compte quand même (l'OMS a supprimé l'exigence d'un minimum de 10 minutes par séance, chaque minute de mouvement contribue au total hebdomadaire), mais vise en moyenne 20 à 40 minutes par jour pour couvrir les 150 à 300 minutes hebdomadaires recommandées."; }
+        else if (dur < 30) { badge = 'mid'; badgeLabel = 'Correct'; text += "C'est une durée correcte qui contribue à ton total hebdomadaire, un peu en dessous de la moyenne de 20 à 40 min/jour nécessaire pour atteindre les 150 à 300 minutes hebdomadaires recommandées par l'OMS."; }
+        else { badge = 'good'; badgeLabel = 'Bonne séance'; text += "C'est une durée qui s'aligne bien avec le repère OMS de 150 à 300 minutes d'activité modérée par semaine (soit environ 20 à 43 min/jour en moyenne)."; }
+      } else {
+        text += "L'OMS recommande 150 à 300 minutes d'activité modérée par semaine (ou 75 à 150 minutes d'activité soutenue), plus du renforcement musculaire au moins 2 jours par semaine.";
+      }
+      return { badge, badgeLabel, title: `Activité — ${typeLabel}`, text, sources: sourceLine };
+    }
+
+    if (key === 'forme') {
+      const sourceLine = "Repère : auto-évaluation subjective, non validée comme outil diagnostique. En cas de fatigue persistante, se référer aux recommandations de la Haute Autorité de Santé (HAS) sur l'asthénie.";
+      const score = log ? log.mood_score : null;
+      if (score == null) {
+        return { badge: 'neutral', badgeLabel: 'Pas de donnée', title: 'Forme non renseignée',
+          text: "Aucune forme ressentie n'a encore été saisie aujourd'hui. Cet indicateur est une auto-évaluation de ton énergie perçue : utile pour suivre tes propres tendances dans le temps, mais ce n'est pas une mesure clinique.",
+          sources: sourceLine };
+      }
+      let badge, badgeLabel, text;
+      if (score >= 7) {
+        badge = 'good'; badgeLabel = 'Bonne forme';
+        text = `Tu te sens à ${score}/10 aujourd'hui, un bon niveau d'énergie perçue. Ce ressenti est souvent lié à la qualité du sommeil de la nuit précédente et au niveau d'activité physique — deux leviers que tu peux suivre juste à côté.`;
+      } else if (score >= 4) {
+        badge = 'mid'; badgeLabel = 'Forme moyenne';
+        text = `Tu te sens à ${score}/10 aujourd'hui, un niveau d'énergie moyen. Une baisse ponctuelle est normale et souvent liée au sommeil, au stress ou à la charge de la journée. Ce n'est pas un signal d'alerte en soi.`;
+      } else {
+        badge = 'low'; badgeLabel = 'Fatigue';
+        text = `Tu te sens à ${score}/10 aujourd'hui, un niveau bas. Une fatigue isolée sur une journée est fréquente. En revanche, si cette fatigue se répète pendant plusieurs semaines malgré un sommeil suffisant, la HAS recommande d'en parler à un médecin pour écarter une cause à traiter (carence, trouble du sommeil, thyroïde, état anxio-dépressif, etc.).`;
+      }
+      text += " Cette note reste une auto-évaluation subjective et ne remplace pas un avis médical.";
+      return { badge, badgeLabel, title: `Forme — ${score}/10`, text, sources: sourceLine };
+    }
+
+    if (key === 'repas') {
+      const sourceLine = "Sources : PNNS (Programme National Nutrition Santé) — repère de 3 repas/jour pour l'adulte · ANSES, avis sur la répartition des prises alimentaires.";
+      if (!log) {
+        return { badge: 'neutral', badgeLabel: 'Pas de donnée', title: 'Repas non renseignés',
+          text: "Aucun repas n'a encore été coché aujourd'hui. Le PNNS structure la journée alimentaire des adultes autour de 3 repas (petit-déjeuner, déjeuner, dîner), ce qui aide à répartir les apports et à éviter le grignotage.",
+          sources: sourceLine };
+      }
+      const mealsDone = [log.breakfast_done, log.lunch_done, log.dinner_done].filter(Boolean).length;
+      let badge, badgeLabel, text;
+      if (mealsDone === 3) {
+        badge = 'good'; badgeLabel = 'Structure complète';
+        text = "Tes 3 repas sont suivis aujourd'hui. Le PNNS recommande cette structure en 3 repas pour les adultes : elle aide à répartir l'énergie sur la journée et à limiter les grignotages liés à une faim excessive.";
+      } else if (mealsDone > 0) {
+        badge = 'mid'; badgeLabel = 'Structure incomplète';
+        text = `${mealsDone}/3 repas suivis aujourd'hui. Le PNNS recommande une structure en 3 repas réguliers pour les adultes. Sauter un repas, en particulier le petit-déjeuner, est associé selon l'Anses à une concentration des apports plus tard dans la journée — même si la littérature scientifique sur les effets précis reste encore limitée, selon l'Anses elle-même.`;
+      } else {
+        badge = 'low'; badgeLabel = 'Aucun repas suivi';
+        text = "Aucun repas n'est encore coché aujourd'hui. Rien d'alarmant si la journée n'est pas terminée, mais pense à les cocher au fur et à mesure : la régularité des repas est un des repères simples du PNNS pour un adulte.";
+      }
+      text += " Ce compteur suit la régularité de tes prises alimentaires, pas la qualité nutritionnelle de ce que tu manges (pour ça, utilise le scanner de produits).";
+      return { badge, badgeLabel, title: `Repas suivis — ${mealsDone}/3`, text, sources: sourceLine };
+    }
+
+    return null;
+  }
+
+  function bindMiniWhy() {
+    const miniWhy = document.getElementById('miniWhy');
+    const miniWhyBadge = document.getElementById('miniWhyBadge');
+    const miniWhyTitle = document.getElementById('miniWhyTitle');
+    const miniWhyText = document.getElementById('miniWhyText');
+    const miniWhySources = document.getElementById('miniWhySources');
+    const cards = document.querySelectorAll('#miniGrid .mini-card');
+    let openKey = null;
+
+    function closeMiniWhy() {
+      openKey = null;
+      miniWhy.classList.remove('open');
+      cards.forEach(c => c.setAttribute('aria-expanded', 'false'));
+    }
+
+    function openMiniWhy(key, card) {
+      const data = buildMiniWhy(key, lastDashboardLog);
+      if (!data) return;
+      miniWhyBadge.textContent = data.badgeLabel;
+      miniWhyBadge.className = 'mini-why-badge badge-' + data.badge;
+      miniWhyTitle.textContent = data.title;
+      miniWhyText.textContent = data.text;
+      miniWhySources.textContent = data.sources;
+      cards.forEach(c => c.setAttribute('aria-expanded', String(c === card)));
+      miniWhy.classList.add('open');
+      openKey = key;
+    }
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const key = card.dataset.mini;
+        if (openKey === key) closeMiniWhy();
+        else openMiniWhy(key, card);
+      });
+    });
+
+    document.getElementById('miniWhyClose').addEventListener('click', closeMiniWhy);
+  }
 
   async function initDashboard() {
     if (!dashboardBound) {
       dashboardBound = true;
       document.getElementById('btnRefreshDashboard').addEventListener('click', () => initDashboard());
+      bindMiniWhy();
     }
 
     const miniGrid = document.getElementById('miniGrid');
@@ -2149,16 +2389,6 @@
       return 'score-good';
     }
 
-    const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
-    const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
-
-    function formatSleepDuration(hours) {
-      if (hours == null) return '--';
-      const h = Math.floor(hours);
-      const m = Math.round((hours - h) * 60);
-      return m > 0 ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`;
-    }
-
     function moodQualitativeLabel(score) {
       if (score == null) return '';
       if (score >= 9) return 'Au top';
@@ -2166,6 +2396,8 @@
       if (score >= 4) return 'Forme moyenne';
       return 'Fatigue';
     }
+
+    lastDashboardLog = log || null;
 
     if (log) {
       const score = log.daily_score ?? 0;
