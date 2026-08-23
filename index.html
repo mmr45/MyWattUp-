@@ -1742,7 +1742,18 @@
   let settingsBound = false;
   const SETTINGS_STORAGE_KEY = 'mywattup_settings_prefs';
 
-  function initSettings() {
+  // Clé VAPID publique — DOIT être la même paire que VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY
+  // configurées dans les secrets de l'Edge Function send-daily-reminder.
+  const VAPID_PUBLIC_KEY = 'COLLE_ICI_TA_CLE_VAPID_PUBLIQUE';
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+  }
+
+  async function initSettings() {
     document.getElementById('settingsEmail').value = user?.email || '';
 
     if (settingsBound) return;
@@ -1755,25 +1766,109 @@
       setTimeout(() => { msg.textContent = ''; msg.className = 'msg'; }, 3000);
     }
 
-    // Préférences locales simples (toggles + unités) — persistées côté navigateur
-    // pour l'instant, en attendant une vraie table "user_settings" côté Supabase.
-    let prefs = {};
-    try { prefs = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}'); } catch (e) { prefs = {}; }
+    // Préférences — table "user_settings" côté Supabase (une ligne par utilisateur).
+    let prefs = { units: 'metric', dailyReminder: false, pushNotifications: false };
+    try {
+      const { data: row, error } = await supabase
+        .from('user_settings')
+        .select('units, daily_reminder, push_notifications')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (row) {
+        prefs.units = row.units;
+        prefs.dailyReminder = row.daily_reminder;
+        prefs.pushNotifications = row.push_notifications;
+      }
+    } catch (e) {
+      console.error('Erreur chargement user_settings:', e.message || e);
+    }
+
+    async function saveSetting(partial) {
+      const { error } = await supabase
+        .from('user_settings')
+        .upsert({ user_id: user.id, ...partial, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+      if (error) {
+        console.error('Erreur sauvegarde user_settings:', error.message);
+        return false;
+      }
+      return true;
+    }
 
     const unitsSelect = document.getElementById('settingsUnits');
     unitsSelect.value = prefs.units || 'metric';
-    unitsSelect.addEventListener('change', () => {
-      prefs.units = unitsSelect.value;
-      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(prefs));
+    unitsSelect.addEventListener('change', async () => {
+      const value = unitsSelect.value;
+      const ok = await saveSetting({ units: value });
+      if (ok) prefs.units = value;
+      else flash('Erreur : préférence non enregistrée.', true);
     });
 
     document.querySelectorAll('[data-settings-toggle]').forEach(toggleEl => {
-      const key = toggleEl.dataset.settingsToggle;
+      const key = toggleEl.dataset.settingsToggle; // 'dailyReminder' ou 'pushNotifications'
+      const column = key === 'dailyReminder' ? 'daily_reminder' : 'push_notifications';
       if (prefs[key]) toggleEl.classList.add('on');
-      toggleEl.addEventListener('click', () => {
-        toggleEl.classList.toggle('on');
-        prefs[key] = toggleEl.classList.contains('on');
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(prefs));
+
+      toggleEl.addEventListener('click', async () => {
+        const turningOn = !toggleEl.classList.contains('on');
+
+        if (key === 'pushNotifications' && turningOn) {
+          // Active le push : permission navigateur + abonnement Web Push réel
+          try {
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') {
+              flash('Autorisation refusée pour les notifications.', true);
+              return;
+            }
+            await navigator.serviceWorker.register('/sw.js');
+            const readyReg = await navigator.serviceWorker.ready;
+            let subscription = await readyReg.pushManager.getSubscription();
+            if (!subscription) {
+              subscription = await readyReg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+              });
+            }
+            const subJson = subscription.toJSON();
+            const { error: subError } = await supabase.from('push_subscriptions').upsert({
+              user_id: user.id,
+              endpoint: subJson.endpoint,
+              p256dh: subJson.keys.p256dh,
+              auth: subJson.keys.auth,
+            }, { onConflict: 'endpoint' });
+            if (subError) {
+              console.error('Erreur enregistrement abonnement push:', subError.message);
+              flash('Erreur lors de l\'activation des notifications.', true);
+              return;
+            }
+          } catch (e) {
+            console.error('Erreur activation push:', e);
+            flash('Impossible d\'activer les notifications sur cet appareil.', true);
+            return;
+          }
+        }
+
+        if (key === 'pushNotifications' && !turningOn) {
+          // Désactive : désabonne le navigateur + supprime l'abonnement en base
+          try {
+            const readyReg = await navigator.serviceWorker.ready;
+            const subscription = await readyReg.pushManager.getSubscription();
+            if (subscription) {
+              await supabase.from('push_subscriptions').delete().eq('endpoint', subscription.endpoint);
+              await subscription.unsubscribe();
+            }
+          } catch (e) {
+            console.error('Erreur désactivation push:', e);
+          }
+        }
+
+        const ok = await saveSetting({ [column]: turningOn });
+        if (ok) {
+          toggleEl.classList.toggle('on', turningOn);
+          prefs[key] = turningOn;
+        } else {
+          flash('Erreur : préférence non enregistrée.', true);
+        }
       });
     });
 
