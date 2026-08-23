@@ -198,6 +198,20 @@
   .pricing-note { text-align: center; color: var(--text-muted); font-size: 12.5px; margin: 26px 0 0; }
   @media (max-width: 780px) { .pricing-grid { grid-template-columns: 1fr; } }
 
+  /* ---------- FAQ (vitrine publique) ---------- */
+  .faq { padding: 80px 0; border-top: 1px solid var(--line); }
+  .faq-wrap { max-width: 760px; margin: 0 auto; }
+  .faq-row { border-bottom: 1px solid var(--line); }
+  .faq-row:first-child { border-top: 1px solid var(--line); }
+  .faq-row-q { width: 100%; text-align: left; background: none; border: none; padding: 20px 4px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--text-0); }
+  .faq-row-q svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s ease; }
+  .faq-row.open .faq-row-q svg { transform: rotate(180deg); color: var(--amber-bright); }
+  .faq-row-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .faq-row.open .faq-row-a { max-height: 400px; }
+  .faq-row-a p { font-size: 14.5px; color: var(--text-1); line-height: 1.6; margin: 0 4px 20px; }
+  .faq-cta { text-align: center; margin-top: 40px; color: var(--text-1); font-size: 14px; }
+  .faq-cta a { color: var(--amber-bright); text-decoration: underline; text-underline-offset: 2px; }
+
   footer { border-top: 1px solid var(--line); padding: 32px 0; position: relative; z-index: 2; }
   .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
@@ -712,6 +726,7 @@
       MyWattUp
     </div>
     <a href="#tarifs" class="link-secondary" style="margin-right:18px;">Tarifs</a>
+    <a href="#faq-public" class="link-secondary" style="margin-right:18px;">FAQ</a>
     <button class="nav-cta" id="btnGoLogin">Se connecter</button>
   </div>
 </nav>
@@ -863,6 +878,43 @@
         </ol>
       </div>
     </div>
+  </section>
+  <section class="faq" id="faq-public">
+    <div class="section-head reveal">
+      <h2>Questions fréquentes</h2>
+      <p>Tout ce qu'il faut savoir avant de te lancer. Une autre question ? Écris-nous à support@mywattup.app.</p>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">MyWattUp est-il vraiment gratuit ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>Oui. L'offre Gratuite donne accès à tous les modules (coach IA, repas, scanner) sans limite de temps, avec des quotas quotidiens/hebdomadaires. L'offre Pro (9,99€/mois) retire ces quotas.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">Quelles sont les limites de l'offre Gratuite ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>5 scans de produits par jour, et 1 génération de plan de repas par semaine. Le journal quotidien, le score du jour et le conseil IA du jour restent illimités.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">Comment est calculé le score du jour ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>À partir de trois données que tu renseignes chaque jour : ton sommeil, ton activité physique et ta forme ressentie. MyWattUp les combine en un score unique et un conseil personnalisé.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">D'où viennent les informations sur les produits scannés ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>De la base collaborative OpenFoodFacts. MyWattUp y ajoute un score personnalisé selon ton sport et ton objectif, en plus du Nutri-Score standard.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">Puis-je annuler mon abonnement Pro à tout moment ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>Oui, en un clic depuis ton compte. Tu gardes l'accès Pro jusqu'à la fin de la période déjà payée, puis ton compte repasse automatiquement sur l'offre Gratuite.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">Mes données sont-elles protégées ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>Oui : consentement explicite recueilli à l'inscription, sécurité au niveau des lignes (Row Level Security) sur toutes les données, et tu peux exporter ou supprimer tes données à tout moment depuis ton compte.</p></div>
+      </div>
+      <div class="faq-row reveal">
+        <button type="button" class="faq-row-q">Sur quels appareils MyWattUp fonctionne-t-il ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="faq-row-a"><p>C'est une Progressive Web App : elle s'installe en quelques secondes sur Android (Chrome) et iPhone (Safari), sans passer par un store, et fonctionne aussi dans n'importe quel navigateur.</p></div>
+      </div>
+    </div>
+    <p class="faq-cta">Une question qui ne figure pas ici ? <a href="mailto:support@mywattup.app">Contacte le support</a>.</p>
   </section>
 
 </main>
@@ -1603,7 +1655,71 @@
 <!-- fin #view-app -->
 
 
+<!-- ======================================================================
+     Effets purement visuels de la vitrine — volontairement en dehors
+     du <script type="module"> ci-dessous : ils ne doivent JAMAIS
+     dépendre de Supabase / du backend pour s'exécuter, sinon un souci
+     de connexion (clé invalide, offline, CDN indisponible) rendrait
+     toute la page publique invisible.
+     ====================================================================== -->
+<script>
+  (function () {
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/.test(ua);
+    var isAndroid = /Android/.test(ua);
+    var cardIos = document.getElementById('card-ios');
+    var cardAndroid = document.getElementById('card-android');
+    if (isIOS && cardIos) cardIos.classList.add('recommended');
+    else if (isAndroid && cardAndroid) cardAndroid.classList.add('recommended');
+  })();
+
+  function revealAll() {
+    document.querySelectorAll('.reveal').forEach(function (c) { c.classList.add('in-view'); });
+  }
+
+  (function () {
+    var items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { revealAll(); return; }
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (entry.isIntersecting) {
+          entry.target.style.animationDelay = (i % 3) * 90 + 'ms';
+          entry.target.classList.add('in-view');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    items.forEach(function (c) { obs.observe(c); });
+  })();
+
+  document.querySelectorAll('.faq-row-q').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.closest('.faq-row').classList.toggle('open');
+    });
+  });
+
+  // Filet de sécurité : si le script principal (type="module", qui importe
+  // supabaseClient.js / auth.js / onboarding.js) échoue à charger — fichiers
+  // absents, mauvaise clé Supabase, hors-ligne, CDN bloqué — la vitrine
+  // reste au moins entièrement visible et lisible, sans connexion/inscription
+  // fonctionnelle. On détecte l'échec au bout de 2s si aucun signal du
+  // module n'a été reçu.
+  window.__mywattupModuleLoaded = false;
+  setTimeout(function () {
+    if (!window.__mywattupModuleLoaded) {
+      revealAll();
+      console.warn('MyWattUp : le script principal (auth/backend) n\'a pas pu se charger. Vitrine affichée en mode dégradé, sans connexion possible.');
+      var banner = document.createElement('div');
+      banner.setAttribute('role', 'status');
+      banner.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:999;background:#3a2a10;color:#ffcb73;font-family:sans-serif;font-size:12.5px;text-align:center;padding:10px 16px;border-top:1px solid #d9720a;';
+      banner.textContent = "Mode démo hors-ligne : connexion et inscription indisponibles (backend non connecté).";
+      document.body.appendChild(banner);
+    }
+  }, 2000);
+</script>
+
 <script type="module">
+  window.__mywattupModuleLoaded = true;
   import { supabase } from './supabaseClient.js';
   import { getCurrentUser, signOut, signIn, signUp, hasProfile, ensureProfile } from './auth.js';
   import { createProfile } from './onboarding.js';
@@ -3217,35 +3333,10 @@
   }
 
   // -------------------------------------------------------------
-  // Effets déco de la vitrine (inchangés)
+  // (Effets déco de la vitrine déplacés en dehors du module,
+  // voir <script> juste avant celui-ci — ils ne doivent pas
+  // dépendre de Supabase pour s'exécuter)
   // -------------------------------------------------------------
-  (function () {
-    var ua = navigator.userAgent || '';
-    var isIOS = /iPhone|iPad|iPod/.test(ua);
-    var isAndroid = /Android/.test(ua);
-    var cardIos = document.getElementById('card-ios');
-    var cardAndroid = document.getElementById('card-android');
-    if (isIOS && cardIos) cardIos.classList.add('recommended');
-    else if (isAndroid && cardAndroid) cardAndroid.classList.add('recommended');
-  })();
-
-  (function () {
-    var items = document.querySelectorAll('.reveal');
-    if (!('IntersectionObserver' in window)) {
-      items.forEach(function (c) { c.classList.add('in-view'); });
-      return;
-    }
-    var obs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry, i) {
-        if (entry.isIntersecting) {
-          entry.target.style.animationDelay = (i % 3) * 90 + 'ms';
-          entry.target.classList.add('in-view');
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    items.forEach(function (c) { obs.observe(c); });
-  })();
 </script>
 
 </body>
