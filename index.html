@@ -176,6 +176,28 @@
   .install-card li::marker { color: var(--amber-bright); font-family: var(--mono); }
   @media (max-width: 780px) { .install-grid { grid-template-columns: 1fr; } }
 
+  /* ---------- Tarifs / Pricing ---------- */
+  .pricing { padding: 80px 0; border-top: 1px solid var(--line); }
+  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+  .pricing-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 18px; padding: 30px 28px; display: flex; flex-direction: column; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
+  .pricing-card.featured { border-color: var(--amber); background: linear-gradient(160deg, rgba(255,159,28,0.10), var(--bg-1) 55%); position: relative; }
+  .pricing-card.featured::before { content: 'Recommandé'; position: absolute; top: -12px; right: 24px; background: var(--amber); color: #1a1206; font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 100px; }
+  .pricing-plan-name { font-family: var(--display); font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+  .pricing-plan-sub { color: var(--text-muted); font-size: 13px; margin: 0 0 18px; }
+  .pricing-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 22px; }
+  .pricing-price .amount { font-family: var(--display); font-size: 38px; font-weight: 800; letter-spacing: -0.02em; }
+  .pricing-price .period { color: var(--text-muted); font-size: 13px; }
+  .pricing-list { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .pricing-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-1); line-height: 1.5; }
+  .pricing-list li svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--jade-bright); }
+  .pricing-card.featured .pricing-list li svg { color: var(--amber-bright); }
+  .pricing-cta { display: block; width: 100%; text-align: center; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; border: 1px solid var(--line-bright); background: transparent; color: var(--text-0); transition: filter 0.15s ease, transform 0.1s ease; }
+  .pricing-card.featured .pricing-cta { background: var(--amber); border-color: var(--amber); color: #1a1206; }
+  .pricing-cta:hover { filter: brightness(1.08); }
+  .pricing-cta:active { transform: scale(0.98); }
+  .pricing-note { text-align: center; color: var(--text-muted); font-size: 12.5px; margin: 26px 0 0; }
+  @media (max-width: 780px) { .pricing-grid { grid-template-columns: 1fr; } }
+
   footer { border-top: 1px solid var(--line); padding: 32px 0; position: relative; z-index: 2; }
   .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
@@ -570,6 +592,33 @@
   #view-app .app-cta.danger.confirm { background: #FF6B6B; color: #1a0e0e; border-color: #FF6B6B; }
   #view-app .app-cta[disabled] { opacity: 0.6; cursor: not-allowed; }
 
+  /* ---------- Abonnement / quotas freemium ---------- */
+  #view-app .plan-pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 100px; text-decoration: none; }
+  #view-app .plan-pill.free { color: var(--gris); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); }
+  #view-app .plan-pill.pro { color: #1a1206; background: var(--ambre); border: 1px solid var(--ambre); }
+  #view-app .plan-pill svg { width: 11px; height: 11px; }
+
+  #view-app .quota-banner { background: var(--fond-card); border: 1px solid rgba(255,159,28,0.22); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; }
+  #view-app .quota-banner-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  #view-app .quota-banner-label { font-size: 12.5px; color: var(--blanc); font-weight: 600; }
+  #view-app .quota-banner-count { font-family: var(--mono); font-size: 11.5px; color: var(--ambre); }
+  #view-app .quota-bar-track { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 10px; }
+  #view-app .quota-bar-fill { height: 100%; border-radius: 4px; background: var(--ambre); transition: width 0.3s ease; }
+  #view-app .quota-banner-link { font-size: 12px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+
+  #view-app .plan-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 22px; margin-bottom: 16px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
+  #view-app .plan-card.current { border-color: var(--vert); }
+  #view-app .plan-card.upgrade { border-color: var(--ambre); background: linear-gradient(160deg, rgba(255,159,28,0.10), var(--fond-card) 60%); }
+  #view-app .plan-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  #view-app .plan-card-name { font-family: var(--display); font-size: 16px; font-weight: 700; }
+  #view-app .plan-card-price { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 6px 0 14px; }
+  #view-app .plan-card-price span { font-family: var(--body); font-size: 12px; font-weight: 400; color: var(--gris); }
+  #view-app .plan-feature-list { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  #view-app .plan-feature-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--blanc); line-height: 1.45; }
+  #view-app .plan-feature-list li svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: var(--vert); }
+  #view-app .plan-card.upgrade .plan-feature-list li svg { color: var(--ambre); }
+  #view-app .plan-quota-mini { font-size: 12px; color: var(--gris); margin: -8px 0 16px; }
+
   /* scanner */
   #view-app .scan-box { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .scan-box label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 8px; }
@@ -639,6 +688,7 @@
       </svg>
       MyWattUp
     </div>
+    <a href="#tarifs" class="link-secondary" style="margin-right:18px;">Tarifs</a>
     <button class="nav-cta" id="btnGoLogin">Se connecter</button>
   </div>
 </nav>
@@ -728,6 +778,43 @@
         <p>Scanne un code-barres, obtiens un score ajusté à ton profil sportif, retrouve l'historique de tout ce que tu as scanné.</p>
       </div>
     </div>
+  </section>
+
+  <section class="pricing" id="tarifs">
+    <div class="section-head reveal">
+      <h2>Gratuit pour commencer, Pro pour ne plus y penser</h2>
+      <p>Toute l'expérience MyWattUp est accessible gratuitement. L'offre Pro retire les quotas quotidiens et hebdomadaires pour un usage sans limite.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <h3 class="pricing-plan-name">Gratuit</h3>
+        <p class="pricing-plan-sub">Pour découvrir et utiliser MyWattUp au quotidien</p>
+        <div class="pricing-price"><span class="amount">0€</span><span class="period">/ toujours</span></div>
+        <ul class="pricing-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Profil, onboarding et journal quotidien illimités</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 conseil IA du jour, généré chaque jour</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de plan de repas par semaine</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>5 scans de produits par jour</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique des scans consultable</li>
+        </ul>
+        <button class="pricing-cta" id="btnGoLoginFree" style="background:none;cursor:pointer;">Commencer gratuitement</button>
+      </div>
+      <div class="pricing-card featured reveal">
+        <h3 class="pricing-plan-name">Pro</h3>
+        <p class="pricing-plan-sub">Pour un usage quotidien sans limite</p>
+        <div class="pricing-price"><span class="amount">9,99€</span><span class="period">/ mois</span></div>
+        <ul class="pricing-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tout ce qui est inclus dans l'offre Gratuite</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de plans de repas illimitées, à la demande</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Réajustement immédiat des menus si l'objectif change</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
+        </ul>
+        <button class="pricing-cta" id="btnGoLoginPro" style="cursor:pointer;">Passer Pro</button>
+      </div>
+    </div>
+    <p class="pricing-note">Paiement sécurisé via Stripe. Résiliable à tout moment depuis ton compte.</p>
   </section>
 
   <section class="install" id="installer">
@@ -900,6 +987,7 @@
           <div class="brand-name">MyWattUp</div>
         </div>
         <div class="topbar-actions">
+          <a href="#abonnement" class="plan-pill free" id="dashboardPlanPill">Gratuit</a>
           <button type="button" class="icon-btn refresh-btn" id="btnRefreshDashboard" aria-label="Actualiser">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
           </button>
@@ -1043,6 +1131,16 @@
         <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Mes repas</h1>
       </div>
+
+      <div class="quota-banner" id="repasQuotaBanner">
+        <div class="quota-banner-row">
+          <span class="quota-banner-label">Génération de plan — offre Gratuite</span>
+          <span class="quota-banner-count" id="repasQuotaCount">0 / 1 cette semaine</span>
+        </div>
+        <div class="quota-bar-track"><div class="quota-bar-fill" id="repasQuotaFill" style="width:0%;"></div></div>
+        <a href="#abonnement" class="quota-banner-link">Passer Pro pour régénérer à volonté →</a>
+      </div>
+
       <div class="day-scroll" id="dayScroll"></div>
       <div id="mealsList"></div>
       <button class="app-cta" id="generateBtn">Générer mon plan de la semaine</button>
@@ -1054,6 +1152,15 @@
       <div class="topbar">
         <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Scanner produit</h1>
+      </div>
+
+      <div class="quota-banner" id="scannerQuotaBanner">
+        <div class="quota-banner-row">
+          <span class="quota-banner-label">Scans aujourd'hui — offre Gratuite</span>
+          <span class="quota-banner-count" id="scanQuotaCount">2 / 5</span>
+        </div>
+        <div class="quota-bar-track"><div class="quota-bar-fill" id="scanQuotaFill" style="width:40%;"></div></div>
+        <a href="#abonnement" class="quota-banner-link">Passer Pro pour des scans illimités →</a>
       </div>
 
       <div class="scan-box">
@@ -1129,6 +1236,22 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
           </button>
         </div>
+      </div>
+
+      <!-- ---------- Mon abonnement ---------- -->
+      <div class="app-section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+          Mon abonnement
+        </div>
+        <div class="setting-row">
+          <div>
+            <span class="setting-row-title">Offre actuelle</span>
+            <span class="setting-row-desc" id="settingsPlanDesc">Gratuite — 5 scans/jour, 1 génération de repas/semaine.</span>
+          </div>
+          <span class="plan-pill free" id="settingsPlanPill">Gratuit</span>
+        </div>
+        <a href="#abonnement" class="app-cta secondary" style="margin-top:14px; text-decoration:none;">Voir les offres et passer Pro</a>
       </div>
 
       <!-- ---------- Compte ---------- -->
@@ -1264,6 +1387,51 @@
       <p class="msg" id="settingsMsg" role="status" aria-live="polite"></p>
     </section>
 
+    <!-- ---------- ABONNEMENT / FACTURATION ---------- -->
+    <section id="panel-abonnement" class="app-panel">
+      <div class="topbar">
+        <a href="#parametres" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <h1 class="app-h1">Abonnement</h1>
+      </div>
+
+      <p class="section-desc" style="margin: -8px 0 18px;">Tu es actuellement sur l'offre <strong>Gratuite</strong>. Passe en Pro pour retirer les quotas de scans et de génération de repas.</p>
+
+      <div class="plan-card current">
+        <div class="plan-card-head">
+          <span class="plan-card-name">Gratuit</span>
+          <span class="plan-pill free">Offre actuelle</span>
+        </div>
+        <div class="plan-card-price">0€<span> / toujours</span></div>
+        <ul class="plan-feature-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Journal quotidien et score du jour illimités</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 conseil IA du jour</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de plan de repas par semaine</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>5 scans de produits par jour</li>
+        </ul>
+        <p class="plan-quota-mini" id="abonnementQuotaSummary">Consommation aujourd'hui : 2/5 scans · 0/1 génération de repas cette semaine.</p>
+      </div>
+
+      <div class="plan-card upgrade">
+        <div class="plan-card-head">
+          <span class="plan-card-name">Pro</span>
+          <span class="plan-pill pro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Recommandé</span>
+        </div>
+        <div class="plan-card-price">9,99€<span> / mois</span></div>
+        <ul class="plan-feature-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de plans de repas illimitées, à la demande</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Réajustement immédiat des menus si l'objectif change</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
+        </ul>
+        <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 9,99€/mois</button>
+      </div>
+
+      <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
+
+      <p class="msg" id="abonnementMsg" role="status" aria-live="polite"></p>
+    </section>
+
     <!-- ---------- MODALE DE RECADRAGE AVATAR ---------- -->
     <div class="crop-overlay" id="cropOverlay">
       <div class="crop-modal">
@@ -1379,6 +1547,8 @@
 
   document.getElementById('btnGoLogin').addEventListener('click', showLogin);
   document.getElementById('btnGoLogin2').addEventListener('click', showLogin);
+  document.getElementById('btnGoLoginFree')?.addEventListener('click', showLogin);
+  document.getElementById('btnGoLoginPro')?.addEventListener('click', showLogin);
   document.getElementById('btnInstall').addEventListener('click', showLogin);
   document.getElementById('btnBackToVitrine').addEventListener('click', showVitrine);
 
@@ -1490,7 +1660,7 @@
   // -------------------------------------------------------------
   // Routeur interne de l'app (panneau affiché selon #hash)
   // -------------------------------------------------------------
-  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres'];
+  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres', 'abonnement'];
   let journalBound = false;
 
   function routeApp() {
@@ -1518,6 +1688,7 @@
     if (current === 'repas') initRepas();
     if (current === 'scanner') initScanner();
     if (current === 'parametres') initSettings();
+    if (current === 'abonnement') initAbonnement();
     if (current !== 'scanner' && window.__stopMyWattUpCamera) window.__stopMyWattUpCamera();
   }
 
@@ -2315,6 +2486,20 @@
   function avatarUrlFromSeed(seed) {
     // DiceBear — avatars vectoriels générés à partir d'une seed, pas de stockage d'image nécessaire.
     return `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(seed)}&backgroundColor=1a1714,221d18&shape1Color=ff9f1c,1f8a63`;
+  }
+
+  let abonnementBound = false;
+  function initAbonnement() {
+    if (abonnementBound) return;
+    abonnementBound = true;
+    const msg = document.getElementById('abonnementMsg');
+    document.getElementById('btnUpgradePro').addEventListener('click', () => {
+      showToast("L'intégration Stripe (Checkout + webhooks) n'est pas encore branchée. Le passage à l'offre Pro arrivera avec le Module Paiement du cahier des charges.", 'info');
+      if (msg) {
+        msg.textContent = "Paiement Stripe à venir — ton compte reste sur l'offre Gratuite pour le moment.";
+        msg.className = 'msg success';
+      }
+    });
   }
 
   async function initSettings() {
