@@ -15,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <script src="/js/shared-head.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
   /* ======================================================================
      PARTIE 1 — VITRINE (page publique, visible si non connecté)
@@ -371,6 +372,17 @@
   #view-app .scan-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   #view-app .hint { font-size: 11px; color: var(--gris); margin-top: 10px; display: flex; align-items: flex-start; gap: 6px; }
   #view-app .hint svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+  #view-app .scan-error { font-size: 12.5px; color: #FF6B6B; background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.25); border-radius: 10px; padding: 10px 12px; margin: 12px 0 0; display: none; line-height: 1.45; }
+  #view-app .scan-error.show { display: block; }
+  #view-app .camera-toggle-btn { width: 100%; margin-top: 12px; padding: 12px; background: none; border: 1px dashed rgba(255,255,255,0.18); border-radius: 10px; color: var(--gris); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; transition: border-color 0.15s ease, color 0.15s ease; }
+  #view-app .camera-toggle-btn svg { width: 15px; height: 15px; }
+  #view-app .camera-toggle-btn:hover { border-color: var(--ambre); color: var(--ambre); }
+  #view-app .camera-toggle-btn.active { border-style: solid; border-color: var(--ambre); color: var(--ambre); background: rgba(255,159,28,0.08); }
+  #view-app .camera-wrap { display: none; margin-top: 14px; }
+  #view-app .camera-wrap.show { display: block; }
+  #view-app .camera-wrap #cameraReader { border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.08); }
+  #view-app .camera-close { width: 100%; margin-top: 10px; padding: 11px; background: var(--fond); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: var(--blanc); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  #view-app .camera-hint { font-size: 11px; color: var(--gris); text-align: center; margin: 8px 0 0; }
   #view-app .result-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: none; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .result-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   #view-app .result-score { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin: 8px 0; }
@@ -798,7 +810,19 @@
           <input type="text" id="barcodeInput" placeholder="ex. 3017620422003" inputmode="numeric" />
           <button class="scan-btn" id="scanBtn">Scanner</button>
         </div>
-        <div class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg> Scan par appareil photo prévu en Phase 2. Pour l'instant, saisis le code-barres manuellement.</div>
+
+        <button type="button" class="camera-toggle-btn" id="cameraToggleBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+          Scanner avec la caméra
+        </button>
+
+        <div class="camera-wrap" id="cameraWrap">
+          <div id="cameraReader"></div>
+          <button type="button" class="camera-close" id="cameraCloseBtn">Annuler</button>
+          <p class="camera-hint">Vise le code-barres, il est détecté automatiquement.</p>
+        </div>
+
+        <p class="scan-error" id="scanError"></p>
       </div>
 
       <div class="result-card" id="resultCard">
@@ -985,6 +1009,7 @@
     if (current === 'journal' && !journalBound) { initJournal(); journalBound = true; }
     if (current === 'repas') initRepas();
     if (current === 'scanner') initScanner();
+    if (current !== 'scanner' && window.__stopMyWattUpCamera) window.__stopMyWattUpCamera();
   }
 
   window.addEventListener('hashchange', () => {
@@ -1249,6 +1274,18 @@
       const barcodeInput = document.getElementById('barcodeInput');
       const scanBtn = document.getElementById('scanBtn');
       const resultCard = document.getElementById('resultCard');
+      const scanError = document.getElementById('scanError');
+
+      function showScanError(message) {
+        resultCard.style.display = 'none';
+        scanError.textContent = message;
+        scanError.classList.add('show');
+      }
+
+      function clearScanError() {
+        scanError.classList.remove('show');
+        scanError.textContent = '';
+      }
 
       function computePersonalizedScore(product, sportType) {
         const nutriscoreMap = { a: 90, b: 75, c: 55, d: 35, e: 15 };
@@ -1265,19 +1302,21 @@
         return 'score-bad';
       }
 
-      scanBtn.addEventListener('click', async () => {
-        const barcode = barcodeInput.value.trim();
+      scanBtn.addEventListener('click', () => runScan(barcodeInput.value.trim()));
+
+      async function runScan(barcode) {
         if (!barcode) return;
 
         scanBtn.disabled = true;
         scanBtn.textContent = '...';
+        clearScanError();
 
         try {
           const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
           const data = await res.json();
 
           if (data.status !== 1) {
-            alert("Produit introuvable dans OpenFoodFacts.");
+            showScanError("Ce produit n'est pas encore référencé dans notre base — réessaie avec un autre code-barres.");
             return;
           }
 
@@ -1292,12 +1331,14 @@
 
           const score = computePersonalizedScore(product, profile?.sport_type);
 
+          barcodeInput.value = barcode;
           document.getElementById('resultName').textContent = productName;
           const scoreEl = document.getElementById('resultScore');
           scoreEl.textContent = `Score : ${score}/100`;
           scoreEl.className = 'result-score ' + scoreClass(score);
           document.getElementById('resultJustif').textContent =
             `Nutri-score ${product.nutriscore_grade?.toUpperCase() || '?'} ajusté selon ton profil ${profile?.sport_type || 'général'}.`;
+          clearScanError();
           resultCard.style.display = 'block';
 
           await supabase.from('scanned_products').insert({
@@ -1310,12 +1351,80 @@
           loadHistory();
         } catch (err) {
           console.error(err);
-          alert("Erreur lors du scan : " + err.message);
+          showScanError("Erreur lors du scan — vérifie ta connexion et réessaie.");
         } finally {
           scanBtn.disabled = false;
           scanBtn.textContent = 'Scanner';
         }
+      }
+
+      // ---- Camera scan (html5-qrcode) ----
+      const cameraToggleBtn = document.getElementById('cameraToggleBtn');
+      const cameraWrap = document.getElementById('cameraWrap');
+      const cameraCloseBtn = document.getElementById('cameraCloseBtn');
+      let html5QrCode = null;
+      let cameraRunning = false;
+
+      async function stopCamera() {
+        if (html5QrCode && cameraRunning) {
+          try { await html5QrCode.stop(); } catch (e) { /* already stopped */ }
+          try { html5QrCode.clear(); } catch (e) {}
+        }
+        cameraRunning = false;
+        cameraWrap.classList.remove('show');
+        cameraToggleBtn.classList.remove('active');
+      }
+
+      async function startCamera() {
+        if (typeof Html5Qrcode === 'undefined') {
+          showScanError("La caméra n'a pas pu se charger. Vérifie ta connexion et réessaie.");
+          return;
+        }
+        clearScanError();
+        cameraWrap.classList.add('show');
+
+        if (!html5QrCode) {
+          html5QrCode = new Html5Qrcode('cameraReader', {
+            formatsToSupport: [
+              Html5QrcodeSupportedFormats.EAN_13,
+              Html5QrcodeSupportedFormats.EAN_8,
+              Html5QrcodeSupportedFormats.UPC_A,
+              Html5QrcodeSupportedFormats.UPC_E,
+              Html5QrcodeSupportedFormats.CODE_128,
+            ],
+            verbose: false,
+          });
+        }
+
+        try {
+          await html5QrCode.start(
+            { facingMode: 'environment' },
+            { fps: 10, qrbox: { width: 260, height: 140 } },
+            async (decodedText) => {
+              await stopCamera();
+              runScan(decodedText.trim());
+            },
+            () => { /* per-frame decode miss, ignore */ }
+          );
+          cameraRunning = true;
+          cameraToggleBtn.classList.add('active');
+        } catch (err) {
+          console.error(err);
+          cameraWrap.classList.remove('show');
+          showScanError("Impossible d'accéder à la caméra — vérifie que tu as autorisé l'accès dans ton navigateur.");
+        }
+      }
+
+      cameraToggleBtn.addEventListener('click', () => {
+        if (cameraWrap.classList.contains('show')) {
+          stopCamera();
+        } else {
+          startCamera();
+        }
       });
+
+      cameraCloseBtn.addEventListener('click', stopCamera);
+      window.__stopMyWattUpCamera = stopCamera;
 
       scannerBound = true;
     }
