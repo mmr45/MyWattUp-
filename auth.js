@@ -68,6 +68,38 @@ export async function getCurrentUser() {
 }
 
 // ============================================
+// GARANTIR L'EXISTENCE D'UN PROFIL (avec avatar + pseudo par défaut)
+// Utile en filet de sécurité si la ligne profiles n'a pas été créée à l'inscription.
+// ============================================
+export async function ensureProfile(user) {
+  const { data: existing, error: fetchError } = await supabase
+    .from('profiles')
+    .select('username, avatar_seed, avatar_url')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("Erreur vérification profil :", fetchError.message);
+  }
+
+  if (existing) return existing;
+
+  const avatarSeed = user.id + '-' + Date.now();
+  const { data: created, error: upsertError } = await supabase
+    .from('profiles')
+    .upsert({ user_id: user.id, avatar_seed: avatarSeed }, { onConflict: 'user_id' })
+    .select('username, avatar_seed, avatar_url')
+    .single();
+
+  if (upsertError) {
+    console.error("Erreur création profil par défaut :", upsertError.message);
+    throw upsertError;
+  }
+
+  return created;
+}
+
+// ============================================
 // VÉRIFIER SI L'UTILISATEUR A DÉJÀ UN PROFIL
 // (utile pour rediriger vers onboarding ou dashboard)
 // ============================================
