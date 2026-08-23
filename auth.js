@@ -16,7 +16,22 @@ export async function signUp(email, password) {
   }
 
   // data.user existe même si email non confirmé (selon config Supabase)
-  return data.user;
+  const user = data.user;
+
+  // Crée la ligne de profil avec un avatar aléatoire dès l'inscription.
+  if (user) {
+    const avatarSeed = user.id + '-' + Date.now();
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .upsert({ user_id: user.id, avatar_seed: avatarSeed }, { onConflict: 'user_id' });
+
+    if (profileError) {
+      // On ne bloque pas l'inscription pour ça, mais on log l'erreur.
+      console.error("Erreur création avatar par défaut :", profileError.message);
+    }
+  }
+
+  return user;
 }
 
 // ============================================
