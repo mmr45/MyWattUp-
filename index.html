@@ -308,9 +308,14 @@
   #view-app .ring-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto 16px; }
   #view-app .ring-wrap svg { transform: rotate(-90deg); }
   #view-app .ring-bg { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 12; }
-  #view-app .ring-fg { fill: none; stroke: var(--vert); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
+  #view-app .ring-fg { fill: none; stroke: var(--vert); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease; }
+  #view-app .ring-fg.score-low { stroke: #FF6B6B; }
+  #view-app .ring-fg.score-mid { stroke: var(--ambre); }
+  #view-app .ring-fg.score-good { stroke: var(--vert); }
+  #view-app .ring-bg.ring-waiting { stroke-dasharray: 3 8; opacity: 0.6; }
   #view-app .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  #view-app .ring-score { font-family: var(--display); font-size: 42px; font-weight: 800; letter-spacing: -0.03em; }
+  #view-app .ring-score { font-family: var(--display); font-size: 42px; font-weight: 800; letter-spacing: -0.03em; transition: color 0.3s ease; }
+  #view-app .ring-score.ring-score-empty { font-size: 17px; font-weight: 700; color: var(--gris); max-width: 130px; line-height: 1.3; }
   #view-app .ring-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
   #view-app .score-date { color: var(--gris); font-size: 13px; }
 
@@ -338,7 +343,23 @@
   #view-app .advice-placeholder-tag svg { width: 11px; height: 11px; flex-shrink: 0; }
 
   #view-app .journal-btn { display: block; width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
-  #view-app .empty-state { text-align: center; color: var(--gris); font-size: 13px; padding: 20px 0; }
+  #view-app .empty-state { text-align: center; color: var(--gris); font-size: 13px; padding: 36px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  #view-app .empty-state svg { width: 34px; height: 34px; color: var(--gris); opacity: 0.7; }
+  #view-app .empty-state strong { color: var(--blanc); font-weight: 600; font-size: 13.5px; }
+  #view-app .empty-state span { max-width: 32ch; line-height: 1.5; }
+
+  /* ---------- loading skeletons ---------- */
+  #view-app .skeleton-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; overflow: hidden; }
+  #view-app .skeleton-line { height: 10px; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.11) 37%, rgba(255,255,255,0.05) 63%); background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; }
+  #view-app .skeleton-line + .skeleton-line { margin-top: 10px; }
+  #view-app .skeleton-line.w-40 { width: 40%; }
+  #view-app .skeleton-line.w-70 { width: 70%; }
+  #view-app .skeleton-line.w-90 { width: 90%; }
+  #view-app .skeleton-row { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+  #view-app .skeleton-row .skeleton-line { flex: 1; margin: 0; }
+  #view-app .skeleton-dot { width: 10px; height: 10px; border-radius: 50%; margin-left: 12px; flex-shrink: 0; background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.13) 37%, rgba(255,255,255,0.06) 63%); background-size: 400% 100%; animation: skeleton-pulse 1.4s ease-in-out infinite; }
+  @keyframes skeleton-pulse { 0% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  @media (prefers-reduced-motion: reduce) { #view-app .skeleton-line, #view-app .skeleton-dot { animation: none; opacity: 0.5; } }
 
   #view-app .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--fond-card); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 max(10px, env(safe-area-inset-bottom)); z-index: 5; }
   #view-app .nav-item { flex: 1; text-align: center; color: var(--gris); font-size: 10px; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; font-family: inherit; }
@@ -386,9 +407,42 @@
   #view-app button[type="submit"]:hover { filter: brightness(1.08); }
   #view-app button[type="submit"]:active { transform: scale(0.98); }
   #view-app button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
-  #view-app .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; }
+  #view-app .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; display: flex; align-items: center; justify-content: center; gap: 6px; }
   #view-app .msg.error { color: #FF6B6B; }
   #view-app .msg.success { color: var(--vert); }
+  #view-app .msg.success::before {
+    content: ''; width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; background: var(--vert);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/60% no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/60% no-repeat;
+    animation: check-pop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes check-pop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(1); } }
+
+  /* micro-feedback : flash de succès sur une carte */
+  #view-app .card-flash { animation: card-flash 0.9s ease; }
+  @keyframes card-flash {
+    0% { box-shadow: 0 0 0 0 rgba(31,138,99,0.55), 0 12px 26px -18px rgba(0,0,0,0.55); background-color: rgba(31,138,99,0.16); }
+    100% { box-shadow: 0 0 0 14px rgba(31,138,99,0), 0 12px 26px -18px rgba(0,0,0,0.55); background-color: var(--fond-card); }
+  }
+  @media (prefers-reduced-motion: reduce) { #view-app .card-flash, #view-app .msg.success::before { animation: none; } }
+
+  /* transition entre panneaux */
+  #view-app .app-panel { display: none; opacity: 0; transform: translateY(10px); transition: opacity 0.24s ease, transform 0.24s ease; }
+  #view-app .app-panel.is-visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { #view-app .app-panel { transition: none; transform: none; } }
+
+  /* focus clavier visible */
+  #view-app a:focus-visible,
+  #view-app button:focus-visible,
+  #view-app .day-chip:focus-visible,
+  #view-app .toggle:focus-visible,
+  #view-app .qbtn:focus-visible,
+  #view-app .history-item:focus-visible,
+  #view-app .icon-btn:focus-visible,
+  #view-app .back:focus-visible {
+    outline: 2px solid var(--ambre); outline-offset: 2px; border-radius: 8px;
+  }
+  #view-app .nav-item:focus-visible { outline: 2px solid var(--ambre); outline-offset: -4px; border-radius: 10px; }
 
   /* repas */
   #view-app .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
@@ -812,9 +866,9 @@
 
           <label>Qualité perçue</label>
           <div class="quality-btns" id="sleepQuality">
-            <div class="qbtn" data-value="bonne">Bonne</div>
-            <div class="qbtn" data-value="moyenne">Moyenne</div>
-            <div class="qbtn" data-value="mauvaise">Mauvaise</div>
+            <div class="qbtn" data-value="bonne" tabindex="0" role="button">Bonne</div>
+            <div class="qbtn" data-value="moyenne" tabindex="0" role="button">Moyenne</div>
+            <div class="qbtn" data-value="mauvaise" tabindex="0" role="button">Mauvaise</div>
           </div>
         </div>
 
@@ -850,16 +904,16 @@
         <div class="app-section">
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg> Repas suivis</div>
           <div class="meal-row">
-            <span class="meal-name-toggle">Petit-déjeuner</span>
-            <div class="toggle" data-target="breakfastDone"><div class="toggle-dot"></div></div>
+            <span class="meal-name-toggle" id="labelBreakfast">Petit-déjeuner</span>
+            <div class="toggle" data-target="breakfastDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelBreakfast"><div class="toggle-dot"></div></div>
           </div>
           <div class="meal-row">
-            <span class="meal-name-toggle">Déjeuner</span>
-            <div class="toggle" data-target="lunchDone"><div class="toggle-dot"></div></div>
+            <span class="meal-name-toggle" id="labelLunch">Déjeuner</span>
+            <div class="toggle" data-target="lunchDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelLunch"><div class="toggle-dot"></div></div>
           </div>
           <div class="meal-row">
-            <span class="meal-name-toggle">Dîner</span>
-            <div class="toggle" data-target="dinnerDone"><div class="toggle-dot"></div></div>
+            <span class="meal-name-toggle" id="labelDinner">Dîner</span>
+            <div class="toggle" data-target="dinnerDone" tabindex="0" role="switch" aria-checked="false" aria-labelledby="labelDinner"><div class="toggle-dot"></div></div>
           </div>
         </div>
 
@@ -915,7 +969,11 @@
       </div>
 
       <div class="history-title">Historique des scans</div>
-      <div id="historyList"><p class="empty-state">Chargement…</p></div>
+      <div id="historyList">
+        <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+        <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+        <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+      </div>
     </section>
 
     <!-- ---------- PARAMÈTRES ---------- -->
@@ -1160,7 +1218,18 @@
   function routeApp() {
     const current = (location.hash || '#dashboard').replace('#', '');
     panels.forEach(p => {
-      document.getElementById('panel-' + p).style.display = (p === current) ? 'block' : 'none';
+      const el = document.getElementById('panel-' + p);
+      if (p === current) {
+        el.style.display = 'block';
+        el.classList.remove('is-visible');
+        // force un reflow puis déclenche la transition (fade + léger slide)
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => el.classList.add('is-visible'));
+        });
+      } else {
+        el.classList.remove('is-visible');
+        el.style.display = 'none';
+      }
     });
     document.querySelectorAll('.nav-item').forEach(item => {
       item.classList.toggle('active', item.dataset.nav === current);
@@ -1207,13 +1276,30 @@
       weekday: 'long', day: 'numeric', month: 'long'
     });
 
+    const scoreValueEl = document.getElementById('scoreValue');
+    const ringFgEl = document.getElementById('ringFg');
+    const ringBgEl = document.querySelector('#view-app .ring-bg');
+    const ringLabelEl = document.querySelector('#view-app .ring-label');
+
+    function scoreClassFor(score) {
+      if (score < 50) return 'score-low';
+      if (score < 75) return 'score-mid';
+      return 'score-good';
+    }
+
     if (log) {
       const score = log.daily_score ?? 0;
-      document.getElementById('scoreValue').textContent = score;
+
+      scoreValueEl.classList.remove('ring-score-empty');
+      scoreValueEl.textContent = score;
 
       const circumference = 2 * Math.PI * 78;
       const offset = circumference - (score / 100) * circumference;
-      document.getElementById('ringFg').style.strokeDashoffset = offset;
+      ringFgEl.style.strokeDashoffset = offset;
+      ringFgEl.classList.remove('score-low', 'score-mid', 'score-good');
+      ringFgEl.classList.add(scoreClassFor(score));
+      ringBgEl.classList.remove('ring-waiting');
+      ringLabelEl.textContent = 'Score du jour';
 
       document.getElementById('sleepValue').textContent = log.sleep_score ?? '--';
       document.getElementById('activityValue').textContent = log.activity_score ?? '--';
@@ -1225,7 +1311,14 @@
         ? log.ai_recommendation
         : "Ton score du jour est calculé. Le conseil personnalisé par l'IA arrivera bientôt ici.";
     } else {
-      document.getElementById('scoreValue').textContent = '--';
+      const circumference = 2 * Math.PI * 78;
+      ringFgEl.style.strokeDashoffset = circumference;
+      ringFgEl.classList.remove('score-low', 'score-mid', 'score-good');
+      ringBgEl.classList.add('ring-waiting');
+      scoreValueEl.classList.add('ring-score-empty');
+      scoreValueEl.textContent = 'Pas encore de données';
+      ringLabelEl.textContent = "aujourd'hui";
+
       document.getElementById('sleepValue').textContent = '--';
       document.getElementById('activityValue').textContent = '--';
       document.getElementById('mealsValue').textContent = '--';
@@ -1238,10 +1331,14 @@
   function initJournal() {
     let selectedQuality = null;
     document.querySelectorAll('#sleepQuality .qbtn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      const selectQuality = () => {
         document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         selectedQuality = btn.dataset.value;
+      };
+      btn.addEventListener('click', selectQuality);
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectQuality(); }
       });
     });
 
@@ -1268,9 +1365,15 @@
     const toggles = {};
     document.querySelectorAll('.toggle').forEach(t => {
       toggles[t.dataset.target] = false;
-      t.addEventListener('click', () => {
+      const flip = () => {
         t.classList.toggle('on');
-        toggles[t.dataset.target] = t.classList.contains('on');
+        const isOn = t.classList.contains('on');
+        toggles[t.dataset.target] = isOn;
+        t.setAttribute('aria-checked', String(isOn));
+      };
+      t.addEventListener('click', flip);
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
       });
     });
 
@@ -1347,6 +1450,9 @@
 
       msg.textContent = "Journée enregistrée !";
       msg.classList.add('success');
+      document.querySelectorAll('#panel-journal .app-section').forEach(section => {
+        section.classList.add('card-flash');
+      });
       setTimeout(() => { location.hash = '#dashboard'; }, 700);
     });
   }
@@ -1367,10 +1473,16 @@
         const chip = document.createElement('div');
         chip.className = 'day-chip' + (i === selectedDayIndex ? ' active' : '');
         chip.textContent = d;
-        chip.addEventListener('click', () => {
+        chip.tabIndex = 0;
+        chip.setAttribute('role', 'button');
+        const selectDay = () => {
           selectedDayIndex = i;
           renderDayChips();
           loadMealsForDay();
+        };
+        chip.addEventListener('click', selectDay);
+        chip.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(); }
         });
         dayScroll.appendChild(chip);
       });
@@ -1395,9 +1507,27 @@
     });
   }
 
+  function mealSkeletonHTML() {
+    return Array.from({ length: 2 }).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-line w-40"></div>
+        <div class="skeleton-line w-70"></div>
+        <div class="skeleton-line w-90"></div>
+      </div>
+    `).join('');
+  }
+
+  function emptyStateHTML(iconPath, title, text) {
+    return `<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${iconPath}</svg>
+      <strong>${title}</strong>
+      <span>${text}</span>
+    </div>`;
+  }
+
   async function loadMealsForDay() {
     const mealsList = document.getElementById('mealsList');
-    mealsList.innerHTML = '<p class="empty-state">Chargement…</p>';
+    mealsList.innerHTML = mealSkeletonHTML();
 
     const { data: plan } = await supabase
       .from('meal_plans')
@@ -1408,7 +1538,11 @@
       .maybeSingle();
 
     if (!plan) {
-      mealsList.innerHTML = '<p class="empty-state">Aucun plan de repas pour l\'instant.<br>Génère ton premier plan de la semaine ci-dessous.</p>';
+      mealsList.innerHTML = emptyStateHTML(
+        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+        'Aucun plan de repas pour l\'instant',
+        'Génère ton premier plan de la semaine ci-dessous pour commencer.'
+      );
       return;
     }
 
@@ -1418,7 +1552,11 @@
       .eq('meal_plan_id', plan.id);
 
     if (!meals || meals.length === 0) {
-      mealsList.innerHTML = '<p class="empty-state">Aucun repas généré pour ce plan.</p>';
+      mealsList.innerHTML = emptyStateHTML(
+        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+        'Aucun repas généré pour ce plan',
+        'Essaie de régénérer ton plan de la semaine.'
+      );
       return;
     }
 
@@ -1613,6 +1751,9 @@
             `Nutri-score ${product.nutriscore_grade?.toUpperCase() || '?'} ajusté selon ton profil ${profile?.sport_type || 'général'}.`;
           clearScanError();
           resultCard.style.display = 'block';
+          resultCard.classList.remove('card-flash');
+          void resultCard.offsetWidth;
+          resultCard.classList.add('card-flash');
 
           await supabase.from('scanned_products').insert({
             user_id: user.id,
@@ -1707,6 +1848,11 @@
 
   async function loadHistory() {
     const historyList = document.getElementById('historyList');
+    historyList.innerHTML = `
+      <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+      <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+      <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
+    `;
     const { data, error } = await supabase
       .from('scanned_products')
       .select('*')
@@ -1715,7 +1861,11 @@
       .limit(20);
 
     if (error || !data || data.length === 0) {
-      historyList.innerHTML = '<p class="empty-state">Aucun scan pour l\'instant.</p>';
+      historyList.innerHTML = emptyStateHTML(
+        '<path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/>',
+        'Aucun scan pour l\'instant',
+        'Scanne ton premier produit pour commencer ton historique.'
+      );
       return;
     }
 
@@ -1732,6 +1882,8 @@
 
       const row = document.createElement('div');
       row.className = 'history-item';
+      row.tabIndex = 0;
+      row.setAttribute('role', 'button');
       row.innerHTML = `
         <div class="history-item-left">
           <svg class="history-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -1748,7 +1900,7 @@
       detail.innerHTML = '<p class="history-detail-loading">Chargement du détail…</p>';
 
       let loaded = false;
-      row.addEventListener('click', async () => {
+      const toggleRow = async () => {
         const isOpen = row.classList.toggle('open');
         detail.classList.toggle('show', isOpen);
         if (isOpen && !loaded) {
@@ -1775,6 +1927,10 @@
             detail.innerHTML = '<p class="history-detail-loading">Erreur lors du chargement du détail.</p>';
           }
         }
+      };
+      row.addEventListener('click', toggleRow);
+      row.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(); }
       });
 
       historyList.appendChild(row);
