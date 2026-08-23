@@ -40,7 +40,7 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 
   body {
     margin: 0;
@@ -51,6 +51,8 @@
     -webkit-font-smoothing: antialiased;
     position: relative;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
   }
 
   a { color: inherit; }
@@ -66,16 +68,46 @@
   .wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
   @media (max-width: 640px) { .wrap { padding: 0 22px; } }
 
-  nav { position: relative; z-index: 2; border-bottom: 1px solid var(--line); }
-  .nav-inner { max-width: 1100px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
-  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
-  .brand svg { width: 30px; height: 30px; }
+  nav { position: relative; z-index: 20; border-bottom: 1px solid var(--line); }
+  .nav-inner { max-width: 1100px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; flex-shrink: 0; }
+  .brand svg { width: 30px; height: 30px; flex-shrink: 0; }
   .nav-cta {
     font-family: var(--mono); font-size: 13px; color: var(--text-1); text-decoration: none;
-    border: 1px solid var(--line); padding: 8px 16px; border-radius: 100px;
+    border: 1px solid var(--line); padding: 8px 16px; border-radius: 100px; white-space: nowrap;
     transition: border-color 0.25s, color 0.25s, background 0.25s; background: none; cursor: pointer;
   }
   .nav-cta:hover { border-color: var(--amber); color: var(--amber-bright); background: rgba(255,159,28,0.08); }
+
+  .nav-links { display: flex; align-items: center; gap: 10px; }
+  .nav-link-btn {
+    font-family: var(--mono); font-size: 13px; color: var(--text-1); text-decoration: none;
+    border: 1px solid transparent; padding: 8px 16px; border-radius: 100px; white-space: nowrap;
+    background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .nav-link-btn:hover { border-color: var(--line-bright); color: var(--text-0); background: rgba(255,255,255,0.06); }
+
+  .nav-burger {
+    display: none; align-items: center; justify-content: center; width: 38px; height: 38px; flex-shrink: 0;
+    border: 1px solid var(--line); border-radius: 10px; background: none; color: var(--text-1); cursor: pointer;
+  }
+  .nav-burger svg { width: 18px; height: 18px; }
+  .nav-burger:hover { border-color: var(--amber); color: var(--amber-bright); }
+
+  .nav-dropdown {
+    display: none; flex-direction: column; gap: 8px; padding: 14px 22px 18px;
+    border-top: 1px solid var(--line); background: var(--bg-0);
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 19;
+    max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.25s ease, opacity 0.2s ease;
+  }
+  .nav-dropdown.show { max-height: 260px; opacity: 1; }
+  .nav-dropdown .nav-link-btn { width: 100%; text-align: center; }
+
+  @media (max-width: 720px) {
+    .nav-links { display: none; }
+    .nav-burger { display: flex; }
+    .nav-dropdown { display: flex; }
+  }
 
   .hero { padding: 84px 0 60px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
   .eyebrow {
@@ -377,8 +409,8 @@
   #view-app .ring-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
   #view-app .score-date { color: var(--gris); font-size: 13px; }
 
-  #view-app .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-  #view-app .mini-card { border-radius: 14px; padding: 16px 10px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease; }
+  #view-app .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+  #view-app .mini-card { border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease; }
   #view-app .mini-card:active { transform: scale(0.97); }
   #view-app .mini-icon { margin-bottom: 8px; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; margin-left: auto; margin-right: auto; }
   #view-app .mini-icon svg { width: 16px; height: 16px; }
@@ -386,12 +418,16 @@
   #view-app .mini-card.sommeil .mini-icon { color: var(--ambre); background: rgba(255,159,28,0.14); }
   #view-app .mini-card.activite { background: rgba(31,138,99,0.08); border-color: rgba(31,138,99,0.2); }
   #view-app .mini-card.activite .mini-icon { color: var(--vert); background: rgba(31,138,99,0.16); }
+  #view-app .mini-card.forme { background: rgba(79,216,224,0.08); border-color: rgba(79,216,224,0.2); }
+  #view-app .mini-card.forme .mini-icon { color: #4FD8E0; background: rgba(79,216,224,0.16); }
   #view-app .mini-card.repas { background: var(--fond-card); }
   #view-app .mini-card.repas .mini-icon { color: var(--blanc); background: rgba(255,255,255,0.08); }
   #view-app .mini-value { font-family: var(--display); font-size: 20px; font-weight: 700; }
-  #view-app .mini-label { font-family: var(--mono); font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  #view-app .mini-detail { font-size: 11px; color: var(--gris); margin-top: 3px; min-height: 14px; }
+  #view-app .mini-label { font-family: var(--mono); font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
   #view-app .mini-card.sommeil .mini-value { color: var(--ambre); }
   #view-app .mini-card.activite .mini-value { color: var(--vert); }
+  #view-app .mini-card.forme .mini-value { color: #4FD8E0; }
   #view-app .mini-card.repas .mini-value { color: var(--blanc); }
 
   #view-app .advice-card { background: linear-gradient(135deg, rgba(31,138,99,0.14), rgba(255,184,0,0.06)); border: 1px solid rgba(31,138,99,0.25); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
@@ -747,9 +783,20 @@
       </svg>
       MyWattUp
     </div>
-    <a href="#tarifs" class="link-secondary" style="margin-right:18px;">Tarifs</a>
-    <a href="#faq-public" class="link-secondary" style="margin-right:18px;">FAQ</a>
-    <button class="nav-cta" id="btnGoLogin">Se connecter</button>
+    <div class="nav-links">
+      <a href="#tarifs" class="nav-link-btn">Tarifs</a>
+      <a href="#faq-public" class="nav-link-btn">FAQ</a>
+      <button class="nav-cta js-go-login">Se connecter</button>
+    </div>
+    <button type="button" class="nav-burger" id="navBurgerBtn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navDropdown">
+      <svg id="navBurgerIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      <svg id="navBurgerIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="nav-dropdown" id="navDropdown">
+    <a href="#tarifs" class="nav-link-btn">Tarifs</a>
+    <a href="#faq-public" class="nav-link-btn">FAQ</a>
+    <button class="nav-cta js-go-login" style="width:100%;">Se connecter</button>
   </div>
 </nav>
 
@@ -1116,20 +1163,30 @@
         <div class="mini-card sommeil">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></div>
           <div class="mini-value" id="sleepValue">--</div>
+          <div class="mini-detail" id="sleepDetail"></div>
           <div class="mini-label">Sommeil</div>
         </div>
         <div class="mini-card activite">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg></div>
           <div class="mini-value" id="activityValue">--</div>
+          <div class="mini-detail" id="activityDetail"></div>
           <div class="mini-label">Activité</div>
+        </div>
+        <div class="mini-card forme">
+          <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-4 2-8 6-9 1 1.5.5 3-1 4 2-1 5-1 6 2 1-1 3-.5 3 1.5 0 4-3 7-7 8-3 .8-6-1-7-4Z"/><path d="M9 15c1.5 1 4 1 6-1"/></svg></div>
+          <div class="mini-value" id="formeValue">--</div>
+          <div class="mini-detail" id="formeDetail"></div>
+          <div class="mini-label">Forme</div>
         </div>
         <div class="mini-card repas">
           <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></div>
           <div class="mini-value" id="mealsValue">--</div>
+          <div class="mini-detail" id="mealsDetail"></div>
           <div class="mini-label">Repas suivis</div>
         </div>
       </div>
       <div class="mini-grid" id="miniGridSkeleton" style="display:none;">
+        <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
         <div class="mini-skeleton"><div class="skeleton-dot" style="width:20px;height:20px;margin:0;"></div><div class="skeleton-line w-40"></div></div>
@@ -1839,10 +1896,37 @@
     routeApp();
   }
 
-  document.getElementById('btnGoLogin').addEventListener('click', showLogin);
+  document.querySelectorAll('.js-go-login').forEach(btn => btn.addEventListener('click', showLogin));
   document.getElementById('btnGoLogin2').addEventListener('click', showLogin);
   document.getElementById('btnGoLoginFree')?.addEventListener('click', showLogin);
   document.getElementById('btnGoLoginPro')?.addEventListener('click', showLogin);
+
+  // ---- Menu déroulant mobile (vitrine) ----
+  const navBurgerBtn = document.getElementById('navBurgerBtn');
+  const navDropdown = document.getElementById('navDropdown');
+  const navBurgerIconOpen = document.getElementById('navBurgerIconOpen');
+  const navBurgerIconClose = document.getElementById('navBurgerIconClose');
+  if (navBurgerBtn && navDropdown) {
+    const closeNavDropdown = () => {
+      navDropdown.classList.remove('show');
+      navBurgerBtn.setAttribute('aria-expanded', 'false');
+      navBurgerIconOpen.style.display = '';
+      navBurgerIconClose.style.display = 'none';
+    };
+    navBurgerBtn.addEventListener('click', () => {
+      const isOpen = navDropdown.classList.toggle('show');
+      navBurgerBtn.setAttribute('aria-expanded', String(isOpen));
+      navBurgerIconOpen.style.display = isOpen ? 'none' : '';
+      navBurgerIconClose.style.display = isOpen ? '' : 'none';
+    });
+    navDropdown.querySelectorAll('a, button').forEach(el => el.addEventListener('click', closeNavDropdown));
+    document.addEventListener('click', (e) => {
+      if (!navDropdown.classList.contains('show')) return;
+      if (!navDropdown.contains(e.target) && !navBurgerBtn.contains(e.target)) closeNavDropdown();
+    });
+    window.addEventListener('resize', () => { if (window.innerWidth > 720) closeNavDropdown(); });
+  }
+
   document.getElementById('btnInstall').addEventListener('click', showLogin);
   document.getElementById('btnBackToVitrine').addEventListener('click', showVitrine);
 
@@ -2065,6 +2149,24 @@
       return 'score-good';
     }
 
+    const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
+    const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
+
+    function formatSleepDuration(hours) {
+      if (hours == null) return '--';
+      const h = Math.floor(hours);
+      const m = Math.round((hours - h) * 60);
+      return m > 0 ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`;
+    }
+
+    function moodQualitativeLabel(score) {
+      if (score == null) return '';
+      if (score >= 9) return 'Au top';
+      if (score >= 7) return 'Bonne forme';
+      if (score >= 4) return 'Forme moyenne';
+      return 'Fatigue';
+    }
+
     if (log) {
       const score = log.daily_score ?? 0;
 
@@ -2079,10 +2181,34 @@
       ringBgEl.classList.remove('ring-waiting');
       ringLabelEl.textContent = 'Score du jour';
 
-      document.getElementById('sleepValue').textContent = log.sleep_score ?? '--';
-      document.getElementById('activityValue').textContent = log.activity_score ?? '--';
-      const mealsCount = [log.breakfast_done, log.lunch_done, log.dinner_done].filter(Boolean).length;
+      // Sommeil : durée réelle + qualité perçue plutôt que le sous-score abstrait
+      document.getElementById('sleepValue').textContent = formatSleepDuration(log.sleep_hours);
+      document.getElementById('sleepDetail').textContent = SLEEP_QUALITY_LABEL[log.sleep_quality] || '';
+
+      // Activité : type de séance + durée, avec un intitulé dédié pour les jours de repos
+      const activityLabel = ACTIVITY_TYPE_LABEL[log.activity_type] || '--';
+      if (log.activity_type === 'repos') {
+        document.getElementById('activityValue').textContent = 'Repos';
+        document.getElementById('activityDetail').textContent = 'Jour de récupération';
+      } else {
+        document.getElementById('activityValue').textContent = log.activity_duration_min ? `${log.activity_duration_min} min` : activityLabel;
+        document.getElementById('activityDetail').textContent = log.activity_duration_min
+          ? `${activityLabel} · intensité ${log.activity_intensity ?? '--'}/10`
+          : activityLabel;
+      }
+
+      // Forme ressentie : donnée déjà saisie dans le journal, jusqu'ici absente du bilan
+      document.getElementById('formeValue').textContent = log.mood_score != null ? `${log.mood_score}/10` : '--';
+      document.getElementById('formeDetail').textContent = moodQualitativeLabel(log.mood_score);
+
+      const mealsDone = [
+        log.breakfast_done && 'Petit-déj',
+        log.lunch_done && 'Déjeuner',
+        log.dinner_done && 'Dîner',
+      ].filter(Boolean);
+      const mealsCount = mealsDone.length;
       document.getElementById('mealsValue').textContent = mealsCount + '/3';
+      document.getElementById('mealsDetail').textContent = mealsCount > 0 ? mealsDone.join(', ') : 'Aucun repas suivi';
 
       const adviceText = document.getElementById('adviceText');
       adviceText.textContent = log.ai_recommendation
@@ -2105,8 +2231,13 @@
       ringLabelEl.textContent = "aujourd'hui";
 
       document.getElementById('sleepValue').textContent = '--';
+      document.getElementById('sleepDetail').textContent = '';
       document.getElementById('activityValue').textContent = '--';
+      document.getElementById('activityDetail').textContent = '';
+      document.getElementById('formeValue').textContent = '--';
+      document.getElementById('formeDetail').textContent = '';
       document.getElementById('mealsValue').textContent = '--';
+      document.getElementById('mealsDetail').textContent = '';
     }
   }
 
