@@ -430,6 +430,14 @@
   #view-app .ring-score.ring-score-empty { font-size: 17px; font-weight: 700; color: var(--gris); max-width: 130px; line-height: 1.3; }
   #view-app .ring-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
   #view-app .score-date { color: var(--gris); font-size: 13px; }
+  #view-app .score-share-btn {
+    position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--gris);
+    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  #view-app .score-share-btn svg { width: 16px; height: 16px; }
+  #view-app .score-share-btn:hover { border-color: var(--ambre); color: var(--ambre); background: rgba(255,159,28,0.1); }
+  #view-app .score-share-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
 
   #view-app .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
   #view-app .mini-card { border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease, border-color 0.15s ease; font-family: inherit; cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; }
@@ -576,6 +584,34 @@
   #view-app .nutrition-entries-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
   #view-app .nutrition-entry-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--fond); border-radius: 10px; font-size: 13px; }
   #view-app .nutrition-entry-row .entry-meta { color: var(--gris); font-size: 11.5px; margin-top: 2px; }
+
+  /* ---- Social : amis + fil d'activité ---- */
+  #view-app .friend-code-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; margin-bottom: 18px; }
+  #view-app .friend-code-label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  #view-app .friend-code-value { font-family: var(--mono, monospace); font-size: 18px; font-weight: 700; color: var(--ambre); word-break: break-all; }
+  #view-app .friend-code-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  #view-app .friend-code-actions button { width: 38px; height: 38px; border-radius: 10px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); color: var(--blanc); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  #view-app .friend-code-actions svg { width: 16px; height: 16px; }
+  #view-app .add-friend-row { display: flex; gap: 8px; }
+  #view-app .add-friend-row input { flex: 1; }
+  #view-app .add-friend-row button { width: auto; padding: 0 18px; margin-top: 0; }
+  #view-app .friend-row, #view-app .request-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--fond); border-radius: 12px; margin-bottom: 8px; }
+  #view-app .friend-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: var(--fond-card); object-fit: cover; }
+  #view-app .friend-name { font-weight: 600; font-size: 13.5px; }
+  #view-app .friend-meta { font-size: 11.5px; color: var(--gris); }
+  #view-app .request-actions { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
+  #view-app .request-actions button { padding: 7px 12px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+  #view-app .request-accept { background: var(--vert); color: #0E1410; }
+  #view-app .request-decline { background: rgba(255,107,107,0.12); color: #FF6B6B; }
+  #view-app .social-section-title { font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ambre); margin: 22px 0 10px; }
+  #view-app .social-empty { font-size: 12.5px; color: var(--gris); padding: 10px 2px; }
+  #view-app .feed-item { display: flex; gap: 12px; padding: 12px; background: var(--fond); border-radius: 12px; margin-bottom: 8px; align-items: flex-start; }
+  #view-app .feed-icon { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,159,28,0.14); color: var(--ambre); }
+  #view-app .feed-icon svg { width: 16px; height: 16px; }
+  #view-app .feed-icon.shared { background: rgba(31,138,99,0.16); color: var(--vert); }
+  #view-app .feed-text { font-size: 13px; line-height: 1.4; }
+  #view-app .feed-text b { font-weight: 700; }
+  #view-app .feed-time { font-size: 11px; color: var(--gris); margin-top: 3px; }
   #view-app .nutrition-entry-delete { background: none; border: none; color: var(--gris); cursor: pointer; padding: 4px; display: flex; flex-shrink: 0; }
   #view-app .nutrition-entry-delete svg { width: 16px; height: 16px; }
   #view-app .nutrition-entry-delete:hover { color: #FF6B6B; }
@@ -1382,6 +1418,9 @@
       <p class="dash-greeting">Voici ton bilan du jour.</p>
 
       <div class="score-card">
+        <button type="button" class="score-share-btn" id="btnShareRecap" aria-label="Partager mon récap du jour" title="Partager mon récap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
+        </button>
         <span class="score-badge" id="scoreBadge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Mis à jour</span>
         <div class="ring-wrap">
           <svg width="180" height="180" viewBox="0 0 180 180">
@@ -1763,6 +1802,50 @@
         <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
         <div class="skeleton-row"><div class="skeleton-line w-70"></div><div class="skeleton-dot"></div></div>
       </div>
+    </section>
+
+    <!-- ---------- SOCIAL (amis + fil d'activité) ---------- -->
+    <section id="panel-social" class="app-panel">
+      <div class="topbar">
+        <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <h1 class="app-h1">Amis</h1>
+      </div>
+      <p class="section-desc" style="margin:-10px 0 18px;">Ajoute des amis par pseudo, suis leurs séries et badges, et partage tes récaps.</p>
+
+      <div class="friend-code-card">
+        <div>
+          <div class="friend-code-label">Ton code ami (ton pseudo)</div>
+          <div class="friend-code-value" id="socialMyUsername">--</div>
+        </div>
+        <div class="friend-code-actions">
+          <button type="button" id="socialCopyCode" aria-label="Copier mon pseudo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button type="button" id="socialShareCode" aria-label="Partager mon pseudo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <form id="addFriendForm" class="add-friend-row">
+        <input type="text" id="addFriendInput" placeholder="Pseudo d'un ami" maxlength="24" required />
+        <button type="submit" class="app-cta" id="addFriendSubmitBtn" style="margin-top:0;">Ajouter</button>
+      </form>
+      <p class="section-desc" id="addFriendMsg" style="margin-top:8px;"></p>
+
+      <button type="button" class="app-cta secondary" id="shareRecapToFriendsBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        Partager mon score du jour avec mes amis
+      </button>
+
+      <div class="social-section-title" id="socialRequestsTitle" style="display:none;">Demandes reçues</div>
+      <div id="socialRequestsList"></div>
+
+      <div class="social-section-title">Mes amis</div>
+      <div id="socialFriendsList"><p class="social-empty">Chargement…</p></div>
+
+      <div class="social-section-title">Fil d'activité</div>
+      <div id="socialFeedList"><p class="social-empty">Chargement…</p></div>
     </section>
 
     <!-- ---------- PARAMÈTRES ---------- -->
@@ -2193,6 +2276,7 @@
     <a href="#journal" class="nav-item" data-nav="journal"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a2 2 0 0 1-2-2V3Z"/><path d="M6 17a2 2 0 0 1 2-2h10"/><path d="M9 7h6M9 11h6"/></svg></span>Journal</a>
     <a href="#repas" class="nav-item" data-nav="repas"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>Repas</a>
     <a href="#scanner" class="nav-item" data-nav="scanner"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></span>Scanner</a>
+    <a href="#social" class="nav-item" data-nav="social"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Amis</a>
   </nav>
 
   <div class="offline-banner" id="offlineBanner" role="status" aria-live="polite">
@@ -2537,8 +2621,9 @@
   // -------------------------------------------------------------
   // Routeur interne de l'app (panneau affiché selon #hash)
   // -------------------------------------------------------------
-  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres', 'abonnement', 'faq', 'support'];
+  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'social', 'parametres', 'abonnement', 'faq', 'support'];
   let journalBound = false;
+  let user = null;
 
   function routeApp() {
     const current = (location.hash || '#dashboard').replace('#', '');
@@ -2564,6 +2649,7 @@
     if (current === 'journal' && !journalBound) { initJournal(); journalBound = true; }
     if (current === 'repas') initRepas();
     if (current === 'scanner') initScanner();
+    if (current === 'social') initSocial();
     if (current === 'parametres') initSettings();
     if (current === 'abonnement') initAbonnement();
     if (current === 'faq') initFaq();
@@ -2576,16 +2662,6 @@
   });
 
   // -------------------------------------------------------------
-  // Démarrage : vitrine par défaut, app si session active
-  // -------------------------------------------------------------
-  let user = await getCurrentUser();
-  if (user) {
-    showApp();
-  } else {
-    showVitrine();
-  }
-
-  // -------------------------------------------------------------
   // DASHBOARD
   // -------------------------------------------------------------
   let dashboardBound = false;
@@ -2593,6 +2669,9 @@
   let lastDashboardLog = null;
   let trendLogsAll = [];
   let currentTrendRange = 7;
+  let lastStreakStats = { currentStreak: 0, bestStreak: 0, bestQualityStreak: 0 };
+  let lastNutritionTotals = null;
+  let lastNutritionTarget = null;
 
   const BADGE_DEFS = [
     { key: 'streak3', label: '3 jours', type: 'streak', threshold: 3 },
@@ -2683,6 +2762,9 @@
       fat_g: acc.fat_g + (e.fat_g || 0),
     }), { kcal: 0, proteins_g: 0, carbs_g: 0, fat_g: 0 });
 
+    lastNutritionTotals = totals;
+    lastNutritionTarget = target || null;
+
     kcalValue.textContent = `${Math.round(totals.kcal)} kcal`;
 
     if (target) {
@@ -2738,6 +2820,179 @@
     if (profileError) console.error(profileError);
 
     renderNutritionCard(entries || [], computeCalorieTarget(profile));
+  }
+
+  // -------------------------------------------------------------
+  // PARTAGE DU RÉCAP DU JOUR (image générée côté client, sans backend)
+  // -------------------------------------------------------------
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function buildRecapCanvas() {
+    const W = 1080, H = 1350;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const COL = {
+      blanc: '#F3EFE8', gris: '#8F887C', card: '#1A1714',
+      ambre: '#FF9F1C', vert: '#1F8A63', rouge: '#FF6B6B',
+    };
+    const pad = 64;
+
+    // Fond + halo décoratif
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, '#15120f');
+    bgGrad.addColorStop(1, '#0d0b09');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+    const halo = ctx.createRadialGradient(W / 2, 210, 40, W / 2, 210, 420);
+    halo.addColorStop(0, 'rgba(31,138,99,0.22)');
+    halo.addColorStop(1, 'rgba(31,138,99,0)');
+    ctx.fillStyle = halo;
+    ctx.fillRect(0, 0, W, H);
+
+    // Marque
+    ctx.textAlign = 'left';
+    ctx.fillStyle = COL.ambre;
+    ctx.font = '700 36px Bricolage Grotesque, sans-serif';
+    ctx.fillText('⚡', pad, pad + 34);
+    ctx.fillStyle = COL.blanc;
+    ctx.font = '700 34px Bricolage Grotesque, sans-serif';
+    ctx.fillText('MyWattUp', pad + 48, pad + 34);
+
+    const dateStr = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    ctx.fillStyle = COL.gris;
+    ctx.font = '500 26px Inter, sans-serif';
+    ctx.fillText(dateStr.charAt(0).toUpperCase() + dateStr.slice(1), pad, pad + 78);
+
+    // Anneau de score
+    const log = lastDashboardLog;
+    const score = log ? (log.daily_score ?? 0) : null;
+    const cx = W / 2, cy = 430, r = 190;
+    ctx.lineWidth = 26;
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+
+    ctx.textAlign = 'center';
+    if (score != null) {
+      const scoreColor = score < 50 ? COL.rouge : score < 75 ? COL.ambre : COL.vert;
+      ctx.strokeStyle = scoreColor;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (score / 100));
+      ctx.stroke();
+      ctx.fillStyle = COL.blanc;
+      ctx.font = '800 130px Bricolage Grotesque, sans-serif';
+      ctx.fillText(String(score), cx, cy + 40);
+      ctx.fillStyle = COL.gris;
+      ctx.font = '600 26px Inter, sans-serif';
+      ctx.fillText('SCORE DU JOUR', cx, cy + 84);
+    } else {
+      ctx.fillStyle = COL.gris;
+      ctx.font = '600 34px Inter, sans-serif';
+      ctx.fillText('Pas encore de bilan', cx, cy + 10);
+    }
+
+    // Cartes sommeil / activité / forme / repas
+    const stats = [
+      { label: 'SOMMEIL', value: log ? formatSleepDuration(log.sleep_hours) : '--' },
+      { label: 'ACTIVITÉ', value: log ? (log.activity_type === 'repos' ? 'Repos' : (log.activity_duration_min ? `${log.activity_duration_min} min` : (ACTIVITY_TYPE_LABEL[log.activity_type] || '--'))) : '--' },
+      { label: 'FORME', value: log && log.mood_score != null ? `${log.mood_score}/10` : '--' },
+      { label: 'REPAS', value: log ? `${[log.breakfast_done, log.lunch_done, log.dinner_done].filter(Boolean).length}/3` : '--' },
+    ];
+    const gridY = 700, gridH = 190, colW = (W - pad * 2) / 4, gap = 16;
+    ctx.textAlign = 'left';
+    stats.forEach((s, i) => {
+      const x = pad + i * colW;
+      ctx.fillStyle = COL.card;
+      roundRect(ctx, x, gridY, colW - gap, gridH, 20);
+      ctx.fill();
+      ctx.fillStyle = COL.blanc;
+      ctx.font = '700 38px Bricolage Grotesque, sans-serif';
+      ctx.fillText(s.value, x + 18, gridY + 90);
+      ctx.fillStyle = COL.gris;
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillText(s.label, x + 18, gridY + 130);
+    });
+
+    // Calories
+    const kcalY = gridY + gridH + 50;
+    ctx.fillStyle = COL.card;
+    roundRect(ctx, pad, kcalY, W - pad * 2, 130, 22);
+    ctx.fill();
+    const kcal = lastNutritionTotals ? Math.round(lastNutritionTotals.kcal) : 0;
+    ctx.fillStyle = COL.blanc;
+    ctx.font = '700 44px Bricolage Grotesque, sans-serif';
+    const kcalText = lastNutritionTarget ? `${kcal} / ${lastNutritionTarget.kcal} kcal` : `${kcal} kcal`;
+    ctx.fillText(kcalText, pad + 28, kcalY + 60);
+    ctx.fillStyle = COL.gris;
+    ctx.font = '600 22px Inter, sans-serif';
+    ctx.fillText("CALORIES AUJOURD'HUI", pad + 28, kcalY + 98);
+
+    // Série en cours
+    const streakY = kcalY + 130 + 46;
+    ctx.fillStyle = COL.ambre;
+    ctx.font = '700 30px Inter, sans-serif';
+    const streakTxt = lastStreakStats.currentStreak > 0
+      ? `🔥 ${lastStreakStats.currentStreak} jour${lastStreakStats.currentStreak > 1 ? 's' : ''} d'affilée`
+      : 'Nouvelle série à démarrer';
+    ctx.fillText(streakTxt, pad, streakY);
+
+    // Footer
+    ctx.textAlign = 'center';
+    ctx.fillStyle = COL.gris;
+    ctx.font = '500 24px Inter, sans-serif';
+    ctx.fillText('mywattup.app', W / 2, H - pad);
+
+    return canvas;
+  }
+
+  async function shareRecap() {
+    const btn = document.getElementById('btnShareRecap');
+    if (!lastDashboardLog) {
+      showToast('Remplis ton journal du jour avant de partager ton récap.', 'error');
+      return;
+    }
+    btn.disabled = true;
+    try {
+      const canvas = buildRecapCanvas();
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Génération image impossible');
+
+      const score = lastDashboardLog.daily_score ?? 0;
+      const shareText = `Mon score du jour sur MyWattUp : ${score}/100 ⚡`;
+      const file = new File([blob], 'mywattup-recap.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Mon récap MyWattUp', text: shareText });
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mywattup-recap-${new Date().toISOString().split('T')[0]}.png`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('Image de ton récap téléchargée.', 'success');
+      }
+    } catch (err) {
+      if (!err || err.name !== 'AbortError') {
+        console.error(err);
+        showToast('Erreur lors de la génération du récap à partager.', 'error');
+      }
+    } finally {
+      btn.disabled = false;
+    }
   }
 
   function formatSleepDuration(hours) {
@@ -3012,6 +3267,7 @@
     if (!valueEl || !flameWrap || !bestEl || !badgeRow) return;
 
     const { currentStreak, bestStreak, bestQualityStreak } = stats;
+    lastStreakStats = stats;
 
     if (currentStreak > 0) {
       flameWrap.classList.remove('off');
@@ -3044,13 +3300,16 @@
     }
 
     const logs = (data || []).filter((d) => d.daily_score != null);
-    renderStreaksAndBadges(computeStreaksAndBadges(logs));
+    const stats = computeStreaksAndBadges(logs);
+    renderStreaksAndBadges(stats);
+    checkAndPostNewBadges(stats);
   }
 
   async function initDashboard() {
     if (!dashboardBound) {
       dashboardBound = true;
       document.getElementById('btnRefreshDashboard').addEventListener('click', () => initDashboard());
+      document.getElementById('btnShareRecap').addEventListener('click', shareRecap);
       bindMiniWhy();
       document.querySelectorAll('#trendToggle .trend-toggle-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -4419,6 +4678,323 @@
     }
   }
 
+  // -------------------------------------------------------------
+  // SOCIAL : amis + fil d'activité
+  // -------------------------------------------------------------
+  const BADGE_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 5H4a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4M17 5h3a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4"/></svg>';
+  const SHARE_ICON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>';
+
+  function timeAgo(dateStr) {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "à l'instant";
+    if (mins < 60) return `il y a ${mins} min`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `il y a ${hours} h`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `il y a ${days} j`;
+    return new Date(dateStr).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  }
+
+  // Retourne { id: profile } pour un lot d'user_id — évite les requêtes en boucle.
+  async function fetchProfilesByIds(ids) {
+    const uniqueIds = [...new Set(ids)];
+    if (!uniqueIds.length) return {};
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('user_id, username, avatar_seed, avatar_url')
+      .in('user_id', uniqueIds);
+    if (error) { console.error(error); return {}; }
+    const map = {};
+    (data || []).forEach(p => { map[p.user_id] = p; });
+    return map;
+  }
+
+  function profileAvatarSrc(profile, fallbackId) {
+    if (profile && profile.avatar_url) return profile.avatar_url;
+    return avatarUrlFromSeed((profile && profile.avatar_seed) || fallbackId);
+  }
+
+  async function postFeedEvent(eventType, payload) {
+    const { error } = await supabase.from('friend_feed_events').insert({
+      user_id: user.id,
+      event_type: eventType,
+      payload,
+    });
+    if (error) console.error('Erreur publication fil d\'activité :', error.message);
+    return !error;
+  }
+
+  // Compare les records de séries déjà atteints à ceux déjà publiés dans le fil,
+  // et publie les nouveaux badges débloqués (évite les doublons à chaque rechargement).
+  async function checkAndPostNewBadges(stats) {
+    try {
+      const { data: existing, error } = await supabase
+        .from('friend_feed_events')
+        .select('payload')
+        .eq('user_id', user.id)
+        .eq('event_type', 'badge_unlocked');
+      if (error) { console.error(error); return; }
+      const alreadyPosted = new Set((existing || []).map(e => e.payload && e.payload.badge_key));
+
+      for (const b of BADGE_DEFS) {
+        const achieved = b.type === 'streak' ? stats.bestStreak >= b.threshold : stats.bestQualityStreak >= b.threshold;
+        if (achieved && !alreadyPosted.has(b.key)) {
+          await postFeedEvent('badge_unlocked', { badge_key: b.key, badge_label: b.label });
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function loadFriendIds() {
+    const { data, error } = await supabase
+      .from('friendships')
+      .select('requester_id, addressee_id')
+      .eq('status', 'accepted')
+      .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`);
+    if (error) { console.error(error); return []; }
+    return (data || []).map(f => (f.requester_id === user.id ? f.addressee_id : f.requester_id));
+  }
+
+  async function loadSocialRequests() {
+    const listEl = document.getElementById('socialRequestsList');
+    const titleEl = document.getElementById('socialRequestsTitle');
+    const { data, error } = await supabase
+      .from('friendships')
+      .select('id, requester_id, created_at')
+      .eq('addressee_id', user.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (error) { console.error(error); listEl.innerHTML = ''; titleEl.style.display = 'none'; return; }
+    if (!data || !data.length) { listEl.innerHTML = ''; titleEl.style.display = 'none'; return; }
+
+    titleEl.style.display = 'block';
+    const profiles = await fetchProfilesByIds(data.map(r => r.requester_id));
+    listEl.innerHTML = data.map(r => {
+      const p = profiles[r.requester_id];
+      const name = (p && p.username) || 'Utilisateur';
+      return `
+        <div class="request-row" data-id="${r.id}">
+          <img class="friend-avatar" src="${profileAvatarSrc(p, r.requester_id)}" alt="" />
+          <div>
+            <div class="friend-name">${escapeHtml(name)}</div>
+            <div class="friend-meta">veut devenir ton ami</div>
+          </div>
+          <div class="request-actions">
+            <button type="button" class="request-accept" data-accept="${r.id}">Accepter</button>
+            <button type="button" class="request-decline" data-decline="${r.id}">Refuser</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    listEl.querySelectorAll('[data-accept]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        const { error } = await supabase.from('friendships')
+          .update({ status: 'accepted', responded_at: new Date().toISOString() })
+          .eq('id', btn.dataset.accept).eq('addressee_id', user.id);
+        if (error) { showToast("Erreur lors de l'acceptation.", 'error'); btn.disabled = false; return; }
+        showToast('Demande acceptée !', 'success');
+        initSocialRefresh();
+      });
+    });
+    listEl.querySelectorAll('[data-decline]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        const { error } = await supabase.from('friendships')
+          .update({ status: 'declined', responded_at: new Date().toISOString() })
+          .eq('id', btn.dataset.decline).eq('addressee_id', user.id);
+        if (error) { showToast('Erreur.', 'error'); btn.disabled = false; return; }
+        initSocialRefresh();
+      });
+    });
+  }
+
+  async function loadFriendsList(friendIds) {
+    const listEl = document.getElementById('socialFriendsList');
+    if (!friendIds.length) {
+      listEl.innerHTML = '<p class="social-empty">Pas encore d\'ami — ajoute quelqu\'un via son pseudo ci-dessus.</p>';
+      return;
+    }
+    const profiles = await fetchProfilesByIds(friendIds);
+    listEl.innerHTML = friendIds.map(id => {
+      const p = profiles[id];
+      const name = (p && p.username) || 'Utilisateur';
+      return `
+        <div class="friend-row">
+          <img class="friend-avatar" src="${profileAvatarSrc(p, id)}" alt="" />
+          <div>
+            <div class="friend-name">${escapeHtml(name)}</div>
+            <div class="friend-meta">Ami MyWattUp</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function loadSocialFeed(friendIds) {
+    const listEl = document.getElementById('socialFeedList');
+    const ids = [user.id, ...friendIds];
+    const { data, error } = await supabase
+      .from('friend_feed_events')
+      .select('id, user_id, event_type, payload, created_at')
+      .in('user_id', ids)
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (error) { console.error(error); listEl.innerHTML = '<p class="social-empty">Impossible de charger le fil pour le moment.</p>'; return; }
+    if (!data || !data.length) { listEl.innerHTML = '<p class="social-empty">Rien pour l\'instant — les séries, badges et récaps partagés de tes amis apparaîtront ici.</p>'; return; }
+
+    const profiles = await fetchProfilesByIds(data.map(e => e.user_id));
+    listEl.innerHTML = data.map(e => {
+      const p = profiles[e.user_id];
+      const name = e.user_id === user.id ? 'Toi' : ((p && p.username) || 'Utilisateur');
+      let text = '';
+      let iconSvg = BADGE_ICON_SVG;
+      let iconClass = '';
+      if (e.event_type === 'badge_unlocked') {
+        text = `<b>${escapeHtml(name)}</b> a débloqué le badge « ${escapeHtml(e.payload.badge_label || '')} »`;
+      } else if (e.event_type === 'shared_recap') {
+        text = `<b>${escapeHtml(name)}</b> a partagé son score du jour : <b>${e.payload.score ?? '--'}/100</b>`;
+        iconSvg = SHARE_ICON_SVG;
+        iconClass = 'shared';
+      } else {
+        text = `<b>${escapeHtml(name)}</b> a une nouvelle activité`;
+      }
+      return `
+        <div class="feed-item">
+          <div class="feed-icon ${iconClass}">${iconSvg}</div>
+          <div>
+            <div class="feed-text">${text}</div>
+            <div class="feed-time">${timeAgo(e.created_at)}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  async function initSocialRefresh() {
+    await loadSocialRequests();
+    const friendIds = await loadFriendIds();
+    await Promise.all([loadFriendsList(friendIds), loadSocialFeed(friendIds)]);
+  }
+
+  let socialBound = false;
+  async function initSocial() {
+    const usernameEl = document.getElementById('socialMyUsername');
+    const { data: myProfile } = await supabase.from('profiles').select('username').eq('user_id', user.id).maybeSingle();
+    usernameEl.textContent = (myProfile && myProfile.username) || '(pseudo non défini — configure-le dans Paramètres)';
+
+    if (!socialBound) {
+      socialBound = true;
+
+      document.getElementById('socialCopyCode').addEventListener('click', async () => {
+        const name = usernameEl.textContent;
+        try {
+          await navigator.clipboard.writeText(name);
+          showToast('Pseudo copié.', 'success');
+        } catch {
+          showToast('Impossible de copier automatiquement — sélectionne le texte manuellement.', 'error');
+        }
+      });
+
+      document.getElementById('socialShareCode').addEventListener('click', async () => {
+        const name = usernameEl.textContent;
+        const shareData = { title: 'MyWattUp', text: `Ajoute-moi sur MyWattUp avec mon pseudo : ${name}` };
+        if (navigator.share) {
+          try { await navigator.share(shareData); } catch {}
+        } else {
+          try {
+            await navigator.clipboard.writeText(shareData.text);
+            showToast('Message copié — colle-le où tu veux.', 'success');
+          } catch {
+            showToast('Partage non disponible sur cet appareil.', 'error');
+          }
+        }
+      });
+
+      const addForm = document.getElementById('addFriendForm');
+      const addInput = document.getElementById('addFriendInput');
+      const addMsg = document.getElementById('addFriendMsg');
+      const addBtn = document.getElementById('addFriendSubmitBtn');
+      addForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const target = addInput.value.trim();
+        addMsg.textContent = '';
+        addMsg.className = 'section-desc';
+        if (!target) return;
+        if (myProfile && target.toLowerCase() === (myProfile.username || '').toLowerCase()) {
+          addMsg.textContent = 'Tu ne peux pas t\'ajouter toi-même.';
+          addMsg.classList.add('error');
+          return;
+        }
+        addBtn.disabled = true;
+        try {
+          const { data: targetProfile, error: lookupError } = await supabase
+            .from('profiles').select('user_id').ilike('username', target).maybeSingle();
+          if (lookupError) throw lookupError;
+          if (!targetProfile) {
+            addMsg.textContent = 'Aucun compte avec ce pseudo.';
+            addMsg.classList.add('error');
+            return;
+          }
+          const { error: insertError } = await supabase.from('friendships').insert({
+            requester_id: user.id,
+            addressee_id: targetProfile.user_id,
+          });
+          if (insertError) {
+            if (insertError.code === '23505') {
+              addMsg.textContent = 'Demande déjà envoyée (ou vous êtes déjà amis).';
+            } else {
+              addMsg.textContent = "Erreur lors de l'envoi de la demande.";
+            }
+            addMsg.classList.add('error');
+            return;
+          }
+          addMsg.textContent = 'Demande envoyée !';
+          addMsg.classList.add('success');
+          addForm.reset();
+        } catch (err) {
+          console.error(err);
+          addMsg.textContent = "Erreur lors de l'ajout — vérifie ta connexion.";
+          addMsg.classList.add('error');
+        } finally {
+          addBtn.disabled = false;
+        }
+      });
+
+      document.getElementById('shareRecapToFriendsBtn').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        try {
+          const today = new Date().toISOString().split('T')[0];
+          const { data: log, error } = await supabase
+            .from('daily_logs').select('daily_score').eq('user_id', user.id).eq('log_date', today).maybeSingle();
+          if (error) throw error;
+          if (!log || log.daily_score == null) {
+            showToast('Remplis ton journal du jour avant de le partager.', 'error');
+            return;
+          }
+          const ok = await postFeedEvent('shared_recap', { score: log.daily_score });
+          if (ok) {
+            showToast('Ton score du jour est visible par tes amis.', 'success');
+            initSocialRefresh();
+          } else {
+            showToast('Erreur lors du partage.', 'error');
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('Erreur lors du partage.', 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+
+    initSocialRefresh();
+  }
+
   let abonnementBound = false;
   function initAbonnement() {
     if (abonnementBound) return;
@@ -5034,6 +5610,20 @@
         deleteSubmitBtn.textContent = 'Supprimer définitivement mon compte';
       }
     });
+  }
+
+  // -------------------------------------------------------------
+  // Démarrage : vitrine par défaut, app si session active.
+  // Placé en tout dernier dans le script pour garantir que toutes les
+  // variables let/const utilisées par le routeur (dashboardBound,
+  // socialBound, repasDaysBuilt, etc.) sont déjà initialisées avant
+  // que showApp() → routeApp() → initXxx() ne les lise.
+  // -------------------------------------------------------------
+  user = await getCurrentUser();
+  if (user) {
+    showApp();
+  } else {
+    showVitrine();
   }
 
   // -------------------------------------------------------------
