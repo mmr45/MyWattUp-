@@ -122,6 +122,28 @@
   .avatar-preview { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line, #322b22); background: var(--bg-2, #221d18); flex-shrink: 0; }
   .avatar-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 
+  .crop-overlay {
+    position: fixed; inset: 0; z-index: 999; background: rgba(10,9,7,0.78);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .crop-overlay.show { display: flex; }
+  .crop-modal {
+    background: var(--bg-1, #1a1714); border: 1px solid var(--line, #322b22); border-radius: 18px;
+    padding: 22px; width: 100%; max-width: 360px; box-shadow: 0 24px 60px -20px rgba(0,0,0,0.6);
+  }
+  .crop-title { font-family: var(--display, sans-serif); font-size: 17px; margin: 0 0 14px; color: var(--text-0, #f3efe8); }
+  .crop-canvas-wrap {
+    width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden;
+    background: #000; touch-action: none; cursor: grab; margin-bottom: 14px;
+  }
+  .crop-canvas-wrap:active { cursor: grabbing; }
+  .crop-canvas-wrap canvas { width: 100%; height: 100%; display: block; }
+  .crop-zoom-label { font-size: 12px; color: var(--text-muted, #8f887c); display: block; margin-bottom: 4px; }
+  #cropZoom { width: 100%; }
+  .crop-hint { font-size: 12px; color: var(--text-muted, #8f887c); margin: 10px 0 0; }
+  .crop-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .crop-actions .app-cta { flex: 1; margin: 0; }
+
   .mission { padding: 96px 0 92px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; text-align: center; }
   .mission::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 0%, rgba(255,159,28,0.07), transparent 60%); pointer-events: none; }
   .mission-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-bright); margin: 0 0 26px; display: inline-flex; align-items: center; gap: 8px; }
@@ -1132,6 +1154,23 @@
       <p class="msg" id="settingsMsg" role="status" aria-live="polite"></p>
     </section>
 
+    <!-- ---------- MODALE DE RECADRAGE AVATAR ---------- -->
+    <div class="crop-overlay" id="cropOverlay">
+      <div class="crop-modal">
+        <h2 class="crop-title">Recadrer ta photo</h2>
+        <div class="crop-canvas-wrap">
+          <canvas id="cropCanvas" width="320" height="320"></canvas>
+        </div>
+        <label class="crop-zoom-label">Zoom</label>
+        <input type="range" id="cropZoom" min="1" max="3" step="0.01" value="1" />
+        <p class="crop-hint">Glisse l'image pour la repositionner.</p>
+        <div class="crop-actions">
+          <button type="button" class="app-cta secondary" id="cropCancelBtn">Annuler</button>
+          <button type="button" class="app-cta" id="cropConfirmBtn">Valider</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ---------- NAV BASSE COMMUNE À TOUTE L'APP ---------- -->
@@ -1153,7 +1192,7 @@
 
 <script type="module">
   import { supabase } from './supabaseClient.js';
-  import { getCurrentUser, signOut, signIn, signUp, hasProfile } from './auth.js';
+  import { getCurrentUser, signOut, signIn, signUp, hasProfile, ensureProfile } from './auth.js';
   import { createProfile } from './onboarding.js';
 
   const viewVitrine = document.getElementById('view-vitrine');
@@ -1322,6 +1361,7 @@
       msg.className = 'msg';
 
       try {
+        await ensureProfile(user); // garantit avatar + pseudo par défaut avant l'upsert des infos sportives
         await createProfile({
           sportType: formData.get('sportType'),
           objective: formData.get('objective'),
@@ -2194,10 +2234,8 @@
       .maybeSingle();
 
     if (!acctProfile) {
-      // Premier passage dans les paramètres sans ligne profiles existante : on en crée une avec avatar aléatoire.
-      const seed = user.id + '-' + Date.now();
-      await supabase.from('profiles').upsert({ user_id: user.id, avatar_seed: seed }, { onConflict: 'user_id' });
-      acctProfile = { username: null, avatar_seed: seed, avatar_url: null };
+      // Filet de sécurité si le profil n'a pas été créé à l'inscription (ex: email non confirmé à l'époque).
+      acctProfile = await ensureProfile(user);
     }
 
     avatarImg.src = acctProfile.avatar_url || avatarUrlFromSeed(acctProfile.avatar_seed || user.id);
@@ -2213,15 +2251,22 @@
       else flash('Nouvel avatar enregistré.', false);
     });
 
-    uploadInput.addEventListener('change', async () => {
+    uploadInput.addEventListener('change', () => {
       const file = uploadInput.files?.[0];
       if (!file) return;
-      if (file.size > 3 * 1024 * 1024) { flash('Image trop lourde (max 3 Mo).', true); return; }
+      if (file.size > 8 * 1024 * 1024) { flash('Image trop lourde (max 8 Mo).', true); uploadInput.value = ''; return; }
+      if (!file.type.startsWith('image/')) { flash('Fichier non supporté.', true); uploadInput.value = ''; return; }
+      openCropModal(file);
+    });
 
+    async function uploadCroppedAvatar(blob) {
       try {
-        const path = `${user.id}/avatar-${Date.now()}.${file.name.split('.').pop()}`;
-        const { error: uploadErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true });
+        const path = `${user.id}/avatar-${Date.now()}.jpg`;
+        const { error: uploadErr } = await supabase.storage
+          .from('avatars')
+          .upload(path, blob, { upsert: true, contentType: 'image/jpeg' });
         if (uploadErr) throw uploadErr;
+
         const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
         const publicUrl = pub.publicUrl;
 
@@ -2230,14 +2275,133 @@
           .upsert({ user_id: user.id, avatar_url: publicUrl }, { onConflict: 'user_id' });
         if (error) throw error;
 
-        avatarImg.src = publicUrl;
+        avatarImg.src = publicUrl + '?t=' + Date.now();
         flash('Photo de profil mise à jour.', false);
       } catch (e) {
-        console.error(e);
-        flash('Erreur lors de l\'import de la photo.', true);
+        console.error('Erreur upload avatar:', e);
+        flash(
+          e?.message?.includes('row-level security') || e?.statusCode === '403'
+            ? "Erreur de permissions (bucket 'avatars' / policies à vérifier)."
+            : (e?.message || "Erreur lors de l'import de la photo."),
+          true
+        );
       } finally {
         uploadInput.value = '';
       }
+    }
+
+    // ---- Modale de recadrage ----
+    const cropOverlay = document.getElementById('cropOverlay');
+    const cropCanvas = document.getElementById('cropCanvas');
+    const cropCtx = cropCanvas.getContext('2d');
+    const cropZoom = document.getElementById('cropZoom');
+    const cropWrap = cropCanvas.parentElement;
+
+    let cropImg = null;
+    let cropState = { scale: 1, minScale: 1, offX: 0, offY: 0 };
+    let dragging = false, dragStart = { x: 0, y: 0 }, offStart = { x: 0, y: 0 };
+
+    function openCropModal(file) {
+      const img = new Image();
+      img.onload = () => {
+        cropImg = img;
+        cropState.minScale = Math.max(cropCanvas.width / img.width, cropCanvas.height / img.height);
+        cropState.scale = cropState.minScale;
+        cropState.offX = 0;
+        cropState.offY = 0;
+        cropZoom.value = 1;
+        drawCrop();
+        cropOverlay.classList.add('show');
+      };
+      img.onerror = () => flash('Impossible de lire cette image.', true);
+      img.src = URL.createObjectURL(file);
+    }
+
+    function closeCropModal() {
+      cropOverlay.classList.remove('show');
+      if (cropImg) { URL.revokeObjectURL(cropImg.src); cropImg = null; }
+    }
+
+    function drawCrop() {
+      if (!cropImg) return;
+      const { width: cw, height: ch } = cropCanvas;
+      cropCtx.clearRect(0, 0, cw, ch);
+      const w = cropImg.width * cropState.scale;
+      const h = cropImg.height * cropState.scale;
+      const x = (cw - w) / 2 + cropState.offX;
+      const y = (ch - h) / 2 + cropState.offY;
+      cropCtx.drawImage(cropImg, x, y, w, h);
+    }
+
+    function clampOffsets() {
+      if (!cropImg) return;
+      const w = cropImg.width * cropState.scale;
+      const h = cropImg.height * cropState.scale;
+      const maxOffX = Math.max(0, (w - cropCanvas.width) / 2);
+      const maxOffY = Math.max(0, (h - cropCanvas.height) / 2);
+      cropState.offX = Math.min(maxOffX, Math.max(-maxOffX, cropState.offX));
+      cropState.offY = Math.min(maxOffY, Math.max(-maxOffY, cropState.offY));
+    }
+
+    cropZoom.addEventListener('input', () => {
+      cropState.scale = cropState.minScale * Number(cropZoom.value);
+      clampOffsets();
+      drawCrop();
+    });
+
+    function pointerPos(e) {
+      const rect = cropCanvas.getBoundingClientRect();
+      const scaleX = cropCanvas.width / rect.width;
+      const scaleY = cropCanvas.height / rect.height;
+      const point = e.touches ? e.touches[0] : e;
+      return { x: (point.clientX - rect.left) * scaleX, y: (point.clientY - rect.top) * scaleY };
+    }
+
+    function startDrag(e) {
+      if (!cropImg) return;
+      dragging = true;
+      const p = pointerPos(e);
+      dragStart = p;
+      offStart = { x: cropState.offX, y: cropState.offY };
+    }
+    function moveDrag(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      const p = pointerPos(e);
+      cropState.offX = offStart.x + (p.x - dragStart.x);
+      cropState.offY = offStart.y + (p.y - dragStart.y);
+      clampOffsets();
+      drawCrop();
+    }
+    function endDrag() { dragging = false; }
+
+    cropWrap.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', moveDrag);
+    window.addEventListener('mouseup', endDrag);
+    cropWrap.addEventListener('touchstart', startDrag, { passive: true });
+    cropWrap.addEventListener('touchmove', moveDrag, { passive: false });
+    cropWrap.addEventListener('touchend', endDrag);
+
+    document.getElementById('cropCancelBtn').addEventListener('click', closeCropModal);
+
+    document.getElementById('cropConfirmBtn').addEventListener('click', () => {
+      const outSize = 512;
+      const outCanvas = document.createElement('canvas');
+      outCanvas.width = outSize;
+      outCanvas.height = outSize;
+      const outCtx = outCanvas.getContext('2d');
+      const ratio = outSize / cropCanvas.width;
+      const w = cropImg.width * cropState.scale * ratio;
+      const h = cropImg.height * cropState.scale * ratio;
+      const x = (outSize - w) / 2 + cropState.offX * ratio;
+      const y = (outSize - h) / 2 + cropState.offY * ratio;
+      outCtx.drawImage(cropImg, x, y, w, h);
+
+      outCanvas.toBlob(async (blob) => {
+        if (!blob) { flash('Erreur lors du recadrage.', true); return; }
+        closeCropModal();
+        await uploadCroppedAvatar(blob);
+      }, 'image/jpeg', 0.9);
     });
 
     usernameSaveBtn.addEventListener('click', async () => {
