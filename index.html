@@ -118,6 +118,10 @@
   .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--amber-bright); opacity: 0.7; }
 
   /* ---------- mission ---------- */
+  .avatar-row { display: flex; align-items: center; gap: 18px; margin-bottom: 4px; }
+  .avatar-preview { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 1px solid var(--line, #322b22); background: var(--bg-2, #221d18); flex-shrink: 0; }
+  .avatar-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+
   .mission { padding: 96px 0 92px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; text-align: center; }
   .mission::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 0%, rgba(255,159,28,0.07), transparent 60%); pointer-events: none; }
   .mission-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-bright); margin: 0 0 26px; display: inline-flex; align-items: center; gap: 8px; }
@@ -1052,7 +1056,24 @@
 
       <div class="app-section">
         <div class="section-title">Compte</div>
-        <label>Email</label>
+
+        <div class="avatar-row">
+          <img id="settingsAvatarPreview" class="avatar-preview" alt="Ton avatar" width="72" height="72" />
+          <div class="avatar-actions">
+            <button type="button" class="app-cta secondary" id="settingsRandomAvatar" style="margin:0 0 8px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
+              Avatar aléatoire
+            </button>
+            <label for="settingsAvatarUpload" class="settings-link" style="cursor:pointer;">Importer une photo</label>
+            <input type="file" id="settingsAvatarUpload" accept="image/*" style="display:none;" />
+          </div>
+        </div>
+
+        <label style="margin-top:16px;">Pseudo</label>
+        <input type="text" id="settingsUsername" maxlength="24" placeholder="Ton pseudo" />
+        <button type="button" class="app-cta secondary" id="settingsUsernameSave" style="margin-top:10px;">Enregistrer le pseudo</button>
+
+        <label style="margin-top:16px;">Email</label>
         <input type="text" id="settingsEmail" disabled />
         <button type="button" class="app-cta secondary" id="settingsChangePassword" style="margin-top:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Changer mon mot de passe</button>
 
@@ -2141,6 +2162,11 @@
     return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
   }
 
+  function avatarUrlFromSeed(seed) {
+    // DiceBear — avatars vectoriels générés à partir d'une seed, pas de stockage d'image nécessaire.
+    return `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(seed)}&backgroundColor=1a1714,221d18&shape1Color=ff9f1c,1f8a63`;
+  }
+
   async function initSettings() {
     document.getElementById('settingsEmail').value = user?.email || '';
 
@@ -2153,6 +2179,84 @@
       msg.className = 'msg ' + (isError ? 'error' : 'success');
       setTimeout(() => { msg.textContent = ''; msg.className = 'msg'; }, 3000);
     }
+
+    // ---- Avatar & pseudo ----
+    const avatarImg = document.getElementById('settingsAvatarPreview');
+    const usernameInput = document.getElementById('settingsUsername');
+    const randomAvatarBtn = document.getElementById('settingsRandomAvatar');
+    const uploadInput = document.getElementById('settingsAvatarUpload');
+    const usernameSaveBtn = document.getElementById('settingsUsernameSave');
+
+    let { data: acctProfile } = await supabase
+      .from('profiles')
+      .select('username, avatar_seed, avatar_url')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!acctProfile) {
+      // Premier passage dans les paramètres sans ligne profiles existante : on en crée une avec avatar aléatoire.
+      const seed = user.id + '-' + Date.now();
+      await supabase.from('profiles').upsert({ user_id: user.id, avatar_seed: seed }, { onConflict: 'user_id' });
+      acctProfile = { username: null, avatar_seed: seed, avatar_url: null };
+    }
+
+    avatarImg.src = acctProfile.avatar_url || avatarUrlFromSeed(acctProfile.avatar_seed || user.id);
+    usernameInput.value = acctProfile.username || '';
+
+    randomAvatarBtn.addEventListener('click', async () => {
+      const newSeed = Math.random().toString(36).slice(2) + Date.now();
+      avatarImg.src = avatarUrlFromSeed(newSeed);
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({ user_id: user.id, avatar_seed: newSeed, avatar_url: null }, { onConflict: 'user_id' });
+      if (error) { console.error(error); flash('Erreur lors du changement d\'avatar.', true); }
+      else flash('Nouvel avatar enregistré.', false);
+    });
+
+    uploadInput.addEventListener('change', async () => {
+      const file = uploadInput.files?.[0];
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024) { flash('Image trop lourde (max 3 Mo).', true); return; }
+
+      try {
+        const path = `${user.id}/avatar-${Date.now()}.${file.name.split('.').pop()}`;
+        const { error: uploadErr } = await supabase.storage.from('avatars').upload(path, file, { upsert: true });
+        if (uploadErr) throw uploadErr;
+        const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path);
+        const publicUrl = pub.publicUrl;
+
+        const { error } = await supabase
+          .from('profiles')
+          .upsert({ user_id: user.id, avatar_url: publicUrl }, { onConflict: 'user_id' });
+        if (error) throw error;
+
+        avatarImg.src = publicUrl;
+        flash('Photo de profil mise à jour.', false);
+      } catch (e) {
+        console.error(e);
+        flash('Erreur lors de l\'import de la photo.', true);
+      } finally {
+        uploadInput.value = '';
+      }
+    });
+
+    usernameSaveBtn.addEventListener('click', async () => {
+      const value = usernameInput.value.trim();
+      if (value.length < 3) { flash('Le pseudo doit faire au moins 3 caractères.', true); return; }
+      if (!/^[a-zA-Z0-9_.\-]+$/.test(value)) { flash('Caractères autorisés : lettres, chiffres, - _ .', true); return; }
+
+      usernameSaveBtn.disabled = true;
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({ user_id: user.id, username: value }, { onConflict: 'user_id' });
+      usernameSaveBtn.disabled = false;
+
+      if (error) {
+        flash(error.code === '23505' ? 'Ce pseudo est déjà pris.' : 'Erreur lors de l\'enregistrement du pseudo.', true);
+      } else {
+        flash('Pseudo enregistré.', false);
+      }
+    });
 
     // Préférences — table "user_settings" côté Supabase (une ligne par utilisateur).
     let prefs = { units: 'metric', dailyReminder: false, pushNotifications: false };
