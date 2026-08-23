@@ -658,6 +658,21 @@
   #view-app .meal-chip .chip-check { width: 14px; height: 14px; opacity: 0; transition: opacity 0.15s ease; margin-top: -2px; }
   #view-app .meal-chip.on .chip-check { opacity: 1; }
 
+  /* ---------- Journal : coucher / réveil ---------- */
+  #view-app .time-row { display: flex; gap: 12px; }
+  #view-app .time-field { flex: 1; }
+  #view-app .time-field label { margin-top: 0; }
+  #view-app .sleep-computed { margin-top: 14px; font-size: 12.5px; color: var(--gris); background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; }
+  #view-app .sleep-computed strong { color: var(--vert); font-weight: 700; }
+
+  /* ---------- Journal : récapitulatif ---------- */
+  #view-app .recap-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 0; }
+  #view-app .recap-row:not(:last-of-type) { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #view-app .recap-label { font-size: 12px; color: var(--gris); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; }
+  #view-app .recap-value { font-size: 13.5px; color: var(--blanc); text-align: right; }
+  #view-app .recap-score { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 13px; color: var(--gris); }
+  #view-app .recap-score strong { font-family: var(--display); font-size: 22px; color: var(--vert); }
+
   /* micro-feedback : flash de succès sur une carte */
   #view-app .card-flash { animation: card-flash 0.9s ease; }
   @keyframes card-flash {
@@ -1386,14 +1401,24 @@
         <div class="wizard-dot" data-step="1"></div>
         <div class="wizard-dot" data-step="2"></div>
         <div class="wizard-dot" data-step="3"></div>
+        <div class="wizard-dot" data-step="4"></div>
       </div>
       <div class="wizard-step-label" id="wizardStepLabel">Étape <strong>1/4</strong> — Sommeil</div>
 
       <form id="journalForm">
         <div class="app-section wizard-step" data-step="0">
           <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg> Sommeil</div>
-          <label for="sleepHours">Heures dormies</label>
-          <input type="number" id="sleepHours" min="0" max="14" step="0.5" placeholder="ex. 7.5" required />
+          <div class="time-row">
+            <div class="time-field">
+              <label for="bedTime">Heure de coucher</label>
+              <input type="time" id="bedTime" required />
+            </div>
+            <div class="time-field">
+              <label for="wakeTime">Heure de réveil</label>
+              <input type="time" id="wakeTime" required />
+            </div>
+          </div>
+          <div class="sleep-computed" id="sleepComputed">Durée calculée : <strong id="sleepComputedValue">--</strong></div>
 
           <label>Qualité perçue</label>
           <div class="quality-btns" id="sleepQuality">
@@ -1451,6 +1476,15 @@
               <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
             </div>
           </div>
+        </div>
+
+        <div class="app-section wizard-step" data-step="4" hidden>
+          <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Récapitulatif</div>
+          <div class="recap-row"><span class="recap-label">Sommeil</span><span class="recap-value" id="recapSleep">--</span></div>
+          <div class="recap-row"><span class="recap-label">Activité</span><span class="recap-value" id="recapActivity">--</span></div>
+          <div class="recap-row"><span class="recap-label">Forme ressentie</span><span class="recap-value" id="recapMood">--</span></div>
+          <div class="recap-row"><span class="recap-label">Repas suivis</span><span class="recap-value" id="recapMeals">--</span></div>
+          <div class="recap-score"><span>Score du jour</span><strong id="recapScore">--</strong></div>
         </div>
 
         <div class="wizard-nav">
@@ -2593,13 +2627,44 @@
   // -------------------------------------------------------------
   function initJournal() {
     let selectedQuality = null;
-    const STEP_LABELS = ['Sommeil', 'Activité', 'Forme ressentie', 'Repas suivis'];
+    const STEP_LABELS = ['Sommeil', 'Activité', 'Forme ressentie', 'Repas suivis', 'Récapitulatif'];
 
-    const sleepHoursInput = document.getElementById('sleepHours');
+    const bedTimeInput = document.getElementById('bedTime');
+    const wakeTimeInput = document.getElementById('wakeTime');
+    const sleepComputedValueEl = document.getElementById('sleepComputedValue');
     const activityTypeSelect = document.getElementById('activityType');
     const activityDurationInput = document.getElementById('activityDuration');
     const intensityInput = document.getElementById('activityIntensity');
     const moodInput = document.getElementById('moodScore');
+
+    // Durée de sommeil calculée à partir de l'heure de coucher/réveil
+    // (gère le passage de minuit : si le réveil est "avant" le coucher
+    // sur l'horloge 24h, on ajoute une journée).
+    function computeSleepHours(bed, wake) {
+      if (!bed || !wake) return null;
+      const [bh, bm] = bed.split(':').map(Number);
+      const [wh, wm] = wake.split(':').map(Number);
+      let diff = (wh * 60 + wm) - (bh * 60 + bm);
+      if (diff <= 0) diff += 24 * 60;
+      return Math.round((diff / 60) * 2) / 2;
+    }
+
+    // Dérive une heure de coucher/réveil approximative à partir d'une durée
+    // (utilisé pour le pré-remplissage sur d'anciens logs sans coucher/réveil enregistrés).
+    function deriveTimesFromHours(hours) {
+      const wake = '07:00';
+      let bedMinutes = 7 * 60 - Math.round(hours * 60);
+      if (bedMinutes < 0) bedMinutes += 24 * 60;
+      const bh = String(Math.floor(bedMinutes / 60) % 24).padStart(2, '0');
+      const bm = String(bedMinutes % 60).padStart(2, '0');
+      return { bed: `${bh}:${bm}`, wake };
+    }
+
+    function updateSleepComputed() {
+      const hours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
+      sleepComputedValueEl.textContent = hours != null ? formatSleepDuration(hours) : '--';
+      return hours;
+    }
 
     function selectQuality(value) {
       document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.toggle('selected', b.dataset.value === value));
@@ -2633,7 +2698,8 @@
       updateLivePreview();
     });
 
-    sleepHoursInput.addEventListener('input', updateLivePreview);
+    bedTimeInput.addEventListener('input', () => { updateSleepComputed(); updateLivePreview(); });
+    wakeTimeInput.addEventListener('input', () => { updateSleepComputed(); updateLivePreview(); });
     activityTypeSelect.addEventListener('change', updateLivePreview);
     activityDurationInput.addEventListener('input', updateLivePreview);
 
@@ -2704,14 +2770,14 @@
     }
 
     function updateLivePreview() {
-      const sleepHours = parseFloat(sleepHoursInput.value);
+      const sleepHours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
       const activityType = activityTypeSelect.value;
       const moodScore = parseInt(moodInput.value);
 
       const parts = [];
       let sleepScore = null, activityScore = null;
 
-      if (!isNaN(sleepHours) && sleepHours > 0) {
+      if (sleepHours != null && sleepHours > 0) {
         ({ sleepScore } = computeScores({
           sleepHours, sleepQuality: selectedQuality || 'moyenne',
           activityType: 'repos', intensity: 5, duration: 0, mood: 5,
@@ -2810,19 +2876,33 @@
 
     prefillBtn.addEventListener('click', () => {
       if (!prefillPayload) return;
-      const d = prefillPayload.mode === 'yesterday' ? {
-        sleepHours: prefillPayload.log.sleep_hours,
-        sleepQuality: prefillPayload.log.sleep_quality,
-        activityType: prefillPayload.log.activity_type,
-        activityDuration: prefillPayload.log.activity_duration_min || 0,
-        activityIntensity: prefillPayload.log.activity_intensity || 5,
-        moodScore: prefillPayload.log.mood_score || 5,
-        breakfastDone: prefillPayload.log.breakfast_done,
-        lunchDone: prefillPayload.log.lunch_done,
-        dinnerDone: prefillPayload.log.dinner_done,
-      } : prefillPayload;
+      let d, times;
+      if (prefillPayload.mode === 'yesterday') {
+        const log = prefillPayload.log;
+        d = {
+          sleepHours: log.sleep_hours,
+          sleepQuality: log.sleep_quality,
+          activityType: log.activity_type,
+          activityDuration: log.activity_duration_min || 0,
+          activityIntensity: log.activity_intensity || 5,
+          moodScore: log.mood_score || 5,
+          breakfastDone: log.breakfast_done,
+          lunchDone: log.lunch_done,
+          dinnerDone: log.dinner_done,
+        };
+        // Reprend le coucher/réveil exact d'hier s'il a été enregistré,
+        // sinon on le déduit de la durée dormie.
+        times = (log.bedtime && log.wake_time)
+          ? { bed: log.bedtime, wake: log.wake_time }
+          : deriveTimesFromHours(log.sleep_hours);
+      } else {
+        d = prefillPayload;
+        times = deriveTimesFromHours(d.sleepHours);
+      }
 
-      sleepHoursInput.value = d.sleepHours;
+      bedTimeInput.value = times.bed;
+      wakeTimeInput.value = times.wake;
+      updateSleepComputed();
       selectQuality(d.sleepQuality);
       activityTypeSelect.value = d.activityType;
       activityDurationInput.value = d.activityDuration || '';
@@ -2865,25 +2945,76 @@
       msg.textContent = '';
       msg.className = 'msg';
       if (i === 0) {
-        if (!sleepHoursInput.value) {
-          sleepHoursInput.classList.add('field-error');
-          msg.textContent = 'Indique combien d\'heures tu as dormi.';
+        const hours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
+        if (hours == null) {
+          bedTimeInput.classList.add('field-error');
+          wakeTimeInput.classList.add('field-error');
+          msg.textContent = "Indique ton heure de coucher et de réveil.";
           msg.className = 'msg error';
           return false;
         }
-        sleepHoursInput.classList.remove('field-error');
+        bedTimeInput.classList.remove('field-error');
+        wakeTimeInput.classList.remove('field-error');
         if (!selectedQuality) {
           msg.textContent = 'Sélectionne la qualité de ton sommeil.';
           msg.className = 'msg error';
           return false;
         }
       }
-      if (i === 1 && !activityTypeSelect.value) {
-        msg.textContent = 'Choisis le type de séance du jour.';
-        msg.className = 'msg error';
-        return false;
+      if (i === 1) {
+        if (!activityTypeSelect.value) {
+          msg.textContent = 'Choisis le type de séance du jour.';
+          msg.className = 'msg error';
+          return false;
+        }
+        // La durée est nécessaire pour calculer un score d'activité fiable
+        // dès qu'il y a eu une vraie séance (pas un jour de repos).
+        if (activityTypeSelect.value !== 'repos' && !activityDurationInput.value) {
+          activityDurationInput.classList.add('field-error');
+          msg.textContent = "Indique la durée de ta séance pour un score précis.";
+          msg.className = 'msg error';
+          return false;
+        }
+        activityDurationInput.classList.remove('field-error');
       }
       return true;
+    }
+
+    function populateRecap() {
+      const hours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
+      const activityType = activityTypeSelect.value;
+      const duration = parseInt(activityDurationInput.value) || 0;
+      const intensity = parseInt(intensityInput.value);
+      const moodScore = parseInt(moodInput.value);
+
+      document.getElementById('recapSleep').textContent = hours != null
+        ? `${bedTimeInput.value} → ${wakeTimeInput.value} · ${formatSleepDuration(hours)} · ${SLEEP_QUALITY_LABEL[selectedQuality] || selectedQuality || ''}`
+        : '--';
+
+      document.getElementById('recapActivity').textContent = activityType === 'repos'
+        ? 'Repos'
+        : activityType
+          ? `${ACTIVITY_TYPE_LABEL[activityType] || activityType} · ${duration} min · intensité ${intensity}/10`
+          : '--';
+
+      document.getElementById('recapMood').textContent = `${moodScore}/10`;
+
+      const mealsDone = [
+        toggles.breakfastDone && 'Petit-déj',
+        toggles.lunchDone && 'Déjeuner',
+        toggles.dinnerDone && 'Dîner',
+      ].filter(Boolean);
+      document.getElementById('recapMeals').textContent = mealsDone.length ? mealsDone.join(', ') : 'Aucun';
+
+      if (hours != null && activityType) {
+        const { dailyScore } = computeScores({
+          sleepHours: hours, sleepQuality: selectedQuality, activityType,
+          intensity, duration, mood: moodScore,
+        });
+        document.getElementById('recapScore').textContent = `${dailyScore}/100`;
+      } else {
+        document.getElementById('recapScore').textContent = '--';
+      }
     }
 
     function renderStep() {
@@ -2893,11 +3024,12 @@
         d.classList.toggle('done', n < currentStep);
         d.classList.toggle('active', n === currentStep);
       });
-      stepLabelEl.innerHTML = `Étape <strong>${currentStep + 1}/4</strong> — ${STEP_LABELS[currentStep]}`;
+      stepLabelEl.innerHTML = `Étape <strong>${currentStep + 1}/${steps.length}</strong> — ${STEP_LABELS[currentStep]}`;
       prevBtn.hidden = currentStep === 0;
       const isLast = currentStep === steps.length - 1;
       nextBtn.hidden = isLast;
       submitBtn.hidden = !isLast;
+      if (isLast) populateRecap();
       msg.textContent = '';
       msg.className = 'msg';
     }
@@ -2921,7 +3053,7 @@
       msg.textContent = '';
       msg.className = 'msg';
 
-      const sleepHours = parseFloat(sleepHoursInput.value);
+      const sleepHours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
       const activityType = activityTypeSelect.value;
       const activityDuration = parseInt(activityDurationInput.value) || 0;
       const activityIntensity = parseInt(intensityInput.value);
@@ -2940,6 +3072,8 @@
           user_id: user.id,
           log_date: today,
           sleep_hours: sleepHours,
+          bedtime: bedTimeInput.value,
+          wake_time: wakeTimeInput.value,
           sleep_quality: selectedQuality,
           sleep_score: sleepScore,
           activity_type: activityType,
