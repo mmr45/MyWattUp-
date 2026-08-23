@@ -633,6 +633,28 @@
   #view-app .plan-card.upgrade .plan-feature-list li svg { color: var(--ambre); }
   #view-app .plan-quota-mini { font-size: 12px; color: var(--gris); margin: -8px 0 16px; }
 
+  /* ---------- Facturation ---------- */
+  #view-app .billing-section-title { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin: 28px 0 12px; }
+  #view-app .billing-method-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; margin-bottom: 18px; }
+  #view-app .billing-method-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  #view-app .billing-method-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: var(--gris); flex-shrink: 0; }
+  #view-app .billing-method-icon svg { width: 18px; height: 18px; }
+  #view-app .billing-method-title { font-size: 13.5px; font-weight: 600; color: var(--blanc); }
+  #view-app .billing-method-desc { font-size: 12px; color: var(--gris); margin-top: 2px; }
+  #view-app .invoice-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 13px 14px; margin-bottom: 8px; }
+  #view-app .invoice-row-left { min-width: 0; }
+  #view-app .invoice-date { font-size: 13px; color: var(--blanc); font-weight: 600; }
+  #view-app .invoice-plan { font-size: 11.5px; color: var(--gris); margin-top: 2px; }
+  #view-app .invoice-row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  #view-app .invoice-amount { font-family: var(--mono); font-size: 12.5px; color: var(--blanc); }
+  #view-app .invoice-status { font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 9px; border-radius: 100px; }
+  #view-app .invoice-status.paid { color: var(--vert); background: rgba(31,138,99,0.14); border: 1px solid rgba(31,138,99,0.3); }
+  #view-app .invoice-status.failed { color: #FF6B6B; background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.28); }
+  #view-app .invoice-download { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: none; border: 1px solid rgba(255,255,255,0.1); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; flex-shrink: 0; }
+  #view-app .invoice-download:hover { color: var(--ambre); border-color: var(--ambre); }
+  #view-app .invoice-download svg { width: 14px; height: 14px; }
+  #view-app .billing-empty { text-align: center; color: var(--gris); font-size: 12.5px; padding: 22px 10px; }
+
   /* ---------- FAQ ---------- */
   #view-app .faq-item { border-bottom: 1px solid rgba(255,255,255,0.06); }
   #view-app .faq-item:last-child { border-bottom: none; }
@@ -882,7 +904,7 @@
   <section class="faq" id="faq-public">
     <div class="section-head reveal">
       <h2>Questions fréquentes</h2>
-      <p>Tout ce qu'il faut savoir avant de te lancer. Une autre question ? Écris-nous à support@mywattup.app.</p>
+      <p>Tout ce qu'il faut savoir avant de te lancer. Une autre question ? Écris-nous à Osman874pro@gmail.com.</p>
     </div>
     <div class="faq-wrap">
       <div class="faq-row reveal">
@@ -914,7 +936,7 @@
         <div class="faq-row-a"><p>C'est une Progressive Web App : elle s'installe en quelques secondes sur Android (Chrome) et iPhone (Safari), sans passer par un store, et fonctionne aussi dans n'importe quel navigateur.</p></div>
       </div>
     </div>
-    <p class="faq-cta">Une question qui ne figure pas ici ? <a href="mailto:support@mywattup.app">Contacte le support</a>.</p>
+    <p class="faq-cta">Une question qui ne figure pas ici ? <a href="mailto:Osman874pro@gmail.com">Contacte le support</a>.</p>
   </section>
 
 </main>
@@ -1515,6 +1537,27 @@
       <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
 
       <p class="msg" id="abonnementMsg" role="status" aria-live="polite"></p>
+
+      <!-- ---------- Facturation ---------- -->
+      <div class="billing-section-title">Facturation</div>
+
+      <div class="billing-method-row">
+        <div class="billing-method-left">
+          <div class="billing-method-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          </div>
+          <div>
+            <div class="billing-method-title" id="billingMethodTitle">Aucun moyen de paiement enregistré</div>
+            <div class="billing-method-desc" id="billingMethodDesc">Ajouté automatiquement lors de ton passage à l'offre Pro.</div>
+          </div>
+        </div>
+        <button type="button" class="app-cta secondary" id="btnManageBilling" style="width:auto; margin:0; padding:10px 16px; white-space:nowrap;">Gérer</button>
+      </div>
+
+      <div class="section-desc" style="margin: -6px 0 12px;">Historique des factures</div>
+      <div id="invoiceHistoryList">
+        <div class="billing-empty" id="invoiceHistoryEmpty">Tu n'as pas encore de facture — elles apparaîtront ici dès ton premier paiement.</div>
+      </div>
     </section>
 
     <!-- ---------- FAQ ---------- -->
@@ -1581,10 +1624,10 @@
           <div class="support-shortcut-desc">Les réponses aux questions les plus fréquentes</div>
         </span>
       </a>
-      <a href="mailto:support@mywattup.app" class="support-shortcut">
+      <a href="mailto:Osman874pro@gmail.com" class="support-shortcut">
         <span class="support-shortcut-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
         <span>
-          <div class="support-shortcut-title">Écrire à support@mywattup.app</div>
+          <div class="support-shortcut-title">Écrire à Osman874pro@gmail.com</div>
           <div class="support-shortcut-desc">Réponse sous 48h, prioritaire pour les comptes Pro</div>
         </span>
       </a>
@@ -2119,15 +2162,37 @@
       });
     });
 
-    function computeScores({ sleepHours, sleepQuality, intensity, duration, mood }) {
-      let sleepScore = Math.max(0, 100 - Math.abs(8 - sleepHours) * 15);
-      if (sleepQuality === 'bonne') sleepScore = Math.min(100, sleepScore + 10);
-      if (sleepQuality === 'mauvaise') sleepScore = Math.max(0, sleepScore - 10);
+    function computeScores({ sleepHours, sleepQuality, activityType, intensity, duration, mood }) {
+      // Sommeil : plage idéale 7h-9h → base 100. En dessous, dette de sommeil pénalisée
+      // fortement (18 pts/h) ; au-dessus, léger surplus pénalisé plus doucement (10 pts/h).
+      let sleepScore;
+      if (sleepHours >= 7 && sleepHours <= 9) {
+        sleepScore = 100;
+      } else if (sleepHours < 7) {
+        sleepScore = 100 - (7 - sleepHours) * 18;
+      } else {
+        sleepScore = 100 - (sleepHours - 9) * 10;
+      }
+      if (sleepQuality === 'bonne') sleepScore += 8;
+      if (sleepQuality === 'mauvaise') sleepScore -= 12;
       sleepScore = Math.round(Math.min(100, Math.max(0, sleepScore)));
 
-      let activityScore = Math.round(Math.min(100, (intensity * 6) + (duration ? Math.min(duration, 60) / 60 * 40 : 0)));
+      // Activité : un jour de repos est valorisé pour lui-même (récupération), sans dépendre
+      // du curseur d'intensité qui n'a pas de sens quand il n'y a pas eu de séance.
+      // Sinon, la durée compte jusqu'à 90 min (au-delà, rendements décroissants) et
+      // l'intensité ressentie complète le score.
+      let activityScore;
+      if (activityType === 'repos') {
+        activityScore = 65;
+      } else {
+        const durationComponent = duration ? Math.min(duration, 90) / 90 * 60 : 0;
+        const intensityComponent = intensity * 4;
+        activityScore = Math.round(Math.min(100, durationComponent + intensityComponent));
+      }
 
-      let dailyScore = Math.round((sleepScore * 0.4) + (activityScore * 0.4) + (mood * 10 * 0.2));
+      // Score du jour : sommeil et activité pèsent autant l'un que l'autre, la forme
+      // ressentie (indicateur subjectif global) compte pour un peu plus qu'avant.
+      let dailyScore = Math.round((sleepScore * 0.35) + (activityScore * 0.35) + (mood * 10 * 0.30));
       dailyScore = Math.min(100, Math.max(0, dailyScore));
 
       return { sleepScore, activityScore, dailyScore };
@@ -2157,7 +2222,7 @@
       const moodScore = parseInt(moodInput.value);
 
       const { sleepScore, activityScore, dailyScore } = computeScores({
-        sleepHours, sleepQuality: selectedQuality,
+        sleepHours, sleepQuality: selectedQuality, activityType,
         intensity: activityIntensity, duration: activityDuration, mood: moodScore
       });
 
@@ -2345,13 +2410,43 @@
   // -------------------------------------------------------------
   let scannerBound = false;
 
-  function computePersonalizedScore(product, sportType) {
+  function computePersonalizedScore(product, sportType, objective) {
+    const n = product.nutriments || {};
     const nutriscoreMap = { a: 90, b: 75, c: 55, d: 35, e: 15 };
-    let base = nutriscoreMap[product.nutriscore_grade] ?? 50;
-    const proteins = product.nutriments?.proteins_100g ?? 0;
-    if (sportType === 'force' && proteins > 15) base = Math.min(100, base + 10);
-    if (sportType === 'endurance' && (product.nutriments?.carbohydrates_100g ?? 0) > 40) base = Math.min(100, base + 5);
-    return Math.round(Math.max(0, Math.min(100, base)));
+    let score = nutriscoreMap[product.nutriscore_grade] ?? 50;
+
+    // Bonus liés à l'objectif sportif
+    const proteins = n.proteins_100g ?? 0;
+    const carbs = n.carbohydrates_100g ?? 0;
+    if (sportType === 'force' && proteins > 15) score += 10;
+    if (sportType === 'endurance' && carbs > 40) score += 5;
+
+    // Malus liés à la composition nutritionnelle — sucres, graisses saturées et sel
+    // pèsent désormais réellement sur le score, et non plus à titre indicatif.
+    const sugars = n.sugars_100g;
+    if (sugars != null) {
+      if (sugars > 22.5) score -= 8;
+      else if (sugars > 5) score -= 3;
+    }
+    const satFat = n['saturated-fat_100g'];
+    if (satFat != null) {
+      if (satFat > 5) score -= 6;
+      else if (satFat > 1.5) score -= 2;
+    }
+    const salt = n.salt_100g;
+    if (salt != null) {
+      if (salt > 1.5) score -= 6;
+      else if (salt > 0.3) score -= 2;
+    }
+
+    // Ajustement selon l'objectif "Perte de poids" — densité énergétique du produit
+    const energy = n['energy-kcal_100g'];
+    if (objective === 'perte_de_poids' && energy != null) {
+      if (energy > 300) score -= 8;
+      else if (energy < 150) score += 5;
+    }
+
+    return Math.round(Math.max(0, Math.min(100, score)));
   }
 
   function scoreClass(score) {
@@ -2369,13 +2464,14 @@
   };
   const NUTRISCORE_BASE = { a: 90, b: 75, c: 55, d: 35, e: 15 };
 
-  function buildScoreExplanation(product, sportType, finalScore) {
+  function buildScoreExplanation(product, sportType, objective, finalScore) {
     const grade = product.nutriscore_grade;
     const proteins = product.nutriments?.proteins_100g ?? null;
     const carbs = product.nutriments?.carbohydrates_100g ?? null;
     const sugars = product.nutriments?.sugars_100g ?? null;
     const satFat = product.nutriments?.['saturated-fat_100g'] ?? null;
     const salt = product.nutriments?.salt_100g ?? null;
+    const energy = product.nutriments?.['energy-kcal_100g'] ?? null;
 
     const rows = [];
 
@@ -2430,33 +2526,62 @@
       });
     }
 
-    // 4. Sucres, graisses saturées, sel — informatifs (n'influencent pas encore le calcul)
+    // 4. Sucres, graisses saturées, sel — malus réellement appliqués au score
     if (sugars !== null) {
+      const malus = sugars > 22.5 ? -8 : sugars > 5 ? -3 : 0;
       rows.push({
         label: 'Sucres',
-        verdict: sugars > 22.5 ? 'neg' : sugars > 5 ? 'neutral' : 'pos',
-        reason: `${sugars.toFixed(1)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+        verdict: malus <= -5 ? 'neg' : malus < 0 ? 'neutral' : 'pos',
+        reason: malus < 0
+          ? `${sugars.toFixed(1)} g/100g → ${malus} points appliqués (produit riche en sucres).`
+          : `${sugars.toFixed(1)} g/100g, teneur modérée → aucun malus.`,
       });
     }
     if (satFat !== null) {
+      const malus = satFat > 5 ? -6 : satFat > 1.5 ? -2 : 0;
       rows.push({
         label: 'Graisses saturées',
-        verdict: satFat > 5 ? 'neg' : satFat > 1.5 ? 'neutral' : 'pos',
-        reason: `${satFat.toFixed(1)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+        verdict: malus <= -4 ? 'neg' : malus < 0 ? 'neutral' : 'pos',
+        reason: malus < 0
+          ? `${satFat.toFixed(1)} g/100g → ${malus} points appliqués (produit riche en graisses saturées).`
+          : `${satFat.toFixed(1)} g/100g, teneur modérée → aucun malus.`,
       });
     }
     if (salt !== null) {
+      const malus = salt > 1.5 ? -6 : salt > 0.3 ? -2 : 0;
       rows.push({
         label: 'Sel',
-        verdict: salt > 1.5 ? 'neg' : salt > 0.3 ? 'neutral' : 'pos',
-        reason: `${salt.toFixed(2)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+        verdict: malus <= -4 ? 'neg' : malus < 0 ? 'neutral' : 'pos',
+        reason: malus < 0
+          ? `${salt.toFixed(2)} g/100g → ${malus} points appliqués (produit riche en sel).`
+          : `${salt.toFixed(2)} g/100g, teneur modérée → aucun malus.`,
       });
     }
 
+    // 5. Densité énergétique / objectif Perte de poids
+    if (objective === 'perte_de_poids') {
+      if (energy !== null) {
+        const adjust = energy > 300 ? -8 : energy < 150 ? 5 : 0;
+        rows.push({
+          label: 'Densité énergétique (objectif Perte de poids)',
+          verdict: adjust > 0 ? 'pos' : adjust < 0 ? 'neg' : 'neutral',
+          reason: adjust !== 0
+            ? `${Math.round(energy)} kcal/100g → ${adjust > 0 ? '+' + adjust : adjust} points appliqués pour ton objectif Perte de poids.`
+            : `${Math.round(energy)} kcal/100g, densité énergétique modérée → aucun ajustement.`,
+        });
+      } else {
+        rows.push({
+          label: 'Densité énergétique (objectif Perte de poids)',
+          verdict: 'neutral',
+          reason: "Valeur calorique non renseignée → impossible d'évaluer ce critère pour ton objectif Perte de poids.",
+        });
+      }
+    }
+
     const summary = `Score final retenu : ${finalScore}/100 pour ton objectif "${sportType || 'général (pas encore défini)'}". `
-      + (sportType
-          ? "Ce chiffre combine le Nutri-score du produit et un bonus lié à sa composition selon ton objectif sportif."
-          : "Aucun bonus personnalisé n'a pu être appliqué car ton objectif sportif n'est pas renseigné dans ton profil.");
+      + (sportType || objective
+          ? "Ce chiffre combine le Nutri-score du produit, un bonus lié à sa composition selon ton objectif sportif, et des malus liés aux sucres, graisses saturées et sel."
+          : "Aucun bonus ou malus personnalisé n'a pu être totalement appliqué car ton profil sportif n'est pas renseigné.");
 
     return { rows, summary };
   }
@@ -2508,11 +2633,11 @@
 
           const { data: profile } = await supabase
             .from('profiles')
-            .select('sport_type')
+            .select('sport_type, objective')
             .eq('user_id', user.id)
             .maybeSingle();
 
-          const score = computePersonalizedScore(product, profile?.sport_type);
+          const score = computePersonalizedScore(product, profile?.sport_type, profile?.objective);
 
           barcodeInput.value = barcode;
           document.getElementById('resultName').textContent = productName;
@@ -2650,10 +2775,11 @@
 
     const { data: profile } = await supabase
       .from('profiles')
-      .select('sport_type')
+      .select('sport_type, objective')
       .eq('user_id', user.id)
       .maybeSingle();
     const sportType = profile?.sport_type;
+    const objective = profile?.objective;
 
     historyList.innerHTML = '';
     data.forEach(item => {
@@ -2691,7 +2817,7 @@
               detail.innerHTML = '<p class="history-detail-loading">Détail indisponible — ce produit n\'est plus référencé sur OpenFoodFacts.</p>';
               return;
             }
-            const { rows, summary } = buildScoreExplanation(apiData.product, sportType, item.personalized_score);
+            const { rows, summary } = buildScoreExplanation(apiData.product, sportType, objective, item.personalized_score);
             detail.innerHTML = rows.map(r => `
               <div class="history-detail-row">
                 <div>
@@ -2741,6 +2867,62 @@
     return `https://api.dicebear.com/7.x/thumbs/svg?seed=${encodeURIComponent(seed)}&backgroundColor=1a1714,221d18&shape1Color=ff9f1c,1f8a63`;
   }
 
+  function formatEuros(cents) {
+    return (cents / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  }
+
+  async function loadBillingHistory() {
+    const listEl = document.getElementById('invoiceHistoryList');
+    const methodTitle = document.getElementById('billingMethodTitle');
+    const methodDesc = document.getElementById('billingMethodDesc');
+    if (!listEl) return;
+
+    try {
+      const { data: invoices, error } = await supabase
+        .from('invoices')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('issued_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (!invoices || invoices.length === 0) {
+        listEl.innerHTML = '<div class="billing-empty">Tu n\'as pas encore de facture — elles apparaîtront ici dès ton premier paiement.</div>';
+        return;
+      }
+
+      // Moyen de paiement déduit de la facture la plus récente
+      const latest = invoices[0];
+      if (latest.card_brand && latest.card_last4) {
+        methodTitle.textContent = `${latest.card_brand.toUpperCase()} •••• ${latest.card_last4}`;
+        methodDesc.textContent = 'Géré via le portail client Stripe.';
+      }
+
+      listEl.innerHTML = invoices.map(inv => {
+        const date = new Date(inv.issued_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
+        const statusLabel = inv.status === 'paid' ? 'Payée' : inv.status === 'failed' ? 'Échouée' : 'En attente';
+        const statusClass = inv.status === 'paid' ? 'paid' : inv.status === 'failed' ? 'failed' : '';
+        return `
+          <div class="invoice-row">
+            <div class="invoice-row-left">
+              <div class="invoice-date">${date}</div>
+              <div class="invoice-plan">${inv.plan_label || 'Offre Pro'}</div>
+            </div>
+            <div class="invoice-row-right">
+              <span class="invoice-amount">${formatEuros(inv.amount_cents ?? 0)}</span>
+              <span class="invoice-status ${statusClass}">${statusLabel}</span>
+              ${inv.pdf_url ? `<a href="${inv.pdf_url}" target="_blank" rel="noopener" class="invoice-download" aria-label="Télécharger la facture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></a>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      // La table "invoices" arrivera avec le Module Paiement — on affiche un état vide plutôt qu'une erreur bloquante.
+      console.error(err);
+      listEl.innerHTML = '<div class="billing-empty">Tu n\'as pas encore de facture — elles apparaîtront ici dès ton premier paiement.</div>';
+    }
+  }
+
   let abonnementBound = false;
   function initAbonnement() {
     if (abonnementBound) return;
@@ -2753,6 +2935,10 @@
         msg.className = 'msg success';
       }
     });
+    document.getElementById('btnManageBilling').addEventListener('click', () => {
+      showToast("Le portail client Stripe (gestion du moyen de paiement) arrivera avec le Module Paiement du cahier des charges.", 'info');
+    });
+    loadBillingHistory();
   }
 
   let faqBound = false;
