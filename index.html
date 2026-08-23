@@ -200,6 +200,11 @@
   #view-login .tab.active { background: var(--vert); color: #0E1410; }
   #view-login label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 16px; }
   #view-login input { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; transition: border-color 0.15s ease; }
+  #view-login .password-field { position: relative; }
+  #view-login .password-field input { padding-right: 44px; }
+  #view-login .password-toggle { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); background: none; border: none; padding: 6px; color: var(--gris); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  #view-login .password-toggle:hover { color: var(--blanc); }
+  #view-login .password-toggle svg { width: 18px; height: 18px; }
   #view-login input:focus { border-color: var(--vert); }
   #view-login button[type="submit"] { width: 100%; margin-top: 26px; padding: 13px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
   #view-login button[type="submit"]:hover { filter: brightness(1.08); }
@@ -391,9 +396,26 @@
   #view-app .score-bad { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .result-justif { font-size: 13px; color: var(--gris); }
   #view-app .history-title { font-size: 13px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin: 24px 0 12px; }
-  #view-app .history-item { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
-  #view-app .history-name { font-size: 13px; }
+  #view-app .history-item { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s ease; }
+  #view-app .history-item:hover { border-color: rgba(255,255,255,0.14); }
+  #view-app .history-item-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  #view-app .history-chevron { width: 14px; height: 14px; color: var(--gris); flex-shrink: 0; transition: transform 0.2s ease; }
+  #view-app .history-item.open .history-chevron { transform: rotate(90deg); }
+  #view-app .history-name { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #view-app .history-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   #view-app .history-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  #view-app .history-detail { display: none; background: var(--fond); border: 1px solid rgba(255,255,255,0.06); border-top: none; border-radius: 0 0 12px 12px; margin: -8px 0 8px; padding: 4px 16px 16px; }
+  #view-app .history-detail.show { display: block; }
+  #view-app .history-detail-loading { font-size: 12px; color: var(--gris); padding: 10px 0; }
+  #view-app .history-detail-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  #view-app .history-detail-row:last-of-type { border-bottom: none; }
+  #view-app .history-detail-label { font-size: 12px; color: var(--blanc); font-weight: 600; flex-shrink: 0; }
+  #view-app .history-detail-reason { font-size: 12px; color: var(--gris); line-height: 1.5; text-align: right; }
+  #view-app .history-detail-verdict { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 6px; margin-top: 2px; }
+  #view-app .history-detail-verdict.pos { background: rgba(31,138,99,0.18); color: var(--vert); }
+  #view-app .history-detail-verdict.neg { background: rgba(255,107,107,0.15); color: #FF6B6B; }
+  #view-app .history-detail-verdict.neutral { background: rgba(255,255,255,0.06); color: var(--gris); }
+  #view-app .history-detail-summary { font-size: 12px; color: var(--gris); line-height: 1.5; padding-top: 10px; }
 </style>
 </head>
 <body>
@@ -567,7 +589,13 @@
       <input type="email" id="authEmail" required autocomplete="email" />
 
       <label for="authPassword">Mot de passe</label>
-      <input type="password" id="authPassword" required autocomplete="current-password" minlength="6" />
+      <div class="password-field">
+        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6" />
+        <button type="button" class="password-toggle" id="authPasswordToggle" aria-label="Afficher le mot de passe">
+          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M3 3l18 18"/><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c7 0 10.5 7 10.5 7a15.6 15.6 0 0 1-3.1 4.1M6.5 6.6C3.6 8.5 1.5 12 1.5 12s3.5 7 10.5 7a10.4 10.4 0 0 0 4.2-.9"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+        </button>
+      </div>
 
       <button type="submit" id="authSubmitBtn">Se connecter</button>
     </form>
@@ -895,6 +923,16 @@
   document.getElementById('btnGoLogin2').addEventListener('click', showLogin);
   document.getElementById('btnInstall').addEventListener('click', showLogin);
   document.getElementById('btnBackToVitrine').addEventListener('click', showVitrine);
+
+  document.getElementById('authPasswordToggle').addEventListener('click', () => {
+    const input = document.getElementById('authPassword');
+    const btn = document.getElementById('authPasswordToggle');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.querySelector('.eye-open').style.display = isHidden ? 'none' : 'block';
+    btn.querySelector('.eye-closed').style.display = isHidden ? 'block' : 'none';
+    btn.setAttribute('aria-label', isHidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe');
+  });
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await signOut();
@@ -1269,6 +1307,122 @@
   // -------------------------------------------------------------
   let scannerBound = false;
 
+  function computePersonalizedScore(product, sportType) {
+    const nutriscoreMap = { a: 90, b: 75, c: 55, d: 35, e: 15 };
+    let base = nutriscoreMap[product.nutriscore_grade] ?? 50;
+    const proteins = product.nutriments?.proteins_100g ?? 0;
+    if (sportType === 'force' && proteins > 15) base = Math.min(100, base + 10);
+    if (sportType === 'endurance' && (product.nutriments?.carbohydrates_100g ?? 0) > 40) base = Math.min(100, base + 5);
+    return Math.round(Math.max(0, Math.min(100, base)));
+  }
+
+  function scoreClass(score) {
+    if (score >= 65) return 'score-good';
+    if (score >= 40) return 'score-mid';
+    return 'score-bad';
+  }
+
+  const NUTRISCORE_LABEL = {
+    a: 'A — très bonne qualité nutritionnelle',
+    b: 'B — bonne qualité nutritionnelle',
+    c: 'C — qualité nutritionnelle moyenne',
+    d: 'D — qualité nutritionnelle faible',
+    e: 'E — qualité nutritionnelle mauvaise',
+  };
+  const NUTRISCORE_BASE = { a: 90, b: 75, c: 55, d: 35, e: 15 };
+
+  function buildScoreExplanation(product, sportType, finalScore) {
+    const grade = product.nutriscore_grade;
+    const proteins = product.nutriments?.proteins_100g ?? null;
+    const carbs = product.nutriments?.carbohydrates_100g ?? null;
+    const sugars = product.nutriments?.sugars_100g ?? null;
+    const satFat = product.nutriments?.['saturated-fat_100g'] ?? null;
+    const salt = product.nutriments?.salt_100g ?? null;
+
+    const rows = [];
+
+    // 1. Nutri-score
+    rows.push({
+      label: 'Nutri-score',
+      verdict: grade ? (['a','b'].includes(grade) ? 'pos' : grade === 'c' ? 'neutral' : 'neg') : 'neutral',
+      reason: grade
+        ? `${NUTRISCORE_LABEL[grade] || grade.toUpperCase()}. Sert de base de calcul : ${NUTRISCORE_BASE[grade] ?? 50}/100.`
+        : "Nutri-score non renseigné par le fabricant sur OpenFoodFacts — le score par défaut (50/100) a été utilisé.",
+    });
+
+    // 2. Protéines / objectif Force
+    if (sportType === 'force') {
+      const has = proteins !== null;
+      const bonus = has && proteins > 15;
+      rows.push({
+        label: 'Protéines (objectif Force)',
+        verdict: bonus ? 'pos' : 'neg',
+        reason: has
+          ? (bonus
+              ? `${proteins.toFixed(1)} g/100g, au-dessus du seuil de 15 g requis pour ton objectif Force → bonus de +10 points appliqué.`
+              : `${proteins.toFixed(1)} g/100g, en dessous du seuil de 15 g attendu pour ton objectif Force → aucun bonus, ce produit ne t'aide pas particulièrement à progresser en force.`)
+          : "Teneur en protéines non renseignée → impossible d'évaluer ce critère pour ton objectif Force.",
+      });
+    } else if (proteins !== null) {
+      rows.push({
+        label: 'Protéines',
+        verdict: 'neutral',
+        reason: `${proteins.toFixed(1)} g/100g. Ce critère ne joue un rôle dans ton score que si ton objectif est "Force" — ce n'est pas ton profil actuel.`,
+      });
+    }
+
+    // 3. Glucides / objectif Endurance
+    if (sportType === 'endurance') {
+      const has = carbs !== null;
+      const bonus = has && carbs > 40;
+      rows.push({
+        label: 'Glucides (objectif Endurance)',
+        verdict: bonus ? 'pos' : 'neg',
+        reason: has
+          ? (bonus
+              ? `${carbs.toFixed(1)} g/100g, au-dessus du seuil de 40 g requis pour ton objectif Endurance → bonus de +5 points appliqué (bon apport énergétique).`
+              : `${carbs.toFixed(1)} g/100g, en dessous du seuil de 40 g attendu pour ton objectif Endurance → aucun bonus, apport énergétique insuffisant pour ce type d'effort.`)
+          : "Teneur en glucides non renseignée → impossible d'évaluer ce critère pour ton objectif Endurance.",
+      });
+    } else if (carbs !== null) {
+      rows.push({
+        label: 'Glucides',
+        verdict: 'neutral',
+        reason: `${carbs.toFixed(1)} g/100g. Ce critère ne joue un rôle dans ton score que si ton objectif est "Endurance" — ce n'est pas ton profil actuel.`,
+      });
+    }
+
+    // 4. Sucres, graisses saturées, sel — informatifs (n'influencent pas encore le calcul)
+    if (sugars !== null) {
+      rows.push({
+        label: 'Sucres',
+        verdict: sugars > 22.5 ? 'neg' : sugars > 5 ? 'neutral' : 'pos',
+        reason: `${sugars.toFixed(1)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+      });
+    }
+    if (satFat !== null) {
+      rows.push({
+        label: 'Graisses saturées',
+        verdict: satFat > 5 ? 'neg' : satFat > 1.5 ? 'neutral' : 'pos',
+        reason: `${satFat.toFixed(1)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+      });
+    }
+    if (salt !== null) {
+      rows.push({
+        label: 'Sel',
+        verdict: salt > 1.5 ? 'neg' : salt > 0.3 ? 'neutral' : 'pos',
+        reason: `${salt.toFixed(2)} g/100g. Indicatif uniquement — n'est pas encore intégré au calcul du score personnalisé.`,
+      });
+    }
+
+    const summary = `Score final retenu : ${finalScore}/100 pour ton objectif "${sportType || 'général (pas encore défini)'}". `
+      + (sportType
+          ? "Ce chiffre combine le Nutri-score du produit et un bonus lié à sa composition selon ton objectif sportif."
+          : "Aucun bonus personnalisé n'a pu être appliqué car ton objectif sportif n'est pas renseigné dans ton profil.");
+
+    return { rows, summary };
+  }
+
   function initScanner() {
     if (!scannerBound) {
       const barcodeInput = document.getElementById('barcodeInput');
@@ -1285,21 +1439,6 @@
       function clearScanError() {
         scanError.classList.remove('show');
         scanError.textContent = '';
-      }
-
-      function computePersonalizedScore(product, sportType) {
-        const nutriscoreMap = { a: 90, b: 75, c: 55, d: 35, e: 15 };
-        let base = nutriscoreMap[product.nutriscore_grade] ?? 50;
-        const proteins = product.nutriments?.proteins_100g ?? 0;
-        if (sportType === 'force' && proteins > 15) base = Math.min(100, base + 10);
-        if (sportType === 'endurance' && (product.nutriments?.carbohydrates_100g ?? 0) > 40) base = Math.min(100, base + 5);
-        return Math.round(Math.max(0, Math.min(100, base)));
-      }
-
-      function scoreClass(score) {
-        if (score >= 65) return 'score-good';
-        if (score >= 40) return 'score-mid';
-        return 'score-bad';
       }
 
       scanBtn.addEventListener('click', () => runScan(barcodeInput.value.trim()));
@@ -1446,16 +1585,66 @@
       return;
     }
 
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('sport_type')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    const sportType = profile?.sport_type;
+
     historyList.innerHTML = '';
     data.forEach(item => {
       const dotColor = item.personalized_score >= 65 ? 'var(--vert)' : item.personalized_score >= 40 ? 'var(--ambre)' : '#FF6B6B';
+
       const row = document.createElement('div');
       row.className = 'history-item';
       row.innerHTML = `
-        <span class="history-name">${item.product_name || item.barcode}</span>
-        <div class="history-dot" style="background:${dotColor}"></div>
+        <div class="history-item-left">
+          <svg class="history-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <span class="history-name">${item.product_name || item.barcode}</span>
+        </div>
+        <div class="history-right">
+          <span style="font-size:12px; color:var(--gris);">${item.personalized_score}/100</span>
+          <div class="history-dot" style="background:${dotColor}"></div>
+        </div>
       `;
+
+      const detail = document.createElement('div');
+      detail.className = 'history-detail';
+      detail.innerHTML = '<p class="history-detail-loading">Chargement du détail…</p>';
+
+      let loaded = false;
+      row.addEventListener('click', async () => {
+        const isOpen = row.classList.toggle('open');
+        detail.classList.toggle('show', isOpen);
+        if (isOpen && !loaded) {
+          loaded = true;
+          try {
+            const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${item.barcode}.json`);
+            const apiData = await res.json();
+            if (apiData.status !== 1) {
+              detail.innerHTML = '<p class="history-detail-loading">Détail indisponible — ce produit n\'est plus référencé sur OpenFoodFacts.</p>';
+              return;
+            }
+            const { rows, summary } = buildScoreExplanation(apiData.product, sportType, item.personalized_score);
+            detail.innerHTML = rows.map(r => `
+              <div class="history-detail-row">
+                <div>
+                  <div class="history-detail-label">${r.label}</div>
+                  <span class="history-detail-verdict ${r.verdict}">${r.verdict === 'pos' ? 'Favorable' : r.verdict === 'neg' ? 'Défavorable' : 'Neutre'}</span>
+                </div>
+                <div class="history-detail-reason">${r.reason}</div>
+              </div>
+            `).join('') + `<p class="history-detail-summary">${summary}</p>`;
+          } catch (err) {
+            console.error(err);
+            detail.innerHTML = '<p class="history-detail-loading">Erreur lors du chargement du détail.</p>';
+          }
+        }
+      });
+
       historyList.appendChild(row);
+      historyList.appendChild(detail);
     });
   }
 
