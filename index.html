@@ -564,6 +564,26 @@
   #view-app .segmented-opt { flex: 1; padding: 9px 6px; background: none; border: none; border-radius: 8px; color: var(--gris); font-size: 12.5px; font-family: inherit; font-weight: 600; cursor: pointer; transition: background 0.15s ease, color 0.15s ease; }
   #view-app .segmented-opt.active { background: var(--vert); color: #0E1410; }
 
+  /* ---------- Suivi calorique / macros ---------- */
+  #view-app .nutrition-bar-track { height: 10px; border-radius: 6px; background: rgba(255,255,255,0.08); overflow: hidden; margin-top: 6px; }
+  #view-app .nutrition-bar-fill { height: 100%; width: 0%; background: var(--vert); border-radius: 6px; transition: width 0.3s ease; }
+  #view-app .nutrition-bar-fill.over { background: var(--ambre); }
+  #view-app .nutrition-kcal-row { display: flex; align-items: baseline; gap: 6px; margin-top: 12px; }
+  #view-app .nutrition-kcal-row span:first-child { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--blanc); }
+  #view-app .nutrition-kcal-row span:last-child { font-size: 13px; color: var(--gris); }
+  #view-app .macro-row { display: flex; gap: 16px; margin-top: 10px; font-size: 12.5px; color: var(--gris); }
+  #view-app .macro-row b { color: var(--blanc); font-weight: 700; }
+  #view-app .nutrition-entries-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+  #view-app .nutrition-entry-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--fond); border-radius: 10px; font-size: 13px; }
+  #view-app .nutrition-entry-row .entry-meta { color: var(--gris); font-size: 11.5px; margin-top: 2px; }
+  #view-app .nutrition-entry-delete { background: none; border: none; color: var(--gris); cursor: pointer; padding: 4px; display: flex; flex-shrink: 0; }
+  #view-app .nutrition-entry-delete svg { width: 16px; height: 16px; }
+  #view-app .nutrition-entry-delete:hover { color: #FF6B6B; }
+  #view-app .result-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  #view-app .result-add-row input, #view-app .result-add-row select { width: auto; flex: 0 0 auto; margin: 0; }
+  #view-app .result-add-row input[type="number"] { width: 70px; }
+  #view-app .result-add-row .app-cta { flex: 1 1 180px; margin: 0; }
+
   /* ---- Lignes de réglage (toggles avec description) ---- */
   #view-app .setting-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 14px 0; }
   #view-app .setting-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -1421,6 +1441,69 @@
         <p class="mini-why-sources" id="miniWhySources"></p>
       </div>
 
+      <div class="app-section" id="nutritionCard" style="display:none;">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8Z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg>
+          Calories aujourd'hui
+        </div>
+        <div class="nutrition-bar-track"><div class="nutrition-bar-fill" id="nutritionBarFill"></div></div>
+        <div class="nutrition-kcal-row">
+          <span id="nutritionKcalValue">0 kcal</span>
+          <span id="nutritionKcalTarget"></span>
+        </div>
+        <div class="macro-row" id="nutritionMacroRow"></div>
+
+        <div class="nutrition-entries-list" id="nutritionEntriesList"></div>
+
+        <button type="button" class="app-cta secondary" id="nutritionAddToggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Ajouter un aliment
+        </button>
+
+        <form id="nutritionAddForm" class="settings-subform">
+          <label for="foodLabel">Nom</label>
+          <input type="text" id="foodLabel" placeholder="ex. Yaourt nature" required />
+
+          <label for="foodMealSlot">Repas</label>
+          <select id="foodMealSlot" required>
+            <option value="petit_dej">Petit-déj</option>
+            <option value="dejeuner">Déjeuner</option>
+            <option value="diner">Dîner</option>
+            <option value="collation">Collation</option>
+          </select>
+
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+              <label for="foodKcal">Calories (kcal)</label>
+              <input type="number" id="foodKcal" min="0" step="1" required />
+            </div>
+            <div style="flex:1;">
+              <label for="foodQuantity">Quantité (g)</label>
+              <input type="number" id="foodQuantity" min="0" step="1" placeholder="optionnel" />
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1;">
+              <label for="foodProteins">Protéines (g)</label>
+              <input type="number" id="foodProteins" min="0" step="0.1" />
+            </div>
+            <div style="flex:1;">
+              <label for="foodCarbs">Glucides (g)</label>
+              <input type="number" id="foodCarbs" min="0" step="0.1" />
+            </div>
+            <div style="flex:1;">
+              <label for="foodFat">Lipides (g)</label>
+              <input type="number" id="foodFat" min="0" step="0.1" />
+            </div>
+          </div>
+
+          <button type="submit" class="app-cta secondary" id="foodAddSubmitBtn">Ajouter</button>
+          <button type="button" class="settings-cancel" id="foodAddCancelBtn">Annuler</button>
+        </form>
+
+        <p class="section-desc" id="nutritionTargetHint" style="margin-top:12px;"></p>
+      </div>
+
       <div class="streak-card" id="streakCard">
         <div class="streak-main">
           <div class="streak-flame" id="streakFlameWrap">
@@ -1657,6 +1740,16 @@
         <div class="result-name" id="resultName"></div>
         <div class="result-score" id="resultScore"></div>
         <div class="result-justif" id="resultJustif"></div>
+        <div class="result-add-row">
+          <input type="number" id="resultQuantity" min="1" step="1" value="100" aria-label="Quantité en grammes" /> g
+          <select id="resultMealSlot" aria-label="Repas">
+            <option value="petit_dej">Petit-déj</option>
+            <option value="dejeuner">Déjeuner</option>
+            <option value="diner">Dîner</option>
+            <option value="collation">Collation</option>
+          </select>
+          <button type="button" class="app-cta secondary" id="resultAddToJournalBtn">Ajouter à mon journal</button>
+        </div>
       </div>
 
       <div class="history-title">
@@ -2511,6 +2604,142 @@
   const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
   const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
 
+  // -------------------------------------------------------------
+  // SUIVI CALORIQUE / MACROS
+  // -------------------------------------------------------------
+  const MEAL_SLOT_LABEL = { petit_dej: 'Petit-déj', dejeuner: 'Déjeuner', diner: 'Dîner', collation: 'Collation' };
+  const ACTIVITY_FACTORS = { sedentaire: 1.2, leger: 1.375, modere: 1.55, actif: 1.725, tres_actif: 1.9 };
+  // Ajustement appliqué à la dépense totale selon l'objectif choisi dans "Ma pratique".
+  const OBJECTIVE_ADJUSTMENT = { perte_de_poids: -0.15, prise_de_masse: 0.12, performance: 0, maintien: 0, recuperation: 0 };
+
+  // Estimation de la cible calorique quotidienne (formule Mifflin-St Jeor + facteur d'activité).
+  // Retourne null si le profil n'a pas encore été complété (taille/poids/âge/sexe requis).
+  function computeCalorieTarget(profile) {
+    if (!profile) return null;
+    const { weight_kg, height_cm, birth_year, sex, activity_level, objective } = profile;
+    if (!weight_kg || !height_cm || !birth_year || !sex) return null;
+
+    const age = new Date().getFullYear() - birth_year;
+    let bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age;
+    bmr += sex === 'homme' ? 5 : sex === 'femme' ? -161 : -78; // moyenne homme/femme retenue pour "autre"
+
+    const tdee = bmr * (ACTIVITY_FACTORS[activity_level] || 1.55);
+    const adjusted = tdee * (1 + (OBJECTIVE_ADJUSTMENT[objective] || 0));
+
+    return {
+      kcal: Math.round(adjusted),
+      proteins_g: Math.round((adjusted * 0.30) / 4), // 30% des kcal via protéines (4 kcal/g)
+      carbs_g: Math.round((adjusted * 0.40) / 4),     // 40% via glucides (4 kcal/g)
+      fat_g: Math.round((adjusted * 0.30) / 9),       // 30% via lipides (9 kcal/g)
+    };
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // Enregistre un aliment consommé (scan ou saisie manuelle) dans le journal du jour.
+  async function logFoodEntry({ mealSlot, label, quantityG, kcal, proteinsG, carbsG, fatG, source, scannedProductId }) {
+    const { error } = await supabase.from('food_entries').insert({
+      user_id: user.id,
+      log_date: new Date().toISOString().split('T')[0],
+      meal_slot: mealSlot,
+      source,
+      scanned_product_id: scannedProductId || null,
+      label,
+      quantity_g: quantityG || null,
+      kcal: kcal ?? null,
+      proteins_g: proteinsG ?? null,
+      carbs_g: carbsG ?? null,
+      fat_g: fatG ?? null,
+    });
+    if (error) { console.error(error); return false; }
+    return true;
+  }
+
+  async function deleteFoodEntry(id) {
+    const { error } = await supabase.from('food_entries').delete().eq('id', id).eq('user_id', user.id);
+    if (error) { console.error(error); showToast('Erreur lors de la suppression.', 'error'); return; }
+    loadTodayNutrition();
+  }
+
+  function renderNutritionCard(entries, target) {
+    const card = document.getElementById('nutritionCard');
+    const barFill = document.getElementById('nutritionBarFill');
+    const kcalValue = document.getElementById('nutritionKcalValue');
+    const kcalTarget = document.getElementById('nutritionKcalTarget');
+    const macroRow = document.getElementById('nutritionMacroRow');
+    const entriesList = document.getElementById('nutritionEntriesList');
+    const targetHint = document.getElementById('nutritionTargetHint');
+    if (!card) return;
+    card.style.display = 'block';
+
+    const totals = entries.reduce((acc, e) => ({
+      kcal: acc.kcal + (e.kcal || 0),
+      proteins_g: acc.proteins_g + (e.proteins_g || 0),
+      carbs_g: acc.carbs_g + (e.carbs_g || 0),
+      fat_g: acc.fat_g + (e.fat_g || 0),
+    }), { kcal: 0, proteins_g: 0, carbs_g: 0, fat_g: 0 });
+
+    kcalValue.textContent = `${Math.round(totals.kcal)} kcal`;
+
+    if (target) {
+      const pct = Math.min(100, Math.round((totals.kcal / target.kcal) * 100));
+      barFill.style.width = pct + '%';
+      barFill.classList.toggle('over', totals.kcal > target.kcal);
+      kcalTarget.textContent = `/ ${target.kcal} kcal`;
+      macroRow.innerHTML = `
+        <span>P <b>${Math.round(totals.proteins_g)}</b>/${target.proteins_g}g</span>
+        <span>G <b>${Math.round(totals.carbs_g)}</b>/${target.carbs_g}g</span>
+        <span>L <b>${Math.round(totals.fat_g)}</b>/${target.fat_g}g</span>
+      `;
+      targetHint.textContent = "Estimation basée sur ton profil (formule Mifflin-St Jeor) — à ajuster selon ton ressenti, pas une prescription médicale.";
+    } else {
+      barFill.style.width = '0%';
+      barFill.classList.remove('over');
+      kcalTarget.textContent = '';
+      macroRow.innerHTML = `
+        <span>P <b>${Math.round(totals.proteins_g)}</b>g</span>
+        <span>G <b>${Math.round(totals.carbs_g)}</b>g</span>
+        <span>L <b>${Math.round(totals.fat_g)}</b>g</span>
+      `;
+      targetHint.textContent = "Complète ton profil (taille, poids, âge, sexe) dans Paramètres → Ma pratique pour voir ta cible calorique.";
+    }
+
+    if (!entries.length) {
+      entriesList.innerHTML = '<p class="section-desc" style="margin:12px 0 0;">Aucun aliment ajouté aujourd\'hui.</p>';
+    } else {
+      entriesList.innerHTML = entries.map(e => `
+        <div class="nutrition-entry-row" data-id="${e.id}">
+          <div>
+            <div>${escapeHtml(e.label)}</div>
+            <div class="entry-meta">${MEAL_SLOT_LABEL[e.meal_slot] || ''} · ${Math.round(e.kcal || 0)} kcal</div>
+          </div>
+          <button type="button" class="nutrition-entry-delete" data-delete-id="${e.id}" aria-label="Supprimer cet aliment">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+      `).join('');
+      entriesList.querySelectorAll('[data-delete-id]').forEach(btn => {
+        btn.addEventListener('click', () => deleteFoodEntry(btn.dataset.deleteId));
+      });
+    }
+  }
+
+  async function loadTodayNutrition() {
+    const today = new Date().toISOString().split('T')[0];
+    const [{ data: entries, error: entriesError }, { data: profile, error: profileError }] = await Promise.all([
+      supabase.from('food_entries').select('*').eq('user_id', user.id).eq('log_date', today).order('created_at', { ascending: true }),
+      supabase.from('profiles').select('weight_kg, height_cm, birth_year, sex, activity_level, objective').eq('user_id', user.id).maybeSingle(),
+    ]);
+    if (entriesError) { console.error(entriesError); return; }
+    if (profileError) console.error(profileError);
+
+    renderNutritionCard(entries || [], computeCalorieTarget(profile));
+  }
+
   function formatSleepDuration(hours) {
     if (hours == null) return '--';
     const h = Math.floor(hours);
@@ -2830,6 +3059,50 @@
           renderTrendRange(parseInt(btn.dataset.range, 10));
         });
       });
+
+      // ---- Suivi calorique : formulaire d'ajout manuel ----
+      const nutritionAddToggle = document.getElementById('nutritionAddToggle');
+      const nutritionAddForm = document.getElementById('nutritionAddForm');
+      const foodAddCancelBtn = document.getElementById('foodAddCancelBtn');
+      const foodAddSubmitBtn = document.getElementById('foodAddSubmitBtn');
+
+      nutritionAddToggle.addEventListener('click', () => {
+        nutritionAddForm.classList.toggle('show');
+        if (nutritionAddForm.classList.contains('show')) document.getElementById('foodLabel').focus();
+      });
+      foodAddCancelBtn.addEventListener('click', () => {
+        nutritionAddForm.reset();
+        nutritionAddForm.classList.remove('show');
+      });
+
+      nutritionAddForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        foodAddSubmitBtn.disabled = true;
+        foodAddSubmitBtn.textContent = '...';
+
+        const ok = await logFoodEntry({
+          mealSlot: document.getElementById('foodMealSlot').value,
+          label: document.getElementById('foodLabel').value.trim(),
+          quantityG: parseFloat(document.getElementById('foodQuantity').value) || null,
+          kcal: parseFloat(document.getElementById('foodKcal').value) || 0,
+          proteinsG: parseFloat(document.getElementById('foodProteins').value) || null,
+          carbsG: parseFloat(document.getElementById('foodCarbs').value) || null,
+          fatG: parseFloat(document.getElementById('foodFat').value) || null,
+          source: 'manuel',
+        });
+
+        foodAddSubmitBtn.disabled = false;
+        foodAddSubmitBtn.textContent = 'Ajouter';
+
+        if (ok) {
+          nutritionAddForm.reset();
+          nutritionAddForm.classList.remove('show');
+          showToast('Aliment ajouté à ton journal.', 'success');
+          loadTodayNutrition();
+        } else {
+          showToast("Erreur lors de l'ajout — vérifie ta connexion.", 'error');
+        }
+      });
     }
 
     const miniGrid = document.getElementById('miniGrid');
@@ -2848,6 +3121,7 @@
 
     loadTrendData();
     loadStreaksData();
+    loadTodayNutrition();
 
     const today = new Date().toISOString().split('T')[0];
 
@@ -3797,6 +4071,38 @@
         if (e.key === 'Enter') { e.preventDefault(); runScan(barcodeInput.value.trim()); }
       });
 
+      // ---- Ajouter le produit scanné à mon journal alimentaire ----
+      const resultAddToJournalBtn = document.getElementById('resultAddToJournalBtn');
+      const resultQuantity = document.getElementById('resultQuantity');
+      const resultMealSlot = document.getElementById('resultMealSlot');
+      let lastScannedProduct = null; // référence au produit OpenFoodFacts du dernier scan affiché
+
+      resultAddToJournalBtn.addEventListener('click', async () => {
+        if (!lastScannedProduct) return;
+        const quantityG = parseFloat(resultQuantity.value) || 100;
+        const n = lastScannedProduct.nutriments || {};
+        const ratio = quantityG / 100;
+
+        resultAddToJournalBtn.disabled = true;
+        resultAddToJournalBtn.textContent = '...';
+
+        const ok = await logFoodEntry({
+          mealSlot: resultMealSlot.value,
+          label: lastScannedProduct.product_name || 'Produit scanné',
+          quantityG,
+          kcal: (n['energy-kcal_100g'] ?? 0) * ratio,
+          proteinsG: (n.proteins_100g ?? 0) * ratio,
+          carbsG: (n.carbohydrates_100g ?? 0) * ratio,
+          fatG: (n['fat_100g'] ?? 0) * ratio,
+          source: 'scan',
+        });
+
+        resultAddToJournalBtn.disabled = false;
+        resultAddToJournalBtn.textContent = 'Ajouter à mon journal';
+
+        showToast(ok ? 'Ajouté à ton journal du jour.' : "Erreur lors de l'ajout — vérifie ta connexion.", ok ? 'success' : 'error');
+      });
+
       let scanInFlight = false;
 
       async function runScan(barcode) {
@@ -3818,6 +4124,8 @@
 
           const product = data.product;
           const productName = product.product_name || "Produit sans nom";
+          lastScannedProduct = product; // gardé en mémoire pour "Ajouter à mon journal"
+          resultQuantity.value = 100;
 
           const { data: profile } = await supabase
             .from('profiles')
