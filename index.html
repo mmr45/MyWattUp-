@@ -20,18 +20,19 @@
      PARTIE 1 — VITRINE (page publique, visible si non connecté)
      ====================================================================== */
   :root {
-    --bg-0: #0a0912;
-    --bg-1: #14101f;
-    --bg-2: #1c1730;
-    --line: #2b2444;
-    --line-bright: #3c3260;
+    --bg-0: #12100e;
+    --bg-1: #1a1714;
+    --bg-2: #221d18;
+    --line: #322b22;
+    --line-bright: #443a2c;
     --amber: #ff9f1c;
     --amber-bright: #ffcb73;
     --amber-deep: #d9720a;
-    --cyan: #4fd8e0;
-    --text-0: #f6f3ee;
-    --text-1: #c7c1da;
-    --text-muted: #8c85a6;
+    --jade: #1f8a63;
+    --jade-bright: #35b483;
+    --text-0: #f3efe8;
+    --text-1: #cdc5b6;
+    --text-muted: #8f887c;
     --display: 'Bricolage Grotesque', sans-serif;
     --body: 'Inter', sans-serif;
     --mono: 'JetBrains Mono', monospace;
@@ -61,7 +62,8 @@
   .b3 { width: 300px; height: 300px; background: rgba(255,159,28,0.08); top: 40%; left: 60%; }
   .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
+  @media (max-width: 640px) { .wrap { padding: 0 22px; } }
 
   nav { position: relative; z-index: 2; border-bottom: 1px solid var(--line); }
   .nav-inner { max-width: 1100px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; }
@@ -100,11 +102,11 @@
   .link-secondary { font-size: 14px; color: var(--text-1); text-decoration: underline; text-underline-offset: 3px; }
   .link-secondary:hover { color: var(--amber-bright); }
 
-  .dial-frame { background: var(--bg-1); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+  .dial-frame { background: var(--bg-1); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); }
   .dial-readout { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .dial-readout span:first-child { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
-  .dial-live { font-family: var(--mono); font-size: 11px; color: var(--cyan); display: inline-flex; align-items: center; gap: 6px; }
-  .dial-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); }
+  .dial-live { font-family: var(--mono); font-size: 11px; color: var(--jade-bright); display: inline-flex; align-items: center; gap: 6px; }
+  .dial-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--jade-bright); }
   .dial-body { display: flex; align-items: center; gap: 20px; padding: 16px 4px; position: relative; }
   .dial-svg { flex-shrink: 0; }
   .dial-score { font-family: var(--display); font-weight: 800; font-size: 32px; }
@@ -115,15 +117,15 @@
   .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--amber-bright); opacity: 0.7; }
 
   /* ---------- mission ---------- */
-  .mission { padding: 88px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; }
+  .mission { padding: 96px 0 92px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; text-align: center; }
   .mission::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 0%, rgba(255,159,28,0.07), transparent 60%); pointer-events: none; }
-  .mission-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-bright); margin: 0 0 20px; display: inline-flex; align-items: center; gap: 8px; }
+  .mission-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-bright); margin: 0 0 26px; display: inline-flex; align-items: center; gap: 8px; }
   .mission-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
-  .mission-statement { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3.2vw, 40px); line-height: 1.22; letter-spacing: -0.01em; color: var(--text-0); max-width: 780px; margin: 0 0 20px; }
+  .mission-statement { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3.2vw, 40px); line-height: 1.22; letter-spacing: -0.01em; color: var(--text-0); max-width: 780px; margin: 0 auto 20px; }
   .mission-statement em { font-style: normal; background: linear-gradient(100deg, var(--amber-bright), var(--amber) 50%, var(--amber-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .mission-sub { font-size: 16px; line-height: 1.6; color: var(--text-1); max-width: 60ch; margin: 0 0 52px; }
+  .mission-sub { font-size: 16px; line-height: 1.6; color: var(--text-1); max-width: 60ch; margin: 0 auto 56px; }
   .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-  .mission-cell { background: var(--bg-1); padding: 30px 26px; }
+  .mission-cell { background: var(--bg-1); padding: 34px 30px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); text-align: left; }
   .mission-cell-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px; }
   .mission-cell h3 { font-family: var(--display); font-size: 17px; font-weight: 700; margin: 0 0 8px; color: var(--text-0); }
   .mission-cell p { font-size: 14px; line-height: 1.55; color: var(--text-1); margin: 0; }
@@ -134,7 +136,8 @@
   .section-head h2 { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); margin: 0 0 12px; }
   .section-head p { color: var(--text-1); font-size: 15px; margin: 0; }
   .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .module-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .module-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); transition: transform 0.2s, box-shadow 0.2s; }
+  .module-card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -16px rgba(0,0,0,0.6); }
   .module-tag { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber-bright); }
   .module-card h3 { font-family: var(--display); font-size: 17px; margin: 12px 0 8px; }
   .module-card p { font-size: 14px; color: var(--text-1); margin: 0; line-height: 1.55; }
@@ -142,7 +145,7 @@
 
   .install { padding: 80px 0; border-top: 1px solid var(--line); }
   .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .install-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; }
+  .install-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
   .install-card.recommended { border-color: var(--amber); }
   .install-card h3 { font-family: var(--display); font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
   .badge { font-family: var(--mono); font-size: 10px; color: var(--text-muted); border: 1px solid var(--line); padding: 2px 8px; border-radius: 100px; }
@@ -167,18 +170,18 @@
      PARTIE 1.5 — LOGIN / INSCRIPTION (namespace #view-login)
      ====================================================================== */
   #view-login {
-    --vert: #1DB954;
-    --ambre: #FFB800;
-    --fond: #0D1117;
-    --fond-card: #161B22;
-    --blanc: #F5F5F0;
-    --gris: #8B949E;
+    --vert: #1F8A63;
+    --ambre: #FF9F1C;
+    --fond: #12100E;
+    --fond-card: #1A1714;
+    --blanc: #F3EFE8;
+    --gris: #8F887C;
     display: none;
     min-height: 100vh;
     background: var(--fond);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(29,185,84,0.10), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(255,184,0,0.08), transparent 40%);
+      radial-gradient(circle at 15% 20%, rgba(31,138,99,0.14), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,159,28,0.10), transparent 40%);
     color: var(--blanc);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     align-items: center;
@@ -186,17 +189,18 @@
     padding: 24px;
   }
   #view-login * { box-sizing: border-box; }
-  #view-login .card { width: 100%; max-width: 380px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; }
-  #view-login .logo { width: 56px; height: 56px; border-radius: 50%; background: var(--fond); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 26px; color: var(--vert); }
+  #view-login .card { width: 100%; max-width: 380px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; box-shadow: 0 24px 50px -24px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.03); }
+  #view-login .logo { width: 56px; height: 56px; border-radius: 50%; background: var(--fond); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--ambre); }
+  #view-login .logo svg { width: 26px; height: 26px; }
   #view-login h1 { text-align: center; font-size: 22px; margin: 0 0 4px; letter-spacing: -0.02em; }
   #view-login .tagline { text-align: center; color: var(--gris); font-size: 13px; margin: 0 0 28px; font-style: italic; }
   #view-login .tabs { display: flex; background: var(--fond); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
   #view-login .tab { flex: 1; text-align: center; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--gris); transition: all 0.15s ease; user-select: none; }
-  #view-login .tab.active { background: var(--vert); color: #04170C; }
+  #view-login .tab.active { background: var(--vert); color: #0E1410; }
   #view-login label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 16px; }
   #view-login input { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; transition: border-color 0.15s ease; }
   #view-login input:focus { border-color: var(--vert); }
-  #view-login button[type="submit"] { width: 100%; margin-top: 26px; padding: 13px; background: var(--vert); color: #04170C; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
+  #view-login button[type="submit"] { width: 100%; margin-top: 26px; padding: 13px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
   #view-login button[type="submit"]:hover { filter: brightness(1.08); }
   #view-login button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
   #view-login .msg { margin-top: 16px; font-size: 13px; text-align: center; min-height: 18px; }
@@ -208,18 +212,18 @@
      PARTIE 1.6 — ONBOARDING (namespace #view-onboarding)
      ====================================================================== */
   #view-onboarding {
-    --vert: #1DB954;
-    --ambre: #FFB800;
-    --fond: #0D1117;
-    --fond-card: #161B22;
-    --blanc: #F5F5F0;
-    --gris: #8B949E;
+    --vert: #1F8A63;
+    --ambre: #FF9F1C;
+    --fond: #12100E;
+    --fond-card: #1A1714;
+    --blanc: #F3EFE8;
+    --gris: #8F887C;
     display: none;
     min-height: 100vh;
     background: var(--fond);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(29,185,84,0.10), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(255,184,0,0.08), transparent 40%);
+      radial-gradient(circle at 15% 20%, rgba(31,138,99,0.14), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,159,28,0.10), transparent 40%);
     color: var(--blanc);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     align-items: center;
@@ -227,7 +231,7 @@
     padding: 24px;
   }
   #view-onboarding * { box-sizing: border-box; }
-  #view-onboarding .card { width: 100%; max-width: 460px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; }
+  #view-onboarding .card { width: 100%; max-width: 460px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; box-shadow: 0 24px 50px -24px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.03); }
   #view-onboarding .step-indicator { display: flex; gap: 6px; margin-bottom: 24px; }
   #view-onboarding .step-dot { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.10); transition: background 0.2s ease; }
   #view-onboarding .step-dot.done { background: var(--vert); }
@@ -237,12 +241,12 @@
   #view-onboarding legend { font-size: 12px; color: var(--gris); margin-bottom: 10px; padding: 0; }
   #view-onboarding .options { display: flex; flex-direction: column; gap: 8px; }
   #view-onboarding .option { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; cursor: pointer; transition: border-color 0.15s ease; font-size: 14px; }
-  #view-onboarding .option:has(input:checked) { border-color: var(--vert); background: rgba(29,185,84,0.08); }
+  #view-onboarding .option:has(input:checked) { border-color: var(--vert); background: rgba(31,138,99,0.12); }
   #view-onboarding .option input { accent-color: var(--vert); width: 16px; height: 16px; margin: 0; flex-shrink: 0; }
   #view-onboarding select, #view-onboarding textarea { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; resize: vertical; }
   #view-onboarding select:focus, #view-onboarding textarea:focus { border-color: var(--vert); }
   #view-onboarding textarea { min-height: 70px; }
-  #view-onboarding button[type="submit"] { width: 100%; padding: 13px; background: var(--vert); color: #04170C; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
+  #view-onboarding button[type="submit"] { width: 100%; padding: 13px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
   #view-onboarding button[type="submit"]:hover { filter: brightness(1.08); }
   #view-onboarding button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
   #view-onboarding .msg { margin-top: 14px; font-size: 13px; text-align: center; min-height: 18px; }
@@ -254,18 +258,18 @@
      avec les classes de la vitrine (.wrap, .brand, h1, etc.)
      ====================================================================== */
   #view-app {
-    --vert: #1DB954;
-    --ambre: #FFB800;
-    --fond: #0D1117;
-    --fond-card: #161B22;
-    --blanc: #F5F5F0;
-    --gris: #8B949E;
+    --vert: #1F8A63;
+    --ambre: #FF9F1C;
+    --fond: #12100E;
+    --fond-card: #1A1714;
+    --blanc: #F3EFE8;
+    --gris: #8F887C;
     display: none;
     min-height: 100vh;
     background: var(--fond);
     background-image:
-      radial-gradient(circle at 15% 0%, rgba(29,185,84,0.08), transparent 40%),
-      radial-gradient(circle at 90% 90%, rgba(255,184,0,0.07), transparent 40%);
+      radial-gradient(circle at 15% 0%, rgba(31,138,99,0.12), transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(255,159,28,0.09), transparent 40%);
     color: var(--blanc);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
@@ -275,13 +279,14 @@
 
   #view-app .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
   #view-app .app-brand { display: flex; align-items: center; gap: 10px; }
-  #view-app .brand-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--fond-card); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; color: var(--vert); font-size: 16px; }
+  #view-app .brand-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--fond-card); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; color: var(--ambre); }
+  #view-app .brand-icon svg { width: 16px; height: 16px; }
   #view-app .brand-name { font-weight: 700; font-size: 15px; letter-spacing: -0.02em; }
   #view-app .logout { color: var(--gris); font-size: 12px; cursor: pointer; background: none; border: none; text-decoration: underline; }
   #view-app .back { color: var(--gris); text-decoration: none; font-size: 20px; }
   #view-app .app-h1 { font-size: 19px; margin: 0; letter-spacing: -0.02em; }
 
-  #view-app .score-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 32px 24px; text-align: center; margin-bottom: 20px; }
+  #view-app .score-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 32px 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 20px 40px -22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03); }
   #view-app .ring-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto 16px; }
   #view-app .ring-wrap svg { transform: rotate(-90deg); }
   #view-app .ring-bg { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 12; }
@@ -292,37 +297,44 @@
   #view-app .score-date { color: var(--gris); font-size: 13px; }
 
   #view-app .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-  #view-app .mini-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 10px; text-align: center; }
-  #view-app .mini-icon { font-size: 20px; margin-bottom: 6px; }
+  #view-app .mini-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 10px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); }
+  #view-app .mini-icon { margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
+  #view-app .mini-icon svg { width: 20px; height: 20px; }
+  #view-app .mini-card.sommeil .mini-icon { color: var(--ambre); }
+  #view-app .mini-card.activite .mini-icon { color: var(--vert); }
+  #view-app .mini-card.repas .mini-icon { color: var(--blanc); }
   #view-app .mini-value { font-size: 20px; font-weight: 700; }
   #view-app .mini-label { font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
   #view-app .mini-card.sommeil .mini-value { color: var(--ambre); }
   #view-app .mini-card.activite .mini-value { color: var(--vert); }
   #view-app .mini-card.repas .mini-value { color: var(--blanc); }
 
-  #view-app .advice-card { background: linear-gradient(135deg, rgba(29,185,84,0.10), rgba(255,184,0,0.06)); border: 1px solid rgba(29,185,84,0.20); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+  #view-app .advice-card { background: linear-gradient(135deg, rgba(31,138,99,0.14), rgba(255,184,0,0.06)); border: 1px solid rgba(31,138,99,0.25); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
   #view-app .advice-eyebrow { font-size: 11px; color: var(--vert); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px; }
   #view-app .advice-text { font-size: 14px; line-height: 1.5; color: var(--blanc); }
-  #view-app .advice-placeholder-tag { display: inline-block; margin-top: 10px; font-size: 10px; color: var(--gris); background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; }
+  #view-app .advice-placeholder-tag { display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 10px; color: var(--gris); background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 6px; }
+  #view-app .advice-placeholder-tag svg { width: 11px; height: 11px; flex-shrink: 0; }
 
-  #view-app .journal-btn { display: block; width: 100%; padding: 14px; background: var(--vert); color: #04170C; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
+  #view-app .journal-btn { display: block; width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
   #view-app .empty-state { text-align: center; color: var(--gris); font-size: 13px; padding: 20px 0; }
 
   #view-app .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--fond-card); border-top: 1px solid rgba(255,255,255,0.06); display: flex; padding: 10px 0 max(10px, env(safe-area-inset-bottom)); z-index: 5; }
   #view-app .nav-item { flex: 1; text-align: center; color: var(--gris); font-size: 10px; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; font-family: inherit; }
   #view-app .nav-item.active { color: var(--vert); }
-  #view-app .nav-icon { font-size: 18px; }
+  #view-app .nav-icon { display: block; margin: 0 auto; }
+  #view-app .nav-icon svg { width: 18px; height: 18px; }
 
   /* journal */
-  #view-app .app-section { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-  #view-app .section-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  #view-app .app-section { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
+  #view-app .section-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--ambre); }
+  #view-app .section-title svg { width: 15px; height: 15px; flex-shrink: 0; }
   #view-app label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 14px; }
   #view-app label:first-of-type { margin-top: 0; }
   #view-app input[type="number"], #view-app select, #view-app input[type="text"] { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; }
   #view-app input:focus, #view-app select:focus { border-color: var(--vert); }
   #view-app .quality-btns, #view-app .meal-btns { display: flex; gap: 8px; }
   #view-app .qbtn { flex: 1; padding: 10px; text-align: center; border-radius: 9px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 12px; cursor: pointer; color: var(--gris); }
-  #view-app .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(29,185,84,0.08); }
+  #view-app .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(31,138,99,0.12); }
   #view-app .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
   #view-app input[type="range"] { flex: 1; accent-color: var(--vert); }
   #view-app .slider-value { font-weight: 700; min-width: 28px; text-align: center; color: var(--vert); }
@@ -333,7 +345,7 @@
   #view-app .toggle.on { background: var(--vert); border-color: var(--vert); }
   #view-app .toggle-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--blanc); position: absolute; top: 2px; left: 2px; transition: left 0.15s ease; }
   #view-app .toggle.on .toggle-dot { left: 22px; }
-  #view-app button[type="submit"] { width: 100%; padding: 14px; background: var(--vert); color: #04170C; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+  #view-app button[type="submit"] { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
   #view-app button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
   #view-app .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; }
   #view-app .msg.error { color: #FF6B6B; }
@@ -342,27 +354,28 @@
   /* repas */
   #view-app .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
   #view-app .day-chip { flex: 0 0 auto; padding: 9px 16px; border-radius: 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: var(--gris); cursor: pointer; white-space: nowrap; }
-  #view-app .day-chip.active { background: var(--vert); color: #04170C; border-color: var(--vert); font-weight: 700; }
-  #view-app .meal-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+  #view-app .day-chip.active { background: var(--vert); color: #0E1410; border-color: var(--vert); font-weight: 700; }
+  #view-app .meal-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .meal-type { font-size: 11px; color: var(--ambre); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px; }
   #view-app .meal-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   #view-app .meal-cal { font-size: 12px; color: var(--gris); margin-bottom: 8px; }
   #view-app .meal-why { font-size: 12px; color: var(--vert); font-style: italic; }
-  #view-app .app-cta { width: 100%; padding: 14px; background: var(--vert); color: #04170C; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  #view-app .app-cta { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
   #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
 
   /* scanner */
-  #view-app .scan-box { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  #view-app .scan-box { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .scan-box label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 8px; }
   #view-app .scan-row { display: flex; gap: 8px; }
-  #view-app .scan-btn { padding: 12px 18px; background: var(--vert); color: #04170C; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
+  #view-app .scan-btn { padding: 12px 18px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 14px; }
   #view-app .scan-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  #view-app .hint { font-size: 11px; color: var(--gris); margin-top: 10px; }
-  #view-app .result-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: none; }
+  #view-app .hint { font-size: 11px; color: var(--gris); margin-top: 10px; display: flex; align-items: flex-start; gap: 6px; }
+  #view-app .hint svg { width: 13px; height: 13px; flex-shrink: 0; margin-top: 1px; }
+  #view-app .result-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: none; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .result-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   #view-app .result-score { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin: 8px 0; }
-  #view-app .score-good { background: rgba(29,185,84,0.15); color: var(--vert); }
-  #view-app .score-mid { background: rgba(255,184,0,0.15); color: var(--ambre); }
+  #view-app .score-good { background: rgba(31,138,99,0.18); color: var(--vert); }
+  #view-app .score-mid { background: rgba(255,159,28,0.18); color: var(--ambre); }
   #view-app .score-bad { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .result-justif { font-size: 13px; color: var(--gris); }
   #view-app .history-title { font-size: 13px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin: 24px 0 12px; }
@@ -426,7 +439,7 @@
         </svg>
         <ul class="dial-legend">
           <li><span class="dot" style="background:#ff9f1c"></span>Sommeil — 7h40</li>
-          <li><span class="dot" style="background:#4fd8e0"></span>Activité — atteinte</li>
+          <li><span class="dot" style="background:#35b483"></span>Activité — atteinte</li>
           <li><span class="dot" style="background:#ffcb73"></span>Forme — bonne</li>
         </ul>
       </div>
@@ -528,7 +541,7 @@
      ====================================================================== -->
 <div id="view-login">
   <div class="card">
-    <div class="logo">⚡</div>
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
     <h1>MyWattUp</h1>
     <p class="tagline">Ton énergie, ton équilibre.</p>
 
@@ -571,7 +584,7 @@
       <div class="step-dot done"></div>
     </div>
 
-    <h1>Bienvenue sur MyWattUp ⚡</h1>
+    <h1>Bienvenue sur MyWattUp</h1>
     <p class="sub">Trois infos rapides pour personnaliser tes recommandations.</p>
 
     <form id="onboardingForm">
@@ -640,7 +653,7 @@
     <section id="panel-dashboard" class="app-panel">
       <div class="topbar">
         <div class="app-brand">
-          <div class="brand-icon">⚡</div>
+          <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
           <div class="brand-name">MyWattUp</div>
         </div>
         <button class="logout" id="logoutBtn">Déconnexion</button>
@@ -662,17 +675,17 @@
 
       <div class="mini-grid">
         <div class="mini-card sommeil">
-          <div class="mini-icon">🌙</div>
+          <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></div>
           <div class="mini-value" id="sleepValue">--</div>
           <div class="mini-label">Sommeil</div>
         </div>
         <div class="mini-card activite">
-          <div class="mini-icon">🔥</div>
+          <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg></div>
           <div class="mini-value" id="activityValue">--</div>
           <div class="mini-label">Activité</div>
         </div>
         <div class="mini-card repas">
-          <div class="mini-icon">🍽️</div>
+          <div class="mini-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></div>
           <div class="mini-value" id="mealsValue">--</div>
           <div class="mini-label">Repas suivis</div>
         </div>
@@ -683,7 +696,7 @@
         <div class="advice-text" id="adviceText">
           Remplis ton journal du jour pour recevoir ton premier conseil personnalisé.
         </div>
-        <span class="advice-placeholder-tag">⚙️ Texte statique — IA Claude à brancher</span>
+        <span class="advice-placeholder-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg> Texte statique — IA Claude à brancher</span>
       </div>
 
       <a href="#journal" class="journal-btn">Remplir mon journal du jour</a>
@@ -698,7 +711,7 @@
 
       <form id="journalForm">
         <div class="app-section">
-          <div class="section-title">🌙 Sommeil</div>
+          <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg> Sommeil</div>
           <label for="sleepHours">Heures dormies</label>
           <input type="number" id="sleepHours" min="0" max="14" step="0.5" placeholder="ex. 7.5" required />
 
@@ -711,7 +724,7 @@
         </div>
 
         <div class="app-section">
-          <div class="section-title">🔥 Activité</div>
+          <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4 0 7-2.5 7-6.5 0-3-2-5-3-7-.3 2-1.3 3-2 3 .5-4-1-6.5-4-8.5.5 3-1 5-3 7-1.5 1.5-2 3.5-2 5.5C5 19.5 8 22 12 22Z"/></svg> Activité</div>
           <label for="activityType">Type de séance</label>
           <select id="activityType" required>
             <option value="" disabled selected>Choisis</option>
@@ -731,7 +744,7 @@
         </div>
 
         <div class="app-section">
-          <div class="section-title">💪 Forme ressentie</div>
+          <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14c0-4 2-8 6-9 1 1.5.5 3-1 4 2-1 5-1 6 2 1-1 3-.5 3 1.5 0 4-3 7-7 8-3 .8-6-1-7-4Z"/><path d="M9 15c1.5 1 4 1 6-1"/></svg> Forme ressentie</div>
           <label>De 1 à 10</label>
           <div class="slider-row">
             <input type="range" id="moodScore" min="1" max="10" value="5" />
@@ -740,7 +753,7 @@
         </div>
 
         <div class="app-section">
-          <div class="section-title">🍽️ Repas suivis</div>
+          <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg> Repas suivis</div>
           <div class="meal-row">
             <span class="meal-name-toggle">Petit-déjeuner</span>
             <div class="toggle" data-target="breakfastDone"><div class="toggle-dot"></div></div>
@@ -785,7 +798,7 @@
           <input type="text" id="barcodeInput" placeholder="ex. 3017620422003" inputmode="numeric" />
           <button class="scan-btn" id="scanBtn">Scanner</button>
         </div>
-        <div class="hint">📷 Scan par appareil photo prévu en Phase 2. Pour l'instant, saisis le code-barres manuellement.</div>
+        <div class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg> Scan par appareil photo prévu en Phase 2. Pour l'instant, saisis le code-barres manuellement.</div>
       </div>
 
       <div class="result-card" id="resultCard">
@@ -802,10 +815,10 @@
 
   <!-- ---------- NAV BASSE COMMUNE À TOUTE L'APP ---------- -->
   <nav class="bottom-nav">
-    <a href="#dashboard" class="nav-item" data-nav="dashboard"><span class="nav-icon">🏠</span>Accueil</a>
-    <a href="#journal" class="nav-item" data-nav="journal"><span class="nav-icon">📓</span>Journal</a>
-    <a href="#repas" class="nav-item" data-nav="repas"><span class="nav-icon">🍽️</span>Repas</a>
-    <a href="#scanner" class="nav-item" data-nav="scanner"><span class="nav-icon">📷</span>Scanner</a>
+    <a href="#dashboard" class="nav-item" data-nav="dashboard"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg></span>Accueil</a>
+    <a href="#journal" class="nav-item" data-nav="journal"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h11a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a2 2 0 0 1-2-2V3Z"/><path d="M6 17a2 2 0 0 1 2-2h10"/><path d="M9 7h6M9 11h6"/></svg></span>Journal</a>
+    <a href="#repas" class="nav-item" data-nav="repas"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span>Repas</a>
+    <a href="#scanner" class="nav-item" data-nav="scanner"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a1 1 0 0 1 1-1h2.2l1-1.6a1 1 0 0 1 .85-.4h5.9a1 1 0 0 1 .85.4l1 1.6H19a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8Z"/><circle cx="12" cy="13.5" r="3.5"/></svg></span>Scanner</a>
   </nav>
 </div>
 <!-- fin #view-app -->
