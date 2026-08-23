@@ -74,7 +74,7 @@ export async function getCurrentUser() {
 export async function ensureProfile(user) {
   const { data: existing, error: fetchError } = await supabase
     .from('profiles')
-    .select('username, avatar_seed, avatar_url')
+    .select('username, avatar_seed, avatar_url, sport_type, objective, allergies')
     .eq('user_id', user.id)
     .maybeSingle();
 
@@ -88,7 +88,7 @@ export async function ensureProfile(user) {
   const { data: created, error: upsertError } = await supabase
     .from('profiles')
     .upsert({ user_id: user.id, avatar_seed: avatarSeed }, { onConflict: 'user_id' })
-    .select('username, avatar_seed, avatar_url')
+    .select('username, avatar_seed, avatar_url, sport_type, objective, allergies')
     .single();
 
   if (upsertError) {
