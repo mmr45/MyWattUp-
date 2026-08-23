@@ -619,6 +619,29 @@
   #view-app .plan-card.upgrade .plan-feature-list li svg { color: var(--ambre); }
   #view-app .plan-quota-mini { font-size: 12px; color: var(--gris); margin: -8px 0 16px; }
 
+  /* ---------- FAQ ---------- */
+  #view-app .faq-item { border-bottom: 1px solid rgba(255,255,255,0.06); }
+  #view-app .faq-item:last-child { border-bottom: none; }
+  #view-app .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 16px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; font-family: inherit; color: var(--blanc); font-size: 14px; font-weight: 600; }
+  #view-app .faq-q svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--gris); transition: transform 0.2s ease; }
+  #view-app .faq-item.open .faq-q svg { transform: rotate(180deg); color: var(--ambre); }
+  #view-app .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  #view-app .faq-item.open .faq-a { max-height: 400px; }
+  #view-app .faq-a p { font-size: 13px; color: var(--gris); line-height: 1.6; margin: 0 0 16px; }
+  #view-app .faq-search { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; margin-bottom: 18px; }
+  #view-app .faq-search:focus { border-color: var(--vert); }
+  #view-app .faq-empty { text-align: center; color: var(--gris); font-size: 13px; padding: 20px 0; display: none; }
+
+  /* ---------- Support ---------- */
+  #view-app .support-shortcut { display: flex; align-items: center; gap: 14px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 18px; margin-bottom: 12px; text-decoration: none; color: var(--blanc); transition: border-color 0.15s ease; }
+  #view-app .support-shortcut:hover { border-color: var(--ambre); }
+  #view-app .support-shortcut-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,159,28,0.12); color: var(--ambre); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  #view-app .support-shortcut-icon svg { width: 19px; height: 19px; }
+  #view-app .support-shortcut-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  #view-app .support-shortcut-desc { font-size: 12px; color: var(--gris); }
+  #view-app .support-status { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--vert); background: rgba(31,138,99,0.10); border: 1px solid rgba(31,138,99,0.25); border-radius: 10px; padding: 10px 14px; margin-bottom: 22px; }
+  #view-app .support-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--vert); flex-shrink: 0; }
+
   /* scanner */
   #view-app .scan-box { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
   #view-app .scan-box label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 8px; }
@@ -1365,6 +1388,16 @@
         <button type="button" class="app-cta secondary" id="settingsExportData" style="margin-top:14px;">Exporter mes données</button>
       </div>
 
+      <!-- ---------- Aide & Support ---------- -->
+      <div class="app-section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2 3"/><path d="M12 17h.01"/></svg>
+          Aide & Support
+        </div>
+        <a href="#faq" class="settings-link">Questions fréquentes (FAQ)</a>
+        <a href="#support" class="settings-link" style="margin-top:12px;">Contacter le support / signaler un bug</a>
+      </div>
+
       <!-- ---------- Zone danger ---------- -->
       <div class="app-section" style="border-color: rgba(255,107,107,0.25);">
         <div class="section-title" style="color:#FF6B6B;">
@@ -1430,6 +1463,108 @@
       <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
 
       <p class="msg" id="abonnementMsg" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- ---------- FAQ ---------- -->
+    <section id="panel-faq" class="app-panel">
+      <div class="topbar">
+        <a href="#parametres" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <h1 class="app-h1">Questions fréquentes</h1>
+      </div>
+
+      <input type="text" class="faq-search" id="faqSearch" placeholder="Rechercher une question..." />
+
+      <div class="app-section" id="faqList">
+        <div class="faq-item" data-q="comment fonctionne le score du jour calcul sommeil activité forme">
+          <button type="button" class="faq-q">Comment est calculé mon score du jour ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>Ton score du jour combine trois éléments que tu renseignes dans le Journal : ton sommeil, ton activité physique et ta forme ressentie. Plus ces trois indicateurs sont bons, plus ton score se rapproche de 100.</p></div>
+        </div>
+        <div class="faq-item" data-q="scans limite 5 par jour gratuit offre">
+          <button type="button" class="faq-q">Pourquoi mon scan de produit ne fonctionne plus ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>L'offre Gratuite est limitée à 5 scans par jour. Le compteur se réinitialise chaque jour à minuit. Passe en Pro pour scanner sans limite.</p></div>
+        </div>
+        <div class="faq-item" data-q="génération repas semaine limite plan menu">
+          <button type="button" class="faq-q">Combien de fois puis-je générer mon plan de repas ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>En offre Gratuite, tu peux générer 1 plan de repas par semaine. En offre Pro, la génération est illimitée et tu peux régénérer un plan à tout moment, y compris si tu changes d'objectif en cours de semaine.</p></div>
+        </div>
+        <div class="faq-item" data-q="code barres introuvable produit non reconnu openfoodfacts">
+          <button type="button" class="faq-q">Le scanner ne trouve pas mon produit, que faire ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>Les informations produits viennent d'OpenFoodFacts, une base collaborative. Si un code-barres n'est pas reconnu, c'est qu'il n'y figure pas encore. Vérifie le code saisi, ou contacte le support si le problème persiste.</p></div>
+        </div>
+        <div class="faq-item" data-q="allergies objectif modifier profil changer">
+          <button type="button" class="faq-q">Comment modifier mon objectif ou mes allergies ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>Rends-toi dans Paramètres → Ma pratique. Tu peux y mettre à jour ton sport, ton objectif et tes allergies à tout moment ; tes prochains conseils et repas générés en tiendront compte.</p></div>
+        </div>
+        <div class="faq-item" data-q="pro abonnement prix résilier annuler paiement stripe">
+          <button type="button" class="faq-q">Comment résilier mon offre Pro ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>Ton abonnement Pro est géré via Stripe et résiliable à tout moment depuis l'écran Abonnement. En cas d'annulation, tu conserves l'accès Pro jusqu'à la fin de la période déjà payée, puis ton compte repasse automatiquement en offre Gratuite.</p></div>
+        </div>
+        <div class="faq-item" data-q="données rgpd confidentialité supprimer compte exporter">
+          <button type="button" class="faq-q">Que deviennent mes données si je supprime mon compte ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>La suppression de ton compte (Paramètres → Zone danger) efface définitivement ton profil, tes journaux, tes repas et ton historique de scans. Tu peux aussi exporter tes données avant de supprimer ton compte.</p></div>
+        </div>
+        <div class="faq-item" data-q="installer app téléphone android iphone pwa">
+          <button type="button" class="faq-q">Comment installer MyWattUp sur mon téléphone ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>Sur Android (Chrome), utilise le menu ⋮ → « Installer l'application ». Sur iPhone (Safari), utilise le bouton Partager → « Sur l'écran d'accueil ». L'app fonctionne alors comme une application native.</p></div>
+        </div>
+      </div>
+      <p class="faq-empty" id="faqEmpty">Aucune question ne correspond à ta recherche. Essaie une autre formulation ou contacte le support.</p>
+
+      <a href="#support" class="app-cta secondary" style="margin-top:6px; text-decoration:none;">Je ne trouve pas ma réponse, contacter le support</a>
+    </section>
+
+    <!-- ---------- SUPPORT ---------- -->
+    <section id="panel-support" class="app-panel">
+      <div class="topbar">
+        <a href="#parametres" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <h1 class="app-h1">Support</h1>
+      </div>
+
+      <div class="support-status"><span class="dot"></span>Tous les services MyWattUp fonctionnent normalement.</div>
+
+      <a href="#faq" class="support-shortcut">
+        <span class="support-shortcut-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-1.5 2-2 3"/><path d="M12 17h.01"/></svg></span>
+        <span>
+          <div class="support-shortcut-title">Consulter la FAQ</div>
+          <div class="support-shortcut-desc">Les réponses aux questions les plus fréquentes</div>
+        </span>
+      </a>
+      <a href="mailto:support@mywattup.app" class="support-shortcut">
+        <span class="support-shortcut-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+        <span>
+          <div class="support-shortcut-title">Écrire à support@mywattup.app</div>
+          <div class="support-shortcut-desc">Réponse sous 48h, prioritaire pour les comptes Pro</div>
+        </span>
+      </a>
+
+      <div class="app-section">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 17h.01"/></svg>
+          Signaler un bug ou poser une question
+        </div>
+
+        <form id="supportForm">
+          <label for="supportType">Type de demande</label>
+          <select id="supportType" required>
+            <option value="" disabled selected>Choisis</option>
+            <option value="bug">Signaler un bug</option>
+            <option value="question">Poser une question</option>
+            <option value="facturation">Question sur mon abonnement / facturation</option>
+            <option value="suggestion">Suggestion d'amélioration</option>
+          </select>
+
+          <label for="supportEmail">Ton email</label>
+          <input type="email" id="supportEmail" placeholder="ton@email.com" required />
+
+          <label for="supportMessage">Décris le problème ou ta question</label>
+          <textarea id="supportMessage" rows="5" placeholder="Ce qui s'est passé, ce que tu attendais, l'écran concerné..." required></textarea>
+
+          <button type="submit" class="app-cta" id="supportSubmitBtn">Envoyer au support</button>
+          <p class="msg" id="supportMsg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <p class="settings-note">Astuce : précise ton navigateur et l'écran concerné, ça nous aide à résoudre le problème plus vite.</p>
     </section>
 
     <!-- ---------- MODALE DE RECADRAGE AVATAR ---------- -->
@@ -1660,7 +1795,7 @@
   // -------------------------------------------------------------
   // Routeur interne de l'app (panneau affiché selon #hash)
   // -------------------------------------------------------------
-  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres', 'abonnement'];
+  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres', 'abonnement', 'faq', 'support'];
   let journalBound = false;
 
   function routeApp() {
@@ -1689,6 +1824,8 @@
     if (current === 'scanner') initScanner();
     if (current === 'parametres') initSettings();
     if (current === 'abonnement') initAbonnement();
+    if (current === 'faq') initFaq();
+    if (current === 'support') initSupport();
     if (current !== 'scanner' && window.__stopMyWattUpCamera) window.__stopMyWattUpCamera();
   }
 
@@ -2499,6 +2636,55 @@
         msg.textContent = "Paiement Stripe à venir — ton compte reste sur l'offre Gratuite pour le moment.";
         msg.className = 'msg success';
       }
+    });
+  }
+
+  let faqBound = false;
+  function initFaq() {
+    if (faqBound) return;
+    faqBound = true;
+    const items = Array.from(document.querySelectorAll('#faqList .faq-item'));
+    items.forEach(item => {
+      item.querySelector('.faq-q').addEventListener('click', () => {
+        item.classList.toggle('open');
+      });
+    });
+    const search = document.getElementById('faqSearch');
+    const empty = document.getElementById('faqEmpty');
+    search.addEventListener('input', () => {
+      const term = search.value.trim().toLowerCase();
+      let visibleCount = 0;
+      items.forEach(item => {
+        const haystack = (item.dataset.q + ' ' + item.querySelector('.faq-q').textContent).toLowerCase();
+        const match = term === '' || haystack.includes(term);
+        item.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+      empty.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+  }
+
+  let supportBound = false;
+  function initSupport() {
+    document.getElementById('supportEmail').value = document.getElementById('supportEmail').value || (user?.email || '');
+    if (supportBound) return;
+    supportBound = true;
+    const form = document.getElementById('supportForm');
+    const msg = document.getElementById('supportMsg');
+    const submitBtn = document.getElementById('supportSubmitBtn');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi...';
+      setTimeout(() => {
+        msg.textContent = "Ta demande a bien été enregistrée (mock — l'envoi réel au support arrivera avec le branchement backend). Nous te répondons sous 48h à l'adresse indiquée.";
+        msg.className = 'msg success';
+        showToast('Message envoyé au support (simulation).', 'success');
+        form.reset();
+        document.getElementById('supportEmail').value = user?.email || '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Envoyer au support';
+      }, 500);
     });
   }
 
