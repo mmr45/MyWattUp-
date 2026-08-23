@@ -469,6 +469,17 @@
   #view-app .mini-card.forme .mini-value { color: #4FD8E0; }
   #view-app .mini-card.repas .mini-value { color: var(--blanc); }
 
+  #view-app .trend-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px 18px 14px; margin-bottom: 20px; }
+  #view-app .trend-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  #view-app .trend-title { font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ambre); }
+  #view-app .trend-toggle { display: flex; background: var(--fond); border-radius: 8px; padding: 3px; }
+  #view-app .trend-toggle-btn { border: none; background: none; color: var(--gris); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; }
+  #view-app .trend-toggle-btn.active { background: var(--vert); color: #0E1410; }
+  #view-app .trend-chart-wrap { width: 100%; height: 120px; }
+  #view-app .trend-chart-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  #view-app .trend-empty { text-align: center; font-size: 12.5px; color: var(--gris); padding: 24px 0; }
+  #view-app .trend-avg { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gris); margin-top: 8px; font-family: var(--mono); }
+  #view-app .trend-avg strong { color: var(--blanc); font-weight: 600; }
   #view-app .advice-card { background: linear-gradient(135deg, rgba(31,138,99,0.14), rgba(255,184,0,0.06)); border: 1px solid rgba(31,138,99,0.25); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
   #view-app .advice-eyebrow { font-size: 11px; color: var(--vert); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px; }
   #view-app .advice-text { font-size: 14px; line-height: 1.5; color: var(--blanc); }
@@ -1350,6 +1361,21 @@
         </div>
         <p class="mini-why-text" id="miniWhyText"></p>
         <p class="mini-why-sources" id="miniWhySources"></p>
+      </div>
+
+      <div class="trend-card" id="trendCard">
+        <div class="trend-head">
+          <span class="trend-title">Évolution du score</span>
+          <div class="trend-toggle" id="trendToggle">
+            <button type="button" class="trend-toggle-btn active" data-range="7">7j</button>
+            <button type="button" class="trend-toggle-btn" data-range="30">30j</button>
+          </div>
+        </div>
+        <div class="trend-chart-wrap" id="trendChartWrap">
+          <svg id="trendChart" viewBox="0 0 320 120" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="trend-empty" id="trendEmpty" style="display:none;">Remplis ton journal quelques jours pour voir ta tendance.</div>
+        <div class="trend-avg" id="trendAvg"></div>
       </div>
 
       <div class="advice-card" id="adviceCard">
@@ -2331,6 +2357,8 @@
   let dashboardBound = false;
   let dashboardLoaded = false;
   let lastDashboardLog = null;
+  let trendLogsAll = [];
+  let currentTrendRange = 7;
 
   const SLEEP_QUALITY_LABEL = { bonne: 'Bonne qualité', moyenne: 'Qualité moyenne', mauvaise: 'Mauvaise qualité' };
   const ACTIVITY_TYPE_LABEL = { force: 'Force', endurance: 'Endurance', repos: 'Repos' };
@@ -2481,11 +2509,105 @@
     document.getElementById('miniWhyClose').addEventListener('click', closeMiniWhy);
   }
 
+  // Construit le tracé SVG (ligne + zone) du graphique de tendance
+  function buildTrendSVG(points) {
+    const svg = document.getElementById('trendChart');
+    if (!svg || points.length < 2) return;
+
+    const w = 320, h = 120, padX = 4, padY = 12;
+    const scores = points.map(p => p.score);
+    const min = Math.min(...scores, 40);
+    const max = Math.max(...scores, 100);
+    const range = (max - min) || 1;
+    const stepX = (w - padX * 2) / (points.length - 1);
+
+    const coords = points.map((p, i) => {
+      const x = padX + i * stepX;
+      const y = h - padY - ((p.score - min) / range) * (h - padY * 2);
+      return [x, y];
+    });
+
+    const linePath = coords.map((c, i) => (i === 0 ? 'M' : 'L') + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
+    const areaPath = linePath + ` L${coords[coords.length - 1][0].toFixed(1)},${h} L${coords[0][0].toFixed(1)},${h} Z`;
+    const dots = coords.map(c => `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="2.5" style="fill:var(--vert)" />`).join('');
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="trendFillGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" style="stop-color:var(--vert); stop-opacity:0.35" />
+          <stop offset="100%" style="stop-color:var(--vert); stop-opacity:0" />
+        </linearGradient>
+      </defs>
+      <path d="${areaPath}" fill="url(#trendFillGradient)" stroke="none" />
+      <path d="${linePath}" fill="none" style="stroke:var(--vert)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      ${dots}
+    `;
+  }
+
+  // Affiche la tranche (7 ou 30 jours) demandée à partir des logs déjà chargés
+  function renderTrendRange(days) {
+    currentTrendRange = days;
+    const wrap = document.getElementById('trendChartWrap');
+    const empty = document.getElementById('trendEmpty');
+    const avgEl = document.getElementById('trendAvg');
+    if (!wrap || !empty || !avgEl) return;
+
+    const slice = trendLogsAll.slice(-days);
+
+    if (slice.length < 2) {
+      wrap.style.display = 'none';
+      empty.style.display = 'block';
+      avgEl.textContent = '';
+      return;
+    }
+
+    wrap.style.display = 'block';
+    empty.style.display = 'none';
+
+    const points = slice.map(d => ({ date: d.log_date, score: d.daily_score }));
+    buildTrendSVG(points);
+
+    const avg = Math.round(points.reduce((sum, p) => sum + p.score, 0) / points.length);
+    const firstDate = new Date(points[0].date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    const lastDate = new Date(points[points.length - 1].date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    avgEl.innerHTML = `<span>${firstDate}</span><span>Moyenne : <strong>${avg}/100</strong></span><span>${lastDate}</span>`;
+  }
+
+  // Récupère les 30 derniers jours de score depuis Supabase et affiche la tranche courante
+  async function loadTrendData() {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+    const fromDate = thirtyDaysAgo.toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+      .from('daily_logs')
+      .select('log_date, daily_score')
+      .eq('user_id', user.id)
+      .gte('log_date', fromDate)
+      .order('log_date', { ascending: true });
+
+    if (error) {
+      console.error("Erreur récupération de la tendance :", error.message);
+      trendLogsAll = [];
+    } else {
+      trendLogsAll = (data || []).filter(d => d.daily_score != null);
+    }
+
+    renderTrendRange(currentTrendRange);
+  }
+
   async function initDashboard() {
     if (!dashboardBound) {
       dashboardBound = true;
       document.getElementById('btnRefreshDashboard').addEventListener('click', () => initDashboard());
       bindMiniWhy();
+      document.querySelectorAll('#trendToggle .trend-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#trendToggle .trend-toggle-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderTrendRange(parseInt(btn.dataset.range, 10));
+        });
+      });
     }
 
     const miniGrid = document.getElementById('miniGrid');
@@ -2501,6 +2623,8 @@
       adviceSkeleton.style.display = 'block';
     }
     if (refreshBtn) refreshBtn.classList.add('spinning');
+
+    loadTrendData();
 
     const today = new Date().toISOString().split('T')[0];
 
