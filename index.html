@@ -193,7 +193,7 @@
   #view-login .card { width: 100%; max-width: 380px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; box-shadow: 0 24px 50px -24px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.03); }
   #view-login .logo { width: 56px; height: 56px; border-radius: 50%; background: var(--fond); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--ambre); }
   #view-login .logo svg { width: 26px; height: 26px; }
-  #view-login h1 { text-align: center; font-size: 22px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  #view-login h1 { text-align: center; font-family: var(--display); font-weight: 700; font-size: 23px; margin: 0 0 4px; letter-spacing: -0.02em; }
   #view-login .tagline { text-align: center; color: var(--gris); font-size: 13px; margin: 0 0 28px; font-style: italic; }
   #view-login .tabs { display: flex; background: var(--fond); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
   #view-login .tab { flex: 1; text-align: center; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--gris); transition: all 0.15s ease; user-select: none; }
@@ -241,7 +241,7 @@
   #view-onboarding .step-indicator { display: flex; gap: 6px; margin-bottom: 24px; }
   #view-onboarding .step-dot { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.10); transition: background 0.2s ease; }
   #view-onboarding .step-dot.done { background: var(--vert); }
-  #view-onboarding h1 { font-size: 20px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  #view-onboarding h1 { font-family: var(--display); font-weight: 700; font-size: 21px; margin: 0 0 4px; letter-spacing: -0.02em; }
   #view-onboarding .sub { color: var(--gris); font-size: 13px; margin: 0 0 24px; }
   #view-onboarding fieldset { border: none; padding: 0; margin: 0 0 28px; }
   #view-onboarding legend { font-size: 12px; color: var(--gris); margin-bottom: 10px; padding: 0; }
@@ -283,7 +283,7 @@
   #view-app .app-wrap { max-width: 480px; margin: 0 auto; padding: 24px 20px 100px; }
   #view-app .app-panel { display: none; }
 
-  #view-app .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  #view-app .topbar { display: flex; align-items: center; margin-bottom: 28px; }
   #view-app .app-brand { display: flex; align-items: center; gap: 10px; }
   #view-app .brand-icon { width: 34px; height: 34px; border-radius: 50%; background: var(--fond-card); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; color: var(--ambre); }
   #view-app .brand-icon svg { width: 16px; height: 16px; }
@@ -293,28 +293,40 @@
   #view-app .icon-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; }
   #view-app .icon-btn:hover { color: var(--ambre); border-color: var(--ambre); }
   #view-app .icon-btn svg { width: 16px; height: 16px; }
-  #view-app .back { color: var(--gris); text-decoration: none; font-size: 20px; }
-  #view-app .app-h1 { font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+  #view-app .topbar { display: flex; align-items: center; gap: 14px; }
+  #view-app .topbar.dashboard-topbar { justify-content: space-between; }
+  #view-app .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  #view-app .back { width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease; }
+  #view-app .back:hover { color: var(--ambre); border-color: var(--ambre); }
+  #view-app .back:active { transform: scale(0.92); }
+  #view-app .back svg { width: 16px; height: 16px; }
+  #view-app .app-h1 { font-family: var(--display); font-weight: 700; font-size: 19px; margin: 0; letter-spacing: -0.02em; }
+  #view-app .dash-greeting { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.08em; margin: -18px 0 20px; }
 
-  #view-app .score-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 32px 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 20px 40px -22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03); }
+  #view-app .score-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 32px 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 20px 40px -22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03); position: relative; overflow: hidden; }
+  #view-app .score-card::before { content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(31,138,99,0.16), transparent 65%); pointer-events: none; }
   #view-app .ring-wrap { position: relative; width: 180px; height: 180px; margin: 0 auto 16px; }
   #view-app .ring-wrap svg { transform: rotate(-90deg); }
   #view-app .ring-bg { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 12; }
   #view-app .ring-fg { fill: none; stroke: var(--vert); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
   #view-app .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  #view-app .ring-score { font-size: 42px; font-weight: 800; letter-spacing: -0.03em; }
-  #view-app .ring-label { font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
+  #view-app .ring-score { font-family: var(--display); font-size: 42px; font-weight: 800; letter-spacing: -0.03em; }
+  #view-app .ring-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; }
   #view-app .score-date { color: var(--gris); font-size: 13px; }
 
   #view-app .mini-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-  #view-app .mini-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 16px 10px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); }
-  #view-app .mini-icon { margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
-  #view-app .mini-icon svg { width: 20px; height: 20px; }
-  #view-app .mini-card.sommeil .mini-icon { color: var(--ambre); }
-  #view-app .mini-card.activite .mini-icon { color: var(--vert); }
-  #view-app .mini-card.repas .mini-icon { color: var(--blanc); }
-  #view-app .mini-value { font-size: 20px; font-weight: 700; }
-  #view-app .mini-label { font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  #view-app .mini-card { border-radius: 14px; padding: 16px 10px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease; }
+  #view-app .mini-card:active { transform: scale(0.97); }
+  #view-app .mini-icon { margin-bottom: 8px; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; margin-left: auto; margin-right: auto; }
+  #view-app .mini-icon svg { width: 16px; height: 16px; }
+  #view-app .mini-card.sommeil { background: rgba(255,159,28,0.08); border-color: rgba(255,159,28,0.18); }
+  #view-app .mini-card.sommeil .mini-icon { color: var(--ambre); background: rgba(255,159,28,0.14); }
+  #view-app .mini-card.activite { background: rgba(31,138,99,0.08); border-color: rgba(31,138,99,0.2); }
+  #view-app .mini-card.activite .mini-icon { color: var(--vert); background: rgba(31,138,99,0.16); }
+  #view-app .mini-card.repas { background: var(--fond-card); }
+  #view-app .mini-card.repas .mini-icon { color: var(--blanc); background: rgba(255,255,255,0.08); }
+  #view-app .mini-value { font-family: var(--display); font-size: 20px; font-weight: 700; }
+  #view-app .mini-label { font-family: var(--mono); font-size: 10px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
   #view-app .mini-card.sommeil .mini-value { color: var(--ambre); }
   #view-app .mini-card.activite .mini-value { color: var(--vert); }
   #view-app .mini-card.repas .mini-value { color: var(--blanc); }
@@ -336,18 +348,33 @@
 
   /* journal */
   #view-app .app-section { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
-  #view-app .section-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--ambre); }
+  #view-app .section-title { font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--ambre); }
   #view-app .section-title svg { width: 15px; height: 15px; flex-shrink: 0; }
   #view-app label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 14px; }
   #view-app label:first-of-type { margin-top: 0; }
   #view-app input[type="number"], #view-app select, #view-app input[type="text"], #view-app input[type="password"] { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; }
   #view-app input:focus, #view-app select:focus { border-color: var(--vert); }
   #view-app .quality-btns, #view-app .meal-btns { display: flex; gap: 8px; }
-  #view-app .qbtn { flex: 1; padding: 10px; text-align: center; border-radius: 9px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 12px; cursor: pointer; color: var(--gris); }
+  #view-app .qbtn { flex: 1; padding: 10px; text-align: center; border-radius: 9px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 12px; cursor: pointer; color: var(--gris); transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
   #view-app .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(31,138,99,0.12); }
   #view-app .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
-  #view-app input[type="range"] { flex: 1; accent-color: var(--vert); }
-  #view-app .slider-value { font-weight: 700; min-width: 28px; text-align: center; color: var(--vert); }
+  #view-app input[type="range"] {
+    flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 4px;
+    background: linear-gradient(to right, var(--vert) 0%, var(--vert) 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 100%);
+    outline: none;
+  }
+  #view-app input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--blanc); border: 3px solid var(--vert); cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4); transition: transform 0.15s ease;
+  }
+  #view-app input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.15); }
+  #view-app input[type="range"]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--blanc);
+    border: 3px solid var(--vert); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  #view-app input[type="range"]::-moz-range-track { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.1); }
+  #view-app .slider-value { font-family: var(--display); font-weight: 700; min-width: 28px; text-align: center; color: var(--vert); }
   #view-app .meal-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
   #view-app .meal-row:not(:last-child) { border-bottom: 1px solid rgba(255,255,255,0.05); }
   #view-app .meal-name-toggle { font-size: 14px; }
@@ -355,7 +382,9 @@
   #view-app .toggle.on { background: var(--vert); border-color: var(--vert); }
   #view-app .toggle-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--blanc); position: absolute; top: 2px; left: 2px; transition: left 0.15s ease; }
   #view-app .toggle.on .toggle-dot { left: 22px; }
-  #view-app button[type="submit"] { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; }
+  #view-app button[type="submit"] { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: filter 0.15s ease, transform 0.1s ease; }
+  #view-app button[type="submit"]:hover { filter: brightness(1.08); }
+  #view-app button[type="submit"]:active { transform: scale(0.98); }
   #view-app button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
   #view-app .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; }
   #view-app .msg.error { color: #FF6B6B; }
@@ -363,15 +392,20 @@
 
   /* repas */
   #view-app .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
-  #view-app .day-chip { flex: 0 0 auto; padding: 9px 16px; border-radius: 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: var(--gris); cursor: pointer; white-space: nowrap; }
+  #view-app .day-chip { flex: 0 0 auto; padding: 9px 16px; border-radius: 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: var(--gris); cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
   #view-app .day-chip.active { background: var(--vert); color: #0E1410; border-color: var(--vert); font-weight: 700; }
-  #view-app .meal-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
-  #view-app .meal-type { font-size: 11px; color: var(--ambre); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px; }
-  #view-app .meal-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  #view-app .meal-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  #view-app .meal-card:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -16px rgba(0,0,0,0.6); }
+  #view-app .meal-type { font-family: var(--mono); font-size: 11px; color: var(--ambre); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px; }
+  #view-app .meal-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   #view-app .meal-cal { font-size: 12px; color: var(--gris); margin-bottom: 8px; }
   #view-app .meal-why { font-size: 12px; color: var(--vert); font-style: italic; }
-  #view-app .app-cta { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-  #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
+  #view-app .app-cta { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: filter 0.15s ease, transform 0.1s ease; }
+  #view-app .app-cta:hover { filter: brightness(1.08); }
+  #view-app .app-cta:active { transform: scale(0.98); }
+  #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  #view-app .app-cta.secondary svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #view-app .app-cta.secondary:hover { filter: none; border-color: var(--ambre); color: var(--ambre-bright, var(--ambre)); }
   #view-app .app-cta.danger { background: rgba(255,107,107,0.12); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
   #view-app .settings-link { display: block; font-size: 13px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
   #view-app .settings-note { text-align: center; font-size: 11.5px; color: var(--gris); margin: 18px 0 0; }
@@ -403,13 +437,13 @@
   #view-app .camera-close { width: 100%; margin-top: 10px; padding: 11px; background: var(--fond); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: var(--blanc); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
   #view-app .camera-hint { font-size: 11px; color: var(--gris); text-align: center; margin: 8px 0 0; }
   #view-app .result-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: none; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
-  #view-app .result-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  #view-app .result-name { font-family: var(--display); font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   #view-app .result-score { display: inline-block; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; margin: 8px 0; }
   #view-app .score-good { background: rgba(31,138,99,0.18); color: var(--vert); }
   #view-app .score-mid { background: rgba(255,159,28,0.18); color: var(--ambre); }
   #view-app .score-bad { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .result-justif { font-size: 13px; color: var(--gris); }
-  #view-app .history-title { font-size: 13px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.05em; margin: 24px 0 12px; }
+  #view-app .history-title { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin: 24px 0 12px; }
   #view-app .history-item { display: flex; justify-content: space-between; align-items: center; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s ease; }
   #view-app .history-item:hover { border-color: rgba(255,255,255,0.14); }
   #view-app .history-item-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -705,7 +739,7 @@
 
     <!-- ---------- DASHBOARD ---------- -->
     <section id="panel-dashboard" class="app-panel">
-      <div class="topbar">
+      <div class="topbar dashboard-topbar">
         <div class="app-brand">
           <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
           <div class="brand-name">MyWattUp</div>
@@ -717,6 +751,8 @@
           <button class="logout" id="logoutBtn">Déconnexion</button>
         </div>
       </div>
+
+      <p class="dash-greeting">Voici ton bilan du jour.</p>
 
       <div class="score-card">
         <div class="ring-wrap">
@@ -764,7 +800,7 @@
     <!-- ---------- JOURNAL ---------- -->
     <section id="panel-journal" class="app-panel">
       <div class="topbar">
-        <a href="#dashboard" class="back">←</a>
+        <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Journal du jour</h1>
       </div>
 
@@ -835,19 +871,19 @@
     <!-- ---------- REPAS ---------- -->
     <section id="panel-repas" class="app-panel">
       <div class="topbar">
-        <a href="#dashboard" class="back">←</a>
+        <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Mes repas</h1>
       </div>
       <div class="day-scroll" id="dayScroll"></div>
       <div id="mealsList"></div>
       <button class="app-cta" id="generateBtn">Générer mon plan de la semaine</button>
-      <button class="app-cta secondary" id="groceryBtn">Voir la liste de courses</button>
+      <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
     </section>
 
     <!-- ---------- SCANNER ---------- -->
     <section id="panel-scanner" class="app-panel">
       <div class="topbar">
-        <a href="#dashboard" class="back">←</a>
+        <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Scanner produit</h1>
       </div>
 
@@ -885,7 +921,7 @@
     <!-- ---------- PARAMÈTRES ---------- -->
     <section id="panel-parametres" class="app-panel">
       <div class="topbar">
-        <a href="#dashboard" class="back">←</a>
+        <a href="#dashboard" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Paramètres</h1>
       </div>
 
@@ -893,7 +929,7 @@
         <div class="section-title">Compte</div>
         <label>Email</label>
         <input type="text" id="settingsEmail" disabled />
-        <button type="button" class="app-cta secondary" id="settingsChangePassword" style="margin-top:14px;">Changer mon mot de passe</button>
+        <button type="button" class="app-cta secondary" id="settingsChangePassword" style="margin-top:14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Changer mon mot de passe</button>
 
         <form id="passwordForm" class="settings-subform">
           <label>Mot de passe actuel</label>
@@ -1209,14 +1245,24 @@
       });
     });
 
+    const fillSlider = (input) => {
+      const min = Number(input.min) || 0, max = Number(input.max) || 100;
+      const pct = ((Number(input.value) - min) / (max - min)) * 100;
+      input.style.background = `linear-gradient(to right, var(--vert) ${pct}%, rgba(255,255,255,0.1) ${pct}%)`;
+    };
+
     const intensityInput = document.getElementById('activityIntensity');
+    fillSlider(intensityInput);
     intensityInput.addEventListener('input', () => {
       document.getElementById('intensityValue').textContent = intensityInput.value;
+      fillSlider(intensityInput);
     });
 
     const moodInput = document.getElementById('moodScore');
+    fillSlider(moodInput);
     moodInput.addEventListener('input', () => {
       document.getElementById('moodValue').textContent = moodInput.value;
+      fillSlider(moodInput);
     });
 
     const toggles = {};
