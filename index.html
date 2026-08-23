@@ -289,6 +289,10 @@
   #view-app .brand-icon svg { width: 16px; height: 16px; }
   #view-app .brand-name { font-weight: 700; font-size: 15px; letter-spacing: -0.02em; }
   #view-app .logout { color: var(--gris); font-size: 12px; cursor: pointer; background: none; border: none; text-decoration: underline; }
+  #view-app .topbar-actions { display: flex; align-items: center; gap: 14px; }
+  #view-app .icon-btn { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--gris); background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); text-decoration: none; transition: color 0.15s ease, border-color 0.15s ease; }
+  #view-app .icon-btn:hover { color: var(--ambre); border-color: var(--ambre); }
+  #view-app .icon-btn svg { width: 16px; height: 16px; }
   #view-app .back { color: var(--gris); text-decoration: none; font-size: 20px; }
   #view-app .app-h1 { font-size: 19px; margin: 0; letter-spacing: -0.02em; }
 
@@ -336,7 +340,7 @@
   #view-app .section-title svg { width: 15px; height: 15px; flex-shrink: 0; }
   #view-app label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 14px; }
   #view-app label:first-of-type { margin-top: 0; }
-  #view-app input[type="number"], #view-app select, #view-app input[type="text"] { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; }
+  #view-app input[type="number"], #view-app select, #view-app input[type="text"], #view-app input[type="password"] { width: 100%; padding: 11px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; font-family: inherit; }
   #view-app input:focus, #view-app select:focus { border-color: var(--vert); }
   #view-app .quality-btns, #view-app .meal-btns { display: flex; gap: 8px; }
   #view-app .qbtn { flex: 1; padding: 10px; text-align: center; border-radius: 9px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 12px; cursor: pointer; color: var(--gris); }
@@ -368,6 +372,16 @@
   #view-app .meal-why { font-size: 12px; color: var(--vert); font-style: italic; }
   #view-app .app-cta { width: 100%; padding: 14px; background: var(--vert); color: #0E1410; border: none; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
   #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
+  #view-app .app-cta.danger { background: rgba(255,107,107,0.12); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
+  #view-app .settings-link { display: block; font-size: 13px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
+  #view-app .settings-note { text-align: center; font-size: 11.5px; color: var(--gris); margin: 18px 0 0; }
+  #view-app input:disabled { opacity: 0.6; cursor: not-allowed; }
+  #view-app .settings-subform { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+  #view-app .settings-subform.show { display: block; }
+  #view-app .settings-cancel { display: block; text-align: center; font-size: 12.5px; color: var(--gris); margin-top: 10px; background: none; border: none; cursor: pointer; font-family: inherit; width: 100%; }
+  #view-app .settings-cancel:hover { color: var(--blanc); }
+  #view-app .app-cta.danger.confirm { background: #FF6B6B; color: #1a0e0e; border-color: #FF6B6B; }
+  #view-app .app-cta[disabled] { opacity: 0.6; cursor: not-allowed; }
 
   /* scanner */
   #view-app .scan-box { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); }
@@ -696,7 +710,12 @@
           <div class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg></div>
           <div class="brand-name">MyWattUp</div>
         </div>
-        <button class="logout" id="logoutBtn">Déconnexion</button>
+        <div class="topbar-actions">
+          <a href="#parametres" class="icon-btn" id="btnGoSettings" aria-label="Paramètres">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+          </a>
+          <button class="logout" id="logoutBtn">Déconnexion</button>
+        </div>
       </div>
 
       <div class="score-card">
@@ -861,6 +880,74 @@
 
       <div class="history-title">Historique des scans</div>
       <div id="historyList"><p class="empty-state">Chargement…</p></div>
+    </section>
+
+    <!-- ---------- PARAMÈTRES ---------- -->
+    <section id="panel-parametres" class="app-panel">
+      <div class="topbar">
+        <a href="#dashboard" class="back">←</a>
+        <h1 class="app-h1">Paramètres</h1>
+      </div>
+
+      <div class="app-section">
+        <div class="section-title">Compte</div>
+        <label>Email</label>
+        <input type="text" id="settingsEmail" disabled />
+        <button type="button" class="app-cta secondary" id="settingsChangePassword" style="margin-top:14px;">Changer mon mot de passe</button>
+
+        <form id="passwordForm" class="settings-subform">
+          <label>Mot de passe actuel</label>
+          <input type="password" id="pwCurrent" autocomplete="current-password" required />
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="pwNew" autocomplete="new-password" required minlength="8" />
+          <label>Confirme le nouveau mot de passe</label>
+          <input type="password" id="pwConfirm" autocomplete="new-password" required minlength="8" />
+          <button type="submit" class="app-cta secondary" id="pwSubmitBtn" style="margin-top:14px;">Valider le nouveau mot de passe</button>
+          <button type="button" class="settings-cancel" id="pwCancelBtn">Annuler</button>
+        </form>
+      </div>
+
+      <div class="app-section">
+        <div class="section-title">Préférences</div>
+
+        <label>Unités</label>
+        <select id="settingsUnits">
+          <option value="metric">Métrique (kg, cm)</option>
+          <option value="imperial">Impérial (lb, ft)</option>
+        </select>
+
+        <div class="meal-row" style="margin-top:16px;">
+          <span class="meal-name-toggle">Rappel quotidien</span>
+          <div class="toggle" data-settings-toggle="dailyReminder"><div class="toggle-dot"></div></div>
+        </div>
+        <div class="meal-row">
+          <span class="meal-name-toggle">Notifications push</span>
+          <div class="toggle" data-settings-toggle="pushNotifications"><div class="toggle-dot"></div></div>
+        </div>
+      </div>
+
+      <div class="app-section">
+        <div class="section-title">Confidentialité</div>
+        <a href="/politique-confidentialite.html" target="_blank" class="settings-link">Politique de confidentialité</a>
+        <button type="button" class="app-cta secondary" id="settingsExportData" style="margin-top:14px;">Exporter mes données</button>
+      </div>
+
+      <div class="app-section" style="border-color: rgba(255,107,107,0.25);">
+        <div class="section-title" style="color:#FF6B6B;">Zone danger</div>
+        <button type="button" class="app-cta danger" id="settingsDeleteAccount">Supprimer mon compte</button>
+
+        <form id="deleteAccountForm" class="settings-subform">
+          <p style="font-size:12.5px; color: var(--gris); margin: 0 0 4px;">Cette action est définitive : ton profil, tes journaux, tes repas et ton historique de scans seront effacés. Saisis ton mot de passe pour confirmer.</p>
+          <label>Mot de passe</label>
+          <input type="password" id="deletePassword" autocomplete="current-password" required />
+          <button type="submit" class="app-cta danger confirm" id="deleteSubmitBtn" style="margin-top:14px;">Supprimer définitivement mon compte</button>
+          <button type="button" class="settings-cancel" id="deleteCancelBtn">Annuler</button>
+        </form>
+      </div>
+
+      <p class="settings-note">D'autres réglages arriveront avec le temps.</p>
+
+      <p class="msg" id="settingsMsg"></p>
     </section>
 
   </div>
@@ -1031,7 +1118,7 @@
   // -------------------------------------------------------------
   // Routeur interne de l'app (panneau affiché selon #hash)
   // -------------------------------------------------------------
-  const panels = ['dashboard', 'journal', 'repas', 'scanner'];
+  const panels = ['dashboard', 'journal', 'repas', 'scanner', 'parametres'];
   let journalBound = false;
 
   function routeApp() {
@@ -1047,6 +1134,7 @@
     if (current === 'journal' && !journalBound) { initJournal(); journalBound = true; }
     if (current === 'repas') initRepas();
     if (current === 'scanner') initScanner();
+    if (current === 'parametres') initSettings();
     if (current !== 'scanner' && window.__stopMyWattUpCamera) window.__stopMyWattUpCamera();
   }
 
@@ -1645,6 +1733,199 @@
 
       historyList.appendChild(row);
       historyList.appendChild(detail);
+    });
+  }
+
+  // -------------------------------------------------------------
+  // PARAMÈTRES
+  // -------------------------------------------------------------
+  let settingsBound = false;
+  const SETTINGS_STORAGE_KEY = 'mywattup_settings_prefs';
+
+  function initSettings() {
+    document.getElementById('settingsEmail').value = user?.email || '';
+
+    if (settingsBound) return;
+    settingsBound = true;
+
+    const msg = document.getElementById('settingsMsg');
+    function flash(text, isError) {
+      msg.textContent = text;
+      msg.className = 'msg ' + (isError ? 'error' : 'success');
+      setTimeout(() => { msg.textContent = ''; msg.className = 'msg'; }, 3000);
+    }
+
+    // Préférences locales simples (toggles + unités) — persistées côté navigateur
+    // pour l'instant, en attendant une vraie table "user_settings" côté Supabase.
+    let prefs = {};
+    try { prefs = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY) || '{}'); } catch (e) { prefs = {}; }
+
+    const unitsSelect = document.getElementById('settingsUnits');
+    unitsSelect.value = prefs.units || 'metric';
+    unitsSelect.addEventListener('change', () => {
+      prefs.units = unitsSelect.value;
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(prefs));
+    });
+
+    document.querySelectorAll('[data-settings-toggle]').forEach(toggleEl => {
+      const key = toggleEl.dataset.settingsToggle;
+      if (prefs[key]) toggleEl.classList.add('on');
+      toggleEl.addEventListener('click', () => {
+        toggleEl.classList.toggle('on');
+        prefs[key] = toggleEl.classList.contains('on');
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(prefs));
+      });
+    });
+
+    // ---- Changer mon mot de passe ----
+    const pwForm = document.getElementById('passwordForm');
+    const pwToggleBtn = document.getElementById('settingsChangePassword');
+    const pwSubmitBtn = document.getElementById('pwSubmitBtn');
+
+    pwToggleBtn.addEventListener('click', () => {
+      pwForm.classList.toggle('show');
+      if (pwForm.classList.contains('show')) document.getElementById('pwCurrent').focus();
+    });
+    document.getElementById('pwCancelBtn').addEventListener('click', () => {
+      pwForm.reset();
+      pwForm.classList.remove('show');
+    });
+
+    pwForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const current = document.getElementById('pwCurrent').value;
+      const next = document.getElementById('pwNew').value;
+      const confirmPw = document.getElementById('pwConfirm').value;
+
+      if (next.length < 8) {
+        flash('Le nouveau mot de passe doit faire au moins 8 caractères.', true);
+        return;
+      }
+      if (next !== confirmPw) {
+        flash('Les deux mots de passe ne correspondent pas.', true);
+        return;
+      }
+
+      pwSubmitBtn.disabled = true;
+      pwSubmitBtn.textContent = '...';
+      try {
+        // Ré-authentification avec le mot de passe actuel avant de changer quoi que ce soit
+        await signIn(user.email, current);
+
+        const { error } = await supabase.auth.updateUser({ password: next });
+        if (error) throw error;
+
+        pwForm.reset();
+        pwForm.classList.remove('show');
+        flash('Mot de passe mis à jour.', false);
+      } catch (err) {
+        console.error(err);
+        flash(err.message === 'Invalid login credentials'
+          ? 'Mot de passe actuel incorrect.'
+          : (err.message || 'Erreur lors du changement de mot de passe.'), true);
+      } finally {
+        pwSubmitBtn.disabled = false;
+        pwSubmitBtn.textContent = 'Valider le nouveau mot de passe';
+      }
+    });
+
+    // ---- Exporter mes données ----
+    const exportBtn = document.getElementById('settingsExportData');
+    exportBtn.addEventListener('click', async () => {
+      exportBtn.disabled = true;
+      const originalLabel = exportBtn.textContent;
+      exportBtn.textContent = 'Préparation de l\'export…';
+
+      try {
+        const [{ data: profile }, { data: dailyLogs }, { data: scannedProducts }, { data: mealPlans }] = await Promise.all([
+          supabase.from('profiles').select('*').eq('user_id', user.id).maybeSingle(),
+          supabase.from('daily_logs').select('*').eq('user_id', user.id).order('log_date', { ascending: true }),
+          supabase.from('scanned_products').select('*').eq('user_id', user.id).order('scanned_at', { ascending: true }),
+          supabase.from('meal_plans').select('*').eq('user_id', user.id).order('week_start', { ascending: true }),
+        ]);
+
+        let meals = [];
+        if (mealPlans && mealPlans.length > 0) {
+          const planIds = mealPlans.map(p => p.id);
+          const { data: mealsData } = await supabase.from('meals').select('*').in('meal_plan_id', planIds);
+          meals = mealsData || [];
+        }
+
+        const exportPayload = {
+          exported_at: new Date().toISOString(),
+          account_email: user.email,
+          profile: profile || null,
+          daily_logs: dailyLogs || [],
+          scanned_products: scannedProducts || [],
+          meal_plans: (mealPlans || []).map(plan => ({
+            ...plan,
+            meals: meals.filter(m => m.meal_plan_id === plan.id),
+          })),
+        };
+
+        const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mywattup-export-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        flash('Export prêt — le téléchargement a démarré.', false);
+      } catch (err) {
+        console.error(err);
+        flash("Erreur lors de l'export de tes données.", true);
+      } finally {
+        exportBtn.disabled = false;
+        exportBtn.textContent = originalLabel;
+      }
+    });
+
+    // ---- Supprimer mon compte ----
+    const deleteForm = document.getElementById('deleteAccountForm');
+    const deleteToggleBtn = document.getElementById('settingsDeleteAccount');
+    const deleteSubmitBtn = document.getElementById('deleteSubmitBtn');
+
+    deleteToggleBtn.addEventListener('click', () => {
+      deleteForm.classList.toggle('show');
+      if (deleteForm.classList.contains('show')) document.getElementById('deletePassword').focus();
+    });
+    document.getElementById('deleteCancelBtn').addEventListener('click', () => {
+      deleteForm.reset();
+      deleteForm.classList.remove('show');
+    });
+
+    deleteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('deletePassword').value;
+
+      const ok = confirm('Ton compte et toutes tes données seront supprimés définitivement. Continuer ?');
+      if (!ok) return;
+
+      deleteSubmitBtn.disabled = true;
+      deleteSubmitBtn.textContent = 'Suppression en cours…';
+
+      try {
+        // Ré-authentification pour confirmer l'identité avant suppression
+        await signIn(user.email, password);
+
+        const { error } = await supabase.rpc('delete_user_account');
+        if (error) throw error;
+
+        await signOut();
+        user = null;
+        location.hash = '';
+        showVitrine();
+      } catch (err) {
+        console.error(err);
+        flash(err.message === 'Invalid login credentials'
+          ? 'Mot de passe incorrect.'
+          : (err.message || 'Erreur lors de la suppression du compte.'), true);
+        deleteSubmitBtn.disabled = false;
+        deleteSubmitBtn.textContent = 'Supprimer définitivement mon compte';
+      }
     });
   }
 
