@@ -438,6 +438,8 @@
   #view-app .score-share-btn svg { width: 16px; height: 16px; }
   #view-app .score-share-btn:hover { border-color: var(--ambre); color: var(--ambre); background: rgba(255,159,28,0.1); }
   #view-app .score-share-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  #view-app .score-share-btn.is-locked { color: var(--gris); }
+  #view-app .score-share-btn.is-locked:hover { border-color: rgba(255,255,255,0.14); color: var(--gris); background: rgba(255,255,255,0.04); }
 
   #view-app .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
   #view-app .mini-card { border-radius: 14px; padding: 16px 12px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.06); transition: transform 0.15s ease, border-color 0.15s ease; font-family: inherit; cursor: pointer; width: 100%; -webkit-tap-highlight-color: transparent; }
@@ -599,6 +601,14 @@
   #view-app .friend-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: var(--fond-card); object-fit: cover; }
   #view-app .friend-name { font-weight: 600; font-size: 13.5px; }
   #view-app .friend-meta { font-size: 11.5px; color: var(--gris); }
+
+  /* ---- Social : écran d'accroche Pro (verrouillage) ---- */
+  #view-app .social-locked-screen { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 44px 20px 28px; }
+  #view-app .social-locked-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(255,159,28,0.12); border: 1px solid rgba(255,159,28,0.25); display: flex; align-items: center; justify-content: center; color: var(--ambre); margin-bottom: 18px; }
+  #view-app .social-locked-icon svg { width: 26px; height: 26px; }
+  #view-app .social-locked-title { font-family: var(--display, inherit); font-size: 18px; font-weight: 700; margin: 0 0 10px; }
+  #view-app .social-locked-desc { font-size: 13.5px; color: var(--gris); line-height: 1.5; max-width: 320px; margin: 0 0 22px; }
+  #view-app .social-locked-screen .app-cta { width: auto; padding: 0 24px; margin-top: 0; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   #view-app .request-actions { display: flex; gap: 6px; margin-left: auto; flex-shrink: 0; }
   #view-app .request-actions button { padding: 7px 12px; border-radius: 8px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
   #view-app .request-accept { background: var(--vert); color: #0E1410; }
@@ -1823,6 +1833,16 @@
       </div>
       <p class="section-desc" style="margin:-10px 0 18px;">Ajoute des amis par pseudo, suis leurs séries et badges, et partage tes récaps.</p>
 
+      <div class="social-locked-screen" id="socialLockedScreen" style="display:none;">
+        <div class="social-locked-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2 class="social-locked-title">Amis & fil d'activité — réservé à l'offre Pro</h2>
+        <p class="social-locked-desc">Ajoute des amis par pseudo, suis leurs séries et badges, et partage tes récaps avec eux. Passe en Pro pour débloquer cette fonctionnalité.</p>
+        <a href="#abonnement" class="app-cta">Découvrir l'offre Pro</a>
+      </div>
+
+      <div id="socialContent">
       <div class="friend-code-card">
         <div>
           <div class="friend-code-label">Ton code ami (ton pseudo)</div>
@@ -1857,6 +1877,8 @@
 
       <div class="social-section-title">Fil d'activité</div>
       <div id="socialFeedList"><p class="social-empty">Chargement…</p></div>
+      </div>
+      <!-- fin #socialContent -->
     </section>
 
     <!-- ---------- PARAMÈTRES ---------- -->
@@ -2101,7 +2123,7 @@
         <h1 class="app-h1">Abonnement</h1>
       </div>
 
-      <p class="section-desc" style="margin: -8px 0 18px;">Tu es actuellement sur l'offre <strong>Gratuite</strong>. Passe en Pro pour retirer les quotas de scans et de génération de repas.</p>
+      <p class="section-desc" id="abonnementIntro" style="margin: -8px 0 18px;">Tu es actuellement sur l'offre <strong>Gratuite</strong>. Passe en Pro pour retirer les quotas de scans et de génération de repas.</p>
 
       <div class="plan-card current">
         <div class="plan-card-head">
@@ -2431,12 +2453,90 @@
     viewOnboarding.style.display = 'flex';
   }
 
-  function showApp() {
+  // -------------------------------------------------------------
+  // OFFRE (freemium) — profiles.plan ('free' / 'pro')
+  // -------------------------------------------------------------
+  function isPro() {
+    return userPlan === 'pro';
+  }
+
+  async function loadUserPlan() {
+    if (!user) {
+      userPlan = 'free';
+      applyPlanUI();
+      return userPlan;
+    }
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('user_id', user.id)
+      .maybeSingle();
+    if (error) console.error(error);
+    userPlan = (data && data.plan === 'pro') ? 'pro' : 'free';
+    applyPlanUI();
+    return userPlan;
+  }
+
+  // Met à jour tous les endroits de l'UI qui dépendent de l'offre : badges
+  // Gratuit/Pro, verrouillage du partage de récap, verrouillage de l'onglet
+  // Amis/fil d'activité.
+  function applyPlanUI() {
+    const pro = isPro();
+
+    // Badges "Gratuit" / "Pro" (tableau de bord + paramètres)
+    document.querySelectorAll('#dashboardPlanPill, #settingsPlanPill').forEach(pill => {
+      pill.textContent = pro ? 'Pro' : 'Gratuit';
+      pill.classList.toggle('pro', pro);
+      pill.classList.toggle('free', !pro);
+    });
+
+    const settingsDesc = document.getElementById('settingsPlanDesc');
+    if (settingsDesc) {
+      settingsDesc.textContent = pro
+        ? 'Pro — scans illimités, génération de repas illimitée.'
+        : 'Gratuite — 5 scans/jour, 1 génération de repas/semaine.';
+    }
+
+    const abonnementIntro = document.getElementById('abonnementIntro');
+    if (abonnementIntro) {
+      abonnementIntro.innerHTML = pro
+        ? `Tu es actuellement sur l'offre <strong>Pro</strong>. Merci de ton soutien — aucun quota ne s'applique à ton compte.`
+        : `Tu es actuellement sur l'offre <strong>Gratuite</strong>. Passe en Pro pour retirer les quotas de scans et de génération de repas.`;
+    }
+
+    applyShareLockUI(pro);
+    applySocialLockUI(pro);
+  }
+
+  // Verrouille le bouton de partage du récap du jour derrière l'offre Pro.
+  function applyShareLockUI(pro) {
+    const btn = document.getElementById('btnShareRecap');
+    if (!btn) return;
+    btn.classList.toggle('is-locked', !pro);
+    btn.title = pro ? 'Partager mon récap' : 'Fonctionnalité Pro — partage du récap';
+    btn.setAttribute('aria-label', pro ? 'Partager mon récap du jour' : 'Partage du récap réservé à l\'offre Pro');
+    btn.innerHTML = pro
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-3.9M8.6 13.5l6.8 3.9"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  }
+
+  // Affiche l'écran d'accroche Pro à la place du contenu de l'onglet Amis
+  // si l'utilisateur est sur l'offre Gratuite.
+  function applySocialLockUI(pro) {
+    const lockedScreen = document.getElementById('socialLockedScreen');
+    const content = document.getElementById('socialContent');
+    if (!lockedScreen || !content) return;
+    lockedScreen.style.display = pro ? 'none' : 'flex';
+    content.style.display = pro ? 'block' : 'none';
+  }
+
+  async function showApp() {
     viewVitrine.style.display = 'none';
     viewLogin.style.display = 'none';
     viewOnboarding.style.display = 'none';
     viewApp.style.display = 'block';
     if (!location.hash) location.hash = '#dashboard';
+    await loadUserPlan();
     routeApp();
   }
 
@@ -2508,6 +2608,7 @@
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await signOut();
     user = null;
+    userPlan = 'free';
     location.hash = '';
     showVitrine();
   });
@@ -2635,6 +2736,9 @@
   const panels = ['dashboard', 'journal', 'repas', 'scanner', 'social', 'parametres', 'abonnement', 'faq', 'support'];
   let journalBound = false;
   let user = null;
+  // Offre de l'utilisateur ('free' / 'pro'), lue depuis profiles.plan et mise
+  // en cache pour la durée de la session (rechargée à chaque connexion).
+  let userPlan = 'free';
   // Mémorise le panneau quitté pour renvoyer "Abonnement" (accessible depuis
   // plusieurs endroits : Accueil, Repas, Scanner, Paramètres) vers le bon écran
   // au lieu de toujours revenir sur Paramètres.
@@ -3010,6 +3114,11 @@
 
   async function shareRecap() {
     const btn = document.getElementById('btnShareRecap');
+    if (!isPro()) {
+      showToast('Le partage du récap est réservé à l\'offre Pro.', 'info');
+      location.hash = '#abonnement';
+      return;
+    }
     if (!lastDashboardLog) {
       showToast('Remplis ton journal du jour avant de partager ton récap.', 'error');
       return;
@@ -4937,6 +5046,11 @@
 
   let socialBound = false;
   async function initSocial() {
+    // Onglet Amis/fil d'activité réservé à l'offre Pro : on affiche l'écran
+    // d'accroche et on n'effectue aucun appel réseau lié au social.
+    applySocialLockUI(isPro());
+    if (!isPro()) return;
+
     const usernameEl = document.getElementById('socialMyUsername');
     const { data: myProfile } = await supabase.from('profiles').select('username').eq('user_id', user.id).maybeSingle();
     usernameEl.textContent = (myProfile && myProfile.username) || '(pseudo non défini — configure-le dans Paramètres)';
@@ -5654,6 +5768,7 @@
 
         await signOut();
         user = null;
+        userPlan = 'free';
         location.hash = '';
         showVitrine();
       } catch (err) {
