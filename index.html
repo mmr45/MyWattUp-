@@ -2762,6 +2762,15 @@
     return div.innerHTML;
   }
 
+  // Comme escapeHtml, mais échappe aussi les guillemets — nécessaire pour toute
+  // valeur non fiable insérée dans un ATTRIBUT HTML (ex. src="${...}"), car
+  // escapeHtml seul (basé sur textContent) ne protège que le contenu texte,
+  // pas les attributs : une valeur contenant un guillemet peut sinon "casser"
+  // l'attribut et injecter du code (ex. avatar_url malveillant → XSS stocké).
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   // Enregistre un aliment consommé (scan ou saisie manuelle) dans le journal du jour.
   async function logFoodEntry({ mealSlot, label, quantityG, kcal, proteinsG, carbsG, fatG, source, scannedProductId }) {
     const { error } = await supabase.from('food_entries').insert({
@@ -4129,9 +4138,9 @@
       const card = document.createElement('div');
       card.className = 'meal-card';
       card.innerHTML = `
-        <div class="meal-type">${typeLabels[m.meal_type] || m.meal_type}</div>
-        <div class="meal-name">${m.name}</div>
-        <div class="meal-cal">${m.ingredients || ''}</div>
+        <div class="meal-type">${escapeHtml(typeLabels[m.meal_type] || m.meal_type)}</div>
+        <div class="meal-name">${escapeHtml(m.name)}</div>
+        <div class="meal-cal">${escapeHtml(m.ingredients || '')}</div>
       `;
       mealsList.appendChild(card);
     });
@@ -4593,7 +4602,7 @@
       row.innerHTML = `
         <div class="history-item-left">
           <svg class="history-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          <span class="history-name">${item.product_name || item.barcode}</span>
+          <span class="history-name">${escapeHtml(item.product_name || item.barcode)}</span>
         </div>
         <div class="history-right">
           <span style="font-size:12px; color:var(--gris);">${item.personalized_score}/100</span>
@@ -4824,7 +4833,7 @@
       const name = (p && p.username) || 'Utilisateur';
       return `
         <div class="request-row" data-id="${r.id}">
-          <img class="friend-avatar" src="${profileAvatarSrc(p, r.requester_id)}" alt="" />
+          <img class="friend-avatar" src="${escapeAttr(profileAvatarSrc(p, r.requester_id))}" alt="" />
           <div>
             <div class="friend-name">${escapeHtml(name)}</div>
             <div class="friend-meta">veut devenir ton ami</div>
@@ -4871,7 +4880,7 @@
       const name = (p && p.username) || 'Utilisateur';
       return `
         <div class="friend-row">
-          <img class="friend-avatar" src="${profileAvatarSrc(p, id)}" alt="" />
+          <img class="friend-avatar" src="${escapeAttr(profileAvatarSrc(p, id))}" alt="" />
           <div>
             <div class="friend-name">${escapeHtml(name)}</div>
             <div class="friend-meta">Ami MyWattUp</div>
