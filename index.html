@@ -865,6 +865,12 @@
   #view-app .plan-pill.pro { color: #1a1206; background: var(--ambre); border: 1px solid var(--ambre); }
   #view-app .plan-pill svg { width: 11px; height: 11px; }
 
+  #view-app .journal-reminder-bubble {
+    display: flex; align-items: center; gap: 10px; background: rgba(255,159,28,0.12);
+    border: 1px solid rgba(255,159,28,0.3); border-radius: 100px; padding: 10px 16px;
+    margin-bottom: 16px; text-decoration: none; color: var(--ambre, #ff9f1c); font-size: 13px; font-weight: 600;
+  }
+  #view-app .journal-reminder-bubble svg { width: 18px; height: 18px; flex-shrink: 0; }
   #view-app .quota-banner { background: var(--fond-card); border: 1px solid rgba(255,159,28,0.22); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; }
   #view-app .quota-banner-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
   #view-app .quota-banner-label { font-size: 12.5px; color: var(--blanc); font-weight: 600; }
@@ -1416,6 +1422,11 @@
       </div>
 
       <p class="dash-greeting">Voici ton bilan du jour.</p>
+
+      <a href="#journal" class="journal-reminder-bubble" id="journalReminderBubble" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6H4c0.5-0.5 2-2 2-6Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span>Tu n'as pas encore rempli ton journal du jour →</span>
+      </a>
 
       <div class="score-card">
         <button type="button" class="score-share-btn" id="btnShareRecap" aria-label="Partager mon récap du jour" title="Partager mon récap">
@@ -2086,7 +2097,7 @@
     <!-- ---------- ABONNEMENT / FACTURATION ---------- -->
     <section id="panel-abonnement" class="app-panel">
       <div class="topbar">
-        <a href="#parametres" class="back" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
+        <a href="#dashboard" class="back" id="abonnementBackLink" aria-label="Retour"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></a>
         <h1 class="app-h1">Abonnement</h1>
       </div>
 
@@ -2624,9 +2635,22 @@
   const panels = ['dashboard', 'journal', 'repas', 'scanner', 'social', 'parametres', 'abonnement', 'faq', 'support'];
   let journalBound = false;
   let user = null;
+  // Mémorise le panneau quitté pour renvoyer "Abonnement" (accessible depuis
+  // plusieurs endroits : Accueil, Repas, Scanner, Paramètres) vers le bon écran
+  // au lieu de toujours revenir sur Paramètres.
+  let previousPanel = 'dashboard';
+  let currentPanel = 'dashboard';
 
   function routeApp() {
     const current = (location.hash || '#dashboard').replace('#', '');
+    if (current !== currentPanel) {
+      previousPanel = currentPanel;
+      currentPanel = current;
+    }
+    if (current === 'abonnement') {
+      const backLink = document.getElementById('abonnementBackLink');
+      if (backLink) backLink.href = '#' + (previousPanel === 'abonnement' ? 'dashboard' : previousPanel);
+    }
     panels.forEach(p => {
       const el = document.getElementById('panel-' + p);
       if (p === current) {
@@ -2690,6 +2714,11 @@
   const ACTIVITY_FACTORS = { sedentaire: 1.2, leger: 1.375, modere: 1.55, actif: 1.725, tres_actif: 1.9 };
   // Ajustement appliqué à la dépense totale selon l'objectif choisi dans "Ma pratique".
   const OBJECTIVE_ADJUSTMENT = { perte_de_poids: -0.15, prise_de_masse: 0.12, performance: 0, maintien: 0, recuperation: 0 };
+  // Apport protéique cible en g/kg de poids de corps, selon l'objectif — les besoins
+  // varient nettement selon le contexte (littérature sportive / ANSES) : plus élevés
+  // en perte de poids (préserver la masse musculaire en déficit) et en prise de masse,
+  // plus modérés en maintien.
+  const OBJECTIVE_PROTEIN_G_PER_KG = { perte_de_poids: 2.0, prise_de_masse: 1.8, performance: 1.6, maintien: 1.4, recuperation: 1.6 };
 
   // Estimation de la cible calorique quotidienne (formule Mifflin-St Jeor + facteur d'activité).
   // Retourne null si le profil n'a pas encore été complété (taille/poids/âge/sexe requis).
@@ -2705,11 +2734,25 @@
     const tdee = bmr * (ACTIVITY_FACTORS[activity_level] || 1.55);
     const adjusted = tdee * (1 + (OBJECTIVE_ADJUSTMENT[objective] || 0));
 
+    // Protéines : calculées en g/kg de poids de corps selon l'objectif (et non plus
+    // un pourcentage fixe des kcal, qui ignorait le poids réel de la personne).
+    const proteinsG = Math.round((OBJECTIVE_PROTEIN_G_PER_KG[objective] || 1.6) * weight_kg);
+    const proteinsKcal = proteinsG * 4;
+    // Lipides : 30% des kcal totales (ANSES recommande une fourchette de 35 à 40%,
+    // on retient une valeur prudente côté bas de fourchette pour laisser de la place
+    // aux glucides sur les objectifs actifs).
+    const fatG = Math.round((adjusted * 0.30) / 9);
+    const fatKcal = fatG * 9;
+    // Glucides : le reste des kcal, jamais négatif même sur un profil très maigre
+    // avec un objectif protéiné élevé.
+    const carbsKcal = Math.max(0, adjusted - proteinsKcal - fatKcal);
+    const carbsG = Math.round(carbsKcal / 4);
+
     return {
       kcal: Math.round(adjusted),
-      proteins_g: Math.round((adjusted * 0.30) / 4), // 30% des kcal via protéines (4 kcal/g)
-      carbs_g: Math.round((adjusted * 0.40) / 4),     // 40% via glucides (4 kcal/g)
-      fat_g: Math.round((adjusted * 0.30) / 9),       // 30% via lipides (9 kcal/g)
+      proteins_g: proteinsG,
+      carbs_g: carbsG,
+      fat_g: fatG,
     };
   }
 
@@ -3044,8 +3087,8 @@
       let badge = 'good', badgeLabel = 'Bonne séance';
       let text = `Séance de type ${typeLabel.toLowerCase()}${dur ? `, ${dur} minutes` : ''}${intensity != null ? `, intensité ressentie ${intensity}/10` : ''}. `;
       if (dur != null) {
-        if (dur < 15) { badge = 'mid'; badgeLabel = 'Séance courte'; text += "C'est une séance courte : elle compte quand même (l'OMS a supprimé l'exigence d'un minimum de 10 minutes par séance, chaque minute de mouvement contribue au total hebdomadaire), mais vise en moyenne 20 à 40 minutes par jour pour couvrir les 150 à 300 minutes hebdomadaires recommandées."; }
-        else if (dur < 30) { badge = 'mid'; badgeLabel = 'Correct'; text += "C'est une durée correcte qui contribue à ton total hebdomadaire, un peu en dessous de la moyenne de 20 à 40 min/jour nécessaire pour atteindre les 150 à 300 minutes hebdomadaires recommandées par l'OMS."; }
+        if (dur < 15) { badge = 'mid'; badgeLabel = 'Séance courte'; text += "C'est une séance courte : elle compte quand même (l'OMS a supprimé l'exigence d'un minimum de 10 minutes par séance, chaque minute de mouvement contribue au total hebdomadaire), mais vise en moyenne 20 à 43 minutes par jour pour couvrir les 150 à 300 minutes hebdomadaires recommandées."; }
+        else if (dur < 30) { badge = 'mid'; badgeLabel = 'Correct'; text += "C'est une durée correcte qui contribue à ton total hebdomadaire, un peu en dessous de la moyenne de 20 à 43 min/jour nécessaire pour atteindre les 150 à 300 minutes hebdomadaires recommandées par l'OMS."; }
         else { badge = 'good'; badgeLabel = 'Bonne séance'; text += "C'est une durée qui s'aligne bien avec le repère OMS de 150 à 300 minutes d'activité modérée par semaine (soit environ 20 à 43 min/jour en moyenne)."; }
       } else {
         text += "L'OMS recommande 150 à 300 minutes d'activité modérée par semaine (ou 75 à 150 minutes d'activité soutenue), plus du renforcement musculaire au moins 2 jours par semaine.";
@@ -3395,6 +3438,9 @@
       console.error("Erreur récupération du log du jour :", error.message);
       showToast("Impossible de charger ton bilan du jour — vérifie ta connexion.", 'error');
     }
+
+    const reminderBubble = document.getElementById('journalReminderBubble');
+    if (reminderBubble) reminderBubble.style.display = log ? 'none' : 'flex';
 
     if (refreshBtn) refreshBtn.classList.remove('spinning');
     miniGrid.style.display = 'grid';
