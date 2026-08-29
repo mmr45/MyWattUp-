@@ -23,7 +23,7 @@ Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.`;
         "User-Agent": "MyWattUp/1.0"
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 300,
         temperature: 0.7
