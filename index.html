@@ -58,96 +58,111 @@
   a { color: inherit; }
   ::selection { background: var(--amber); color: #1a1206; }
 
-  .field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-  .field span { position: absolute; border-radius: 50%; filter: blur(70px); }
-  .b1 { width: 480px; height: 480px; background: rgba(255,159,28,0.14); top: -140px; left: -100px; }
-  .b2 { width: 420px; height: 420px; background: rgba(79,216,224,0.10); bottom: -120px; right: -80px; }
-  .b3 { width: 300px; height: 300px; background: rgba(255,159,28,0.08); top: 40%; left: 60%; }
-  .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
-  @media (max-width: 640px) { .wrap { padding: 0 22px; } }
-
-  nav { position: relative; z-index: 20; border-bottom: 1px solid var(--line); }
-  .nav-inner { max-width: 1100px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; flex-shrink: 0; }
-  .brand svg { width: 30px; height: 30px; flex-shrink: 0; }
-  .nav-cta {
-    font-family: var(--mono); font-size: 13px; color: var(--text-1); text-decoration: none;
-    border: 1px solid var(--line); padding: 8px 16px; border-radius: 100px; white-space: nowrap;
-    transition: border-color 0.25s, color 0.25s, background 0.25s; background: none; cursor: pointer;
+  #view-vitrine {
+    --vv-bg: #0D1013;
+    --vv-surface: #171B1F;
+    --vv-surface-2: #1F242A;
+    --vv-line: #2A3038;
+    --vv-line-bright: #3A4048;
+    --vv-text: #ECEAE4;
+    --vv-muted: #8D9299;
+    --vv-volt: #D4FF3F;
+    --vv-volt-bright: #E6FF7A;
+    --vv-volt-dim: #8C9E2E;
+    --vv-coral: #FF5A36;
+    --vv-coral-dim: #5C2A1E;
+    background: var(--vv-bg);
+    color: var(--vv-text);
+    position: relative;
   }
-  .nav-cta:hover { border-color: var(--amber); color: var(--amber-bright); background: rgba(255,159,28,0.08); }
+  #view-vitrine .field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  #view-vitrine .field span { position: absolute; border-radius: 50%; filter: blur(70px); }
+  #view-vitrine .b1 { width: 480px; height: 480px; background: rgba(212,255,63,0.10); top: -140px; left: -100px; }
+  #view-vitrine .b2 { width: 420px; height: 420px; background: rgba(255,90,54,0.10); bottom: -120px; right: -80px; }
+  #view-vitrine .b3 { width: 300px; height: 300px; background: rgba(212,255,63,0.06); top: 40%; left: 60%; }
+  #view-vitrine .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-  .nav-links { display: flex; align-items: center; gap: 10px; }
-  .nav-link-btn {
-    font-family: var(--mono); font-size: 13px; color: var(--text-1); text-decoration: none;
-    border: 1px solid transparent; padding: 8px 16px; border-radius: 100px; white-space: nowrap;
-    background: rgba(255,255,255,0.03); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+  #view-vitrine .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+  @media (max-width: 640px) { #view-vitrine .wrap { padding: 0 20px; } }
+
+  #view-vitrine nav { position: relative; z-index: 20; border-bottom: 1px solid var(--vv-line); }
+  #view-vitrine .nav-inner { max-width: 1120px; margin: 0 auto; padding: 22px 32px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #view-vitrine .brand { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: -0.01em; flex-shrink: 0; }
+  #view-vitrine .brand svg { width: 26px; height: 26px; flex-shrink: 0; }
+  #view-vitrine .nav-cta {
+    font-family: var(--body); font-size: 14px; font-weight: 500; color: var(--vv-text); text-decoration: none;
+    border: 1px solid var(--vv-line); padding: 9px 20px; border-radius: 100px; white-space: nowrap;
+    transition: border-color 0.2s, color 0.2s; background: none; cursor: pointer;
   }
-  .nav-link-btn:hover { border-color: var(--line-bright); color: var(--text-0); background: rgba(255,255,255,0.06); }
+  #view-vitrine .nav-cta:hover { border-color: var(--vv-volt); color: var(--vv-volt); }
+  #view-vitrine .nav-links { display: flex; align-items: center; gap: 28px; }
+  #view-vitrine .nav-link-btn {
+    font-family: var(--body); font-size: 14px; color: var(--vv-muted); text-decoration: none;
+    border: none; padding: 0; background: none; cursor: pointer; transition: color 0.2s;
+  }
+  #view-vitrine .nav-link-btn:hover { color: var(--vv-text); }
 
-  .nav-burger {
+  #view-vitrine .nav-burger {
     display: none; align-items: center; justify-content: center; width: 38px; height: 38px; flex-shrink: 0;
-    border: 1px solid var(--line); border-radius: 10px; background: none; color: var(--text-1); cursor: pointer;
+    border: 1px solid var(--vv-line); border-radius: 10px; background: none; color: var(--vv-muted); cursor: pointer;
   }
-  .nav-burger svg { width: 18px; height: 18px; }
-  .nav-burger:hover { border-color: var(--amber); color: var(--amber-bright); }
+  #view-vitrine .nav-burger svg { width: 18px; height: 18px; }
+  #view-vitrine .nav-burger:hover { border-color: var(--vv-volt); color: var(--vv-volt); }
 
-  .nav-dropdown {
-    display: none; flex-direction: column; gap: 8px; padding: 14px 22px 18px;
-    border-top: 1px solid var(--line); background: var(--bg-0);
+  #view-vitrine .nav-dropdown {
+    display: none; flex-direction: column; gap: 4px; padding: 14px 22px 18px;
+    border-top: 1px solid var(--vv-line); background: var(--vv-bg);
     position: absolute; top: 100%; left: 0; right: 0; z-index: 19;
     max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.25s ease, opacity 0.2s ease;
   }
-  .nav-dropdown.show { max-height: 260px; opacity: 1; }
-  .nav-dropdown .nav-link-btn { width: 100%; text-align: center; }
+  #view-vitrine .nav-dropdown.show { max-height: 260px; opacity: 1; }
+  #view-vitrine .nav-dropdown .nav-link-btn { width: 100%; text-align: center; padding: 10px 0; }
 
   @media (max-width: 720px) {
-    .nav-links { display: none; }
-    .nav-burger { display: flex; }
-    .nav-dropdown { display: flex; }
+    #view-vitrine .nav-links { display: none; }
+    #view-vitrine .nav-burger { display: flex; }
+    #view-vitrine .nav-dropdown { display: flex; }
   }
 
-  .hero { padding: 84px 0 60px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
-  .eyebrow {
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: var(--amber-bright); margin: 0 0 18px; display: inline-flex; align-items: center; gap: 8px;
+  #view-vitrine .hero { padding: 72px 0 96px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  #view-vitrine .eyebrow {
+    font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--vv-volt); margin: 0 0 20px; display: inline-flex; align-items: center; gap: 8px;
   }
-  .eyebrow::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 0 rgba(255,159,28,0.6); animation: ping 2s ease-out infinite; }
-  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(255,159,28,0.55); } 70% { box-shadow: 0 0 0 8px rgba(255,159,28,0); } 100% { box-shadow: 0 0 0 0 rgba(255,159,28,0); } }
-  h1.vitrine-title { font-family: var(--display); font-weight: 700; font-size: clamp(36px, 5.2vw, 56px); line-height: 1.03; letter-spacing: -0.02em; margin: 0 0 20px; }
-  h1.vitrine-title .accent {
-    background: linear-gradient(100deg, var(--amber-bright), var(--amber) 50%, var(--amber-deep));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    background-size: 200% auto; animation: sheen 6s ease-in-out infinite;
+  #view-vitrine .eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--vv-volt); border-radius: 50%; display: inline-block; box-shadow: 0 0 0 0 rgba(212,255,63,0.6); animation: vv-ping 2s ease-out infinite; }
+  @keyframes vv-ping { 0% { box-shadow: 0 0 0 0 rgba(212,255,63,0.55); } 70% { box-shadow: 0 0 0 8px rgba(212,255,63,0); } 100% { box-shadow: 0 0 0 0 rgba(212,255,63,0); } }
+  #view-vitrine h1.vitrine-title { font-family: var(--display); font-weight: 700; font-size: clamp(34px, 5vw, 52px); line-height: 1.07; letter-spacing: -0.02em; margin: 0 0 24px; }
+  #view-vitrine h1.vitrine-title .accent { color: var(--vv-volt); }
+  #view-vitrine .hero-sub { font-size: 17px; color: var(--vv-muted); max-width: 440px; margin: 0 0 36px; }
+  #view-vitrine .cta-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  #view-vitrine .btn-primary {
+    font-family: var(--body); font-weight: 600; font-size: 15px; color: #12160A;
+    background: var(--vv-volt); border: none; border-radius: 100px;
+    padding: 15px 28px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.15s ease;
   }
-  @keyframes sheen { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
-  .hero-sub { font-size: 17px; color: var(--text-1); max-width: 46ch; margin: 0 0 32px; }
-  .cta-row { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-  .btn-primary {
-    font-family: var(--body); font-weight: 600; font-size: 15px; color: #1a1206;
-    background: linear-gradient(100deg, var(--amber-bright), var(--amber)); border: none; border-radius: 100px;
-    padding: 14px 26px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 24px rgba(255,159,28,0.25);
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(255,159,28,0.35); }
-  .link-secondary { font-size: 14px; color: var(--text-1); text-decoration: underline; text-underline-offset: 3px; }
-  .link-secondary:hover { color: var(--amber-bright); }
+  #view-vitrine .btn-primary:hover { transform: translateY(-1px); }
+  #view-vitrine .btn-ghost { font-family: var(--body); font-size: 14px; color: var(--vv-muted); background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 0; text-decoration: none; }
+  #view-vitrine .btn-ghost:hover { color: var(--vv-text); }
+  #view-vitrine .link-secondary { font-size: 14px; color: var(--vv-muted); text-decoration: underline; text-underline-offset: 3px; background: none; border: none; cursor: pointer; padding: 0; font-family: var(--body); }
+  #view-vitrine .link-secondary:hover { color: var(--vv-volt); }
 
-  .dial-frame { background: var(--bg-1); border: 1px solid var(--line); border-radius: 20px; padding: 24px; box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); }
-  .dial-readout { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .dial-readout span:first-child { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
-  .dial-live { font-family: var(--mono); font-size: 11px; color: var(--jade-bright); display: inline-flex; align-items: center; gap: 6px; }
-  .dial-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--jade-bright); }
-  .dial-body { display: flex; align-items: center; gap: 20px; padding: 16px 4px; position: relative; }
-  .dial-svg { flex-shrink: 0; }
-  .dial-score { font-family: var(--display); font-weight: 800; font-size: 32px; }
-  .dial-legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--text-1); }
-  .dial-legend li { list-style: none; display: flex; align-items: center; gap: 8px; }
-  .dial-legend .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .sparks { position: absolute; inset: 0; pointer-events: none; }
-  .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--amber-bright); opacity: 0.7; }
+  #view-vitrine .dial-frame { background: var(--vv-surface); border: 1px solid var(--vv-line); border-radius: 20px; padding: 24px; box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03); position: relative; }
+  #view-vitrine .dial-readout { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  #view-vitrine .dial-readout span:first-child { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--vv-muted); }
+  #view-vitrine .dial-live { font-family: var(--mono); font-size: 11px; color: var(--vv-volt); display: inline-flex; align-items: center; gap: 6px; }
+  #view-vitrine .dial-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--vv-volt); }
+  #view-vitrine .dial-body { display: flex; align-items: center; gap: 20px; padding: 16px 4px; position: relative; }
+  #view-vitrine .dial-svg { flex-shrink: 0; }
+  #view-vitrine .dial-score { font-family: var(--display); font-weight: 800; font-size: 32px; }
+  #view-vitrine .dial-legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--vv-text); }
+  #view-vitrine .dial-legend li { list-style: none; display: flex; align-items: center; gap: 8px; }
+  #view-vitrine .dial-legend .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  #view-vitrine .sparks { position: absolute; inset: 0; pointer-events: none; }
+  #view-vitrine .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--vv-volt); opacity: 0.7; }
+  #view-vitrine .action-box { background: var(--vv-surface-2); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; }
+  #view-vitrine .action-box .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vv-coral); margin-top: 6px; flex-shrink: 0; }
+  #view-vitrine .action-box p { margin: 0; color: var(--vv-text); line-height: 1.5; }
 
   /* ---------- mission ---------- */
   .crop-overlay {
@@ -172,90 +187,83 @@
   .crop-actions { display: flex; gap: 10px; margin-top: 18px; }
   .crop-actions .app-cta { flex: 1; margin: 0; }
 
-  .mission { padding: 96px 0 92px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: relative; text-align: center; }
-  .mission::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 15% 0%, rgba(255,159,28,0.07), transparent 60%); pointer-events: none; }
-  .mission-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber-bright); margin: 0 0 26px; display: inline-flex; align-items: center; gap: 8px; }
-  .mission-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
-  .mission-statement { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3.2vw, 40px); line-height: 1.22; letter-spacing: -0.01em; color: var(--text-0); max-width: 780px; margin: 0 auto 20px; }
-  .mission-statement em { font-style: normal; background: linear-gradient(100deg, var(--amber-bright), var(--amber) 50%, var(--amber-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .mission-sub { font-size: 16px; line-height: 1.6; color: var(--text-1); max-width: 60ch; margin: 0 auto 56px; }
-  .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
-  .mission-cell { background: var(--bg-1); padding: 34px 30px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.02); text-align: left; }
-  .mission-cell-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 12px; }
-  .mission-cell h3 { font-family: var(--display); font-size: 17px; font-weight: 700; margin: 0 0 8px; color: var(--text-0); }
-  .mission-cell p { font-size: 14px; line-height: 1.55; color: var(--text-1); margin: 0; }
-  @media (max-width: 780px) { .mission-grid { grid-template-columns: 1fr; } }
+  #view-vitrine .section { padding: 80px 0; border-top: 1px solid var(--vv-line); }
+  #view-vitrine .section:first-of-type { border-top: none; }
+  #view-vitrine .section-head { max-width: 620px; margin: 0 0 44px; }
+  #view-vitrine .kicker { font-family: var(--mono); font-size: 12px; color: var(--vv-volt-dim); text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 14px; }
+  #view-vitrine .section-head h2 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3vw, 32px); letter-spacing: -0.01em; margin: 0 0 12px; }
+  #view-vitrine .section-head p { color: var(--vv-muted); font-size: 15.5px; margin: 0; }
 
-  .modules { padding: 80px 0; }
-  .section-head { max-width: 620px; margin: 0 0 44px; }
-  .section-head h2 { font-family: var(--display); font-size: clamp(26px, 3vw, 34px); margin: 0 0 12px; }
-  .section-head p { color: var(--text-1); font-size: 15px; margin: 0; }
-  .module-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .module-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); transition: transform 0.2s, box-shadow 0.2s; }
-  .module-card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -16px rgba(0,0,0,0.6); }
-  .module-tag { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber-bright); }
-  .module-card h3 { font-family: var(--display); font-size: 17px; margin: 12px 0 8px; }
-  .module-card p { font-size: 14px; color: var(--text-1); margin: 0; line-height: 1.55; }
-  @media (max-width: 780px) { .module-grid { grid-template-columns: 1fr; } }
+  #view-vitrine .factors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  #view-vitrine .factor { background: var(--vv-surface); border: 1px solid var(--vv-line); border-radius: 16px; padding: 24px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); transition: transform 0.2s, box-shadow 0.2s; }
+  #view-vitrine .factor:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -16px rgba(0,0,0,0.6); }
+  #view-vitrine .factor-icon { width: 36px; height: 36px; margin-bottom: 16px; }
+  #view-vitrine .factor-title { font-family: var(--display); font-weight: 700; font-size: 16px; margin: 0 0 8px; }
+  #view-vitrine .factor-desc { font-size: 13.5px; color: var(--vv-muted); line-height: 1.55; margin: 0; }
+  @media (max-width: 780px) { #view-vitrine .factors { grid-template-columns: 1fr; } }
 
-  .install { padding: 80px 0; border-top: 1px solid var(--line); }
-  .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .install-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 16px; padding: 26px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
-  .install-card.recommended { border-color: var(--amber); }
-  .install-card h3 { font-family: var(--display); font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
-  .badge { font-family: var(--mono); font-size: 10px; color: var(--text-muted); border: 1px solid var(--line); padding: 2px 8px; border-radius: 100px; }
-  .install-card ol { margin: 0; padding-left: 18px; color: var(--text-1); font-size: 14px; line-height: 1.7; }
-  .install-card li::marker { color: var(--amber-bright); font-family: var(--mono); }
-  @media (max-width: 780px) { .install-grid { grid-template-columns: 1fr; } }
+  #view-vitrine .trust { background: var(--vv-surface); border: 1px solid var(--vv-line); border-radius: 20px; padding: 36px 40px; display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: flex-start; }
+  #view-vitrine .trust-icon { width: 40px; height: 40px; flex-shrink: 0; }
+  #view-vitrine .trust h3 { font-family: var(--display); font-size: 17px; font-weight: 700; margin: 0 0 8px; }
+  #view-vitrine .trust p { font-size: 14.5px; color: var(--vv-muted); line-height: 1.6; margin: 0; }
+  #view-vitrine .trust-tags { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  #view-vitrine .trust-tag { font-family: var(--mono); font-size: 11.5px; color: var(--vv-text); border: 1px solid var(--vv-line); border-radius: 100px; padding: 5px 12px; }
+  @media (max-width: 780px) { #view-vitrine .trust { grid-template-columns: 1fr; } }
 
-  /* ---------- Tarifs / Pricing ---------- */
-  .pricing { padding: 80px 0; border-top: 1px solid var(--line); }
-  .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
-  .pricing-card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 18px; padding: 30px 28px; display: flex; flex-direction: column; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
-  .pricing-card.featured { border-color: var(--amber); background: linear-gradient(160deg, rgba(255,159,28,0.10), var(--bg-1) 55%); position: relative; }
-  .pricing-card.featured::before { content: 'Recommandé'; position: absolute; top: -12px; right: 24px; background: var(--amber); color: #1a1206; font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 100px; }
-  .pricing-plan-name { font-family: var(--display); font-size: 18px; font-weight: 700; margin: 0 0 4px; }
-  .pricing-plan-sub { color: var(--text-muted); font-size: 13px; margin: 0 0 18px; }
-  .pricing-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 22px; }
-  .pricing-price .amount { font-family: var(--display); font-size: 38px; font-weight: 800; letter-spacing: -0.02em; }
-  .pricing-price .period { color: var(--text-muted); font-size: 13px; }
-  .pricing-list { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-  .pricing-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text-1); line-height: 1.5; }
-  .pricing-list li svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--jade-bright); }
-  .pricing-card.featured .pricing-list li svg { color: var(--amber-bright); }
-  .pricing-cta { display: block; width: 100%; text-align: center; padding: 13px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; border: 1px solid var(--line-bright); background: transparent; color: var(--text-0); transition: filter 0.15s ease, transform 0.1s ease; }
-  .pricing-card.featured .pricing-cta { background: var(--amber); border-color: var(--amber); color: #1a1206; }
-  .pricing-cta:hover { filter: brightness(1.08); }
-  .pricing-cta:active { transform: scale(0.98); }
-  .pricing-note { text-align: center; color: var(--text-muted); font-size: 12.5px; margin: 26px 0 0; }
-  @media (max-width: 780px) { .pricing-grid { grid-template-columns: 1fr; } }
+  #view-vitrine .install-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  #view-vitrine .install-card { background: var(--vv-surface); border: 1px solid var(--vv-line); border-radius: 16px; padding: 26px; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
+  #view-vitrine .install-card.recommended { border-color: var(--vv-volt); }
+  #view-vitrine .install-card h3 { font-family: var(--display); font-size: 16px; margin: 0 0 14px; display: flex; align-items: center; gap: 10px; }
+  #view-vitrine .badge { font-family: var(--mono); font-size: 10px; color: var(--vv-muted); border: 1px solid var(--vv-line); padding: 2px 8px; border-radius: 100px; }
+  #view-vitrine .install-card ol { margin: 0; padding-left: 18px; color: var(--vv-muted); font-size: 14px; line-height: 1.7; }
+  #view-vitrine .install-card li::marker { color: var(--vv-volt); font-family: var(--mono); }
+  @media (max-width: 780px) { #view-vitrine .install-grid { grid-template-columns: 1fr; } }
 
-  /* ---------- FAQ (vitrine publique) ---------- */
-  .faq { padding: 80px 0; border-top: 1px solid var(--line); }
-  .faq-wrap { max-width: 760px; margin: 0 auto; }
-  .faq-row { border-bottom: 1px solid var(--line); }
-  .faq-row:first-child { border-top: 1px solid var(--line); }
-  .faq-row-q { width: 100%; text-align: left; background: none; border: none; padding: 20px 4px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--text-0); }
-  .faq-row-q svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-muted); transition: transform 0.2s ease; }
-  .faq-row.open .faq-row-q svg { transform: rotate(180deg); color: var(--amber-bright); }
-  .faq-row-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
-  .faq-row.open .faq-row-a { max-height: 400px; }
-  .faq-row-a p { font-size: 14.5px; color: var(--text-1); line-height: 1.6; margin: 0 4px 20px; }
-  .faq-cta { text-align: center; margin-top: 40px; color: var(--text-1); font-size: 14px; }
-  .faq-cta a { color: var(--amber-bright); text-decoration: underline; text-underline-offset: 2px; }
+  #view-vitrine .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: stretch; }
+  #view-vitrine .pricing-card { background: var(--vv-surface); border: 1px solid var(--vv-line); border-radius: 20px; padding: 32px 28px; display: flex; flex-direction: column; box-shadow: 0 14px 30px -18px rgba(0,0,0,0.55); }
+  #view-vitrine .pricing-card.featured { border: 1.5px solid var(--vv-volt); background: linear-gradient(160deg, rgba(212,255,63,0.07), var(--vv-surface) 55%); position: relative; }
+  #view-vitrine .pricing-card.featured::before { content: 'Recommandé'; position: absolute; top: -12px; right: 24px; background: var(--vv-volt); color: #12160A; font-family: var(--mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 10px; border-radius: 100px; }
+  #view-vitrine .pricing-plan-name { font-family: var(--mono); font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--vv-muted); margin: 0 0 16px; }
+  #view-vitrine .pricing-plan-sub { color: var(--vv-muted); font-size: 13px; margin: 0 0 18px; }
+  #view-vitrine .pricing-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+  #view-vitrine .pricing-price .amount { font-family: var(--display); font-size: 38px; font-weight: 700; letter-spacing: -0.02em; }
+  #view-vitrine .pricing-price .period { color: var(--vv-muted); font-size: 15px; }
+  #view-vitrine .pricing-list { list-style: none; margin: 18px 0 26px; padding: 0; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  #view-vitrine .pricing-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--vv-text); line-height: 1.5; }
+  #view-vitrine .pricing-list li svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; color: var(--vv-volt); }
+  #view-vitrine .pricing-card.featured .pricing-list li svg { color: var(--vv-coral); }
+  #view-vitrine .pricing-cta { display: block; width: 100%; text-align: center; padding: 13px; border-radius: 100px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1px solid var(--vv-line-bright); background: transparent; color: var(--vv-text); transition: filter 0.15s ease, transform 0.1s ease; font-family: var(--body); }
+  #view-vitrine .pricing-card.featured .pricing-cta { background: var(--vv-volt); border-color: var(--vv-volt); color: #12160A; }
+  #view-vitrine .pricing-cta:hover { filter: brightness(1.08); }
+  #view-vitrine .pricing-cta:active { transform: scale(0.98); }
+  #view-vitrine .pricing-note { text-align: center; color: var(--vv-muted); font-size: 12.5px; margin: 26px 0 0; }
+  @media (max-width: 780px) { #view-vitrine .pricing-grid { grid-template-columns: 1fr; } }
 
-  footer { border-top: 1px solid var(--line); padding: 32px 0; position: relative; z-index: 2; }
-  .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-  .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
-  .footer-brand svg { width: 16px; height: 16px; }
+  #view-vitrine .faq-wrap { max-width: 760px; margin: 0 auto; }
+  #view-vitrine .faq-row { border-bottom: 1px solid var(--vv-line); }
+  #view-vitrine .faq-row:first-child { border-top: 1px solid var(--vv-line); }
+  #view-vitrine .faq-row-q { width: 100%; text-align: left; background: none; border: none; padding: 20px 4px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--vv-text); }
+  #view-vitrine .faq-row-q svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--vv-muted); transition: transform 0.2s ease; }
+  #view-vitrine .faq-row.open .faq-row-q svg { transform: rotate(180deg); color: var(--vv-volt); }
+  #view-vitrine .faq-row-a { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  #view-vitrine .faq-row.open .faq-row-a { max-height: 400px; }
+  #view-vitrine .faq-row-a p { font-size: 14.5px; color: var(--vv-muted); line-height: 1.6; margin: 0 4px 20px; }
+  #view-vitrine .faq-cta { text-align: center; margin-top: 40px; color: var(--vv-muted); font-size: 14px; }
+  #view-vitrine .faq-cta a { color: var(--vv-volt); text-decoration: underline; text-underline-offset: 2px; }
 
-  @media (max-width: 800px) {
-    .hero { grid-template-columns: 1fr; padding-top: 52px; }
-  }
+  #view-vitrine .final-cta { text-align: center; padding: 100px 0 90px; border-top: 1px solid var(--vv-line); }
+  #view-vitrine .final-cta h2 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.6vw, 38px); max-width: 560px; margin: 0 auto 28px; letter-spacing: -0.01em; }
 
-  .reveal { opacity: 0; transform: translateY(16px); animation: none; }
-  .reveal.in-view { animation: rise 0.6s ease forwards; }
-  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  #view-vitrine footer { border-top: 1px solid var(--vv-line); padding: 32px 0; position: relative; z-index: 2; }
+  #view-vitrine .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  #view-vitrine .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--vv-muted); }
+  #view-vitrine .footer-brand svg { width: 16px; height: 16px; }
+
+  @media (max-width: 800px) { #view-vitrine .hero { grid-template-columns: 1fr; padding-top: 52px; } }
+
+  #view-vitrine .reveal { opacity: 0; transform: translateY(16px); animation: none; }
+  #view-vitrine .reveal.in-view { animation: vv-rise 0.6s ease forwards; }
+  @keyframes vv-rise { to { opacity: 1; transform: translateY(0); } }
 
   /* ======================================================================
      PARTIE 1.5 — LOGIN / INSCRIPTION (namespace #view-login)
@@ -1030,11 +1038,13 @@
     <div class="brand">
       <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
         <rect width="1024" height="1024" rx="220" fill="#14101f"/>
-        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#ff9f1c" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#D4FF3F" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       MyWattUp
     </div>
     <div class="nav-links">
+      <a href="#comment" class="nav-link-btn">Comment ça marche</a>
+      <a href="#confiance" class="nav-link-btn">Confiance</a>
       <a href="#tarifs" class="nav-link-btn">Tarifs</a>
       <a href="#faq-public" class="nav-link-btn">FAQ</a>
       <button class="nav-cta js-go-login">Se connecter</button>
@@ -1045,6 +1055,8 @@
     </button>
   </div>
   <div class="nav-dropdown" id="navDropdown">
+    <a href="#comment" class="nav-link-btn">Comment ça marche</a>
+    <a href="#confiance" class="nav-link-btn">Confiance</a>
     <a href="#tarifs" class="nav-link-btn">Tarifs</a>
     <a href="#faq-public" class="nav-link-btn">FAQ</a>
     <button class="nav-cta js-go-login" style="width:100%;">Se connecter</button>
@@ -1055,12 +1067,12 @@
 
   <section class="hero">
     <div>
-      <p class="eyebrow">Santé · Sport · Nutrition</p>
-      <h1 class="vitrine-title">Ton énergie,<br><span class="accent">ton équilibre.</span></h1>
-      <p class="hero-sub">MyWattUp relie ton sommeil, ton activité et ton alimentation dans un coach quotidien simple — pensé pour vivre dans ta poche, pas dans un onglet de navigateur.</p>
+      <p class="eyebrow">Un score. Une action.</p>
+      <h1 class="vitrine-title">MyWattUp te dit <span class="accent">quoi faire aujourd'hui</span> pour progresser.</h1>
+      <p class="hero-sub">Sommeil, activité et alimentation croisés en un coach quotidien simple — pensé pour vivre dans ta poche, pas dans un onglet de navigateur.</p>
       <div class="cta-row">
-        <button class="btn-primary" id="btnInstall">Installer l'app →</button>
-        <button class="nav-cta" id="btnGoLogin2" style="border:none;background:none;padding:0;">Déjà un compte ? Se connecter</button>
+        <button class="btn-primary" id="btnInstall">Voir mon conseil du jour — gratuit</button>
+        <a href="#comment" class="btn-ghost">Comment ça marche →</a>
       </div>
     </div>
     <div class="dial-frame">
@@ -1073,81 +1085,79 @@
         <svg class="dial-svg" width="128" height="128" viewBox="0 0 100 100">
           <defs>
             <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#ffcb73"/>
-              <stop offset="55%" stop-color="#ff9f1c"/>
-              <stop offset="100%" stop-color="#d9720a"/>
+              <stop offset="0%" stop-color="#E6FF7A"/>
+              <stop offset="55%" stop-color="#D4FF3F"/>
+              <stop offset="100%" stop-color="#8C9E2E"/>
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
           <circle cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="42" transform="rotate(-90 50 50)"/>
-          <text x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#f6f3ee" font-family="Bricolage Grotesque, sans-serif">84</text>
+          <text x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#ECEAE4" font-family="Bricolage Grotesque, sans-serif">84</text>
         </svg>
         <ul class="dial-legend">
-          <li><span class="dot" style="background:#ff9f1c"></span>Sommeil — 7h40</li>
-          <li><span class="dot" style="background:#35b483"></span>Activité — atteinte</li>
-          <li><span class="dot" style="background:#ffcb73"></span>Forme — bonne</li>
+          <li><span class="dot" style="background:#D4FF3F"></span>Sommeil — 7h40</li>
+          <li><span class="dot" style="background:#FF5A36"></span>Activité — atteinte</li>
+          <li><span class="dot" style="background:#E6FF7A"></span>Forme — bonne</li>
         </ul>
       </div>
-    </div>
-  </section>
-
-  <section class="mission">
-    <p class="mission-eyebrow">Le principe</p>
-    <h2 class="mission-statement">Ton sommeil, ton activité et ton alimentation racontent la même histoire. MyWattUp les lit ensemble et te dit <em>quoi faire aujourd'hui</em>.</h2>
-    <p class="mission-sub">Pas une appli de plus à remplir. Un coach quotidien qui croise tes données et transforme trois chiffres en une seule décision simple : qu'est-ce que je fais maintenant pour tenir mon objectif.</p>
-    <div class="mission-grid">
-      <div class="mission-cell">
-        <p class="mission-cell-label">Le problème</p>
-        <h3>Trois applis, zéro vue d'ensemble</h3>
-        <p>Une appli de sommeil, une de sport, une de nutrition — et toi au milieu à faire le lien. Les données existent, mais personne ne les connecte.</p>
-      </div>
-      <div class="mission-cell">
-        <p class="mission-cell-label">La méthode</p>
-        <h3>Un score, une recommandation</h3>
-        <p>Chaque jour, MyWattUp calcule un score d'énergie à partir de tes données réelles et en tire un conseil concret et une suggestion de repas adaptée.</p>
-      </div>
-      <div class="mission-cell">
-        <p class="mission-cell-label">Pour qui</p>
-        <h3>Sportifs qui veulent progresser sans y passer des heures</h3>
-        <p>Pas besoin de tableurs ni de calculs. Tu ouvres l'app, tu vois où tu en es, tu sais ce que tu manges. C'est tout.</p>
+      <div class="action-box">
+        <div class="dot"></div>
+        <p>Ton conseil : séance modérée aujourd'hui + repas riche en protéines ce soir.</p>
       </div>
     </div>
   </section>
 
-  <section class="modules">
+  <section class="section" id="comment">
     <div class="section-head reveal">
-      <h2>Trois modules, un seul réflexe quotidien</h2>
-      <p>Pas de tableurs, pas de calculs à la main. Tu ouvres l'app, tu suis ton score, tu manges en fonction de ton objectif.</p>
+      <p class="kicker">Pourquoi un score</p>
+      <h2>Trois signaux, une explication, une action</h2>
+      <p>Un chiffre seul ne veut rien dire. Chaque score MyWattUp vient avec ce qui l'a produit et ce qu'il faut en faire — pas besoin de jongler entre trois applis.</p>
     </div>
-    <div class="module-grid">
-      <div class="module-card reveal">
-        <span class="module-tag">Coach IA</span>
-        <h3>Un score, une recommandation</h3>
-        <p>Onboarding sport et objectif, saisie quotidienne du sommeil et de la forme ressentie, score du jour et conseils personnalisés.</p>
+    <div class="factors">
+      <div class="factor reveal">
+        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-8 4 16 2-8h6" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="factor-title">Sommeil</h3>
+        <p class="factor-desc">Durée et régularité de tes nuits, pour savoir si ton corps est prêt à encaisser une séance intense.</p>
       </div>
-      <div class="module-card reveal">
-        <span class="module-tag">Repas</span>
-        <h3>Manger sans réfléchir</h3>
-        <p>Des repas générés selon ton objectif et tes allergies, navigables jour par jour, avec la justification de chaque choix.</p>
+      <div class="factor reveal">
+        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#D4FF3F" stroke-width="2"/><path d="M12 7v5l3 3" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3 class="factor-title">Activité</h3>
+        <p class="factor-desc">Charge d'entraînement récente comparée à ta capacité de récupération du moment.</p>
       </div>
-      <div class="module-card reveal">
-        <span class="module-tag">Scanner</span>
-        <h3>Un produit, un verdict</h3>
-        <p>Scanne un code-barres, obtiens un score ajusté à ton profil sportif, retrouve l'historique de tout ce que tu as scanné.</p>
+      <div class="factor reveal">
+        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4v16M4 4h6a3 3 0 013 3v10M13 4v16M20 4v16" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round"/></svg>
+        <h3 class="factor-title">Nutrition</h3>
+        <p class="factor-desc">Ce que tu as mangé récemment, mis en regard de l'effort fourni et de celui à venir.</p>
       </div>
     </div>
   </section>
 
-  <section class="pricing" id="tarifs">
+  <section class="section" id="confiance">
+    <div class="trust reveal">
+      <svg class="trust-icon" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="#FF5A36" stroke-width="2" stroke-linejoin="round"/></svg>
+      <div>
+        <h3>Bien-être et sport — pas un diagnostic médical</h3>
+        <p>MyWattUp t'aide à mieux dormir, t'entraîner et manger. Ce n'est pas un outil médical et ne remplace pas l'avis d'un professionnel de santé. Tes données t'appartiennent : exportables et supprimables à tout moment.</p>
+        <div class="trust-tags">
+          <span class="trust-tag">Export des données</span>
+          <span class="trust-tag">Suppression à tout moment</span>
+          <span class="trust-tag">Paiement Stripe</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="tarifs">
     <div class="section-head reveal">
+      <p class="kicker">Prix</p>
       <h2>Gratuit pour commencer, Pro pour ne plus y penser</h2>
       <p>Toute l'expérience MyWattUp est accessible gratuitement. L'offre Pro retire les quotas quotidiens et hebdomadaires pour un usage sans limite.</p>
     </div>
     <div class="pricing-grid">
       <div class="pricing-card reveal">
         <h3 class="pricing-plan-name">Gratuit</h3>
-        <p class="pricing-plan-sub">Pour découvrir et utiliser MyWattUp au quotidien</p>
         <div class="pricing-price"><span class="amount">0€</span><span class="period">/ toujours</span></div>
+        <p class="pricing-plan-sub">Pour découvrir et utiliser MyWattUp au quotidien</p>
         <ul class="pricing-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Profil, onboarding et journal quotidien illimités</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 conseil IA du jour, généré chaque jour</li>
@@ -1155,12 +1165,12 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>5 scans de produits par jour</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique des scans consultable</li>
         </ul>
-        <button class="pricing-cta" id="btnGoLoginFree" style="background:none;cursor:pointer;">Commencer gratuitement</button>
+        <button class="pricing-cta" id="btnGoLoginFree" style="cursor:pointer;">Commencer gratuitement</button>
       </div>
       <div class="pricing-card featured reveal">
         <h3 class="pricing-plan-name">Pro</h3>
-        <p class="pricing-plan-sub">Pour un usage quotidien sans limite</p>
         <div class="pricing-price"><span class="amount">9,99€</span><span class="period">/ mois</span></div>
+        <p class="pricing-plan-sub">Pour un usage quotidien sans limite</p>
         <ul class="pricing-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tout ce qui est inclus dans l'offre Gratuite</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
@@ -1175,8 +1185,9 @@
     <p class="pricing-note">Paiement sécurisé via Stripe. Résiliable à tout moment depuis ton compte.</p>
   </section>
 
-  <section class="install" id="installer">
+  <section class="section" id="installer">
     <div class="section-head reveal">
+      <p class="kicker">Installation</p>
       <h2>MyWattUp vit sur ton téléphone</h2>
       <p>Pas de store, pas de téléchargement lourd : l'app s'installe en 10 secondes directement depuis ton navigateur.</p>
     </div>
@@ -1199,8 +1210,10 @@
       </div>
     </div>
   </section>
-  <section class="faq" id="faq-public">
+
+  <section class="section" id="faq-public">
     <div class="section-head reveal">
+      <p class="kicker">FAQ</p>
       <h2>Questions fréquentes</h2>
       <p>Tout ce qu'il faut savoir avant de te lancer. Une autre question ? Écris-nous à Osman874pro@gmail.com.</p>
     </div>
@@ -1237,6 +1250,11 @@
     <p class="faq-cta">Une question qui ne figure pas ici ? <a href="mailto:Osman874pro@gmail.com">Contacte le support</a>.</p>
   </section>
 
+  <section class="final-cta">
+    <h2>Vois ton conseil du jour en moins d'une minute.</h2>
+    <button class="btn-primary js-go-login">Voir mon conseil du jour — gratuit</button>
+  </section>
+
 </main>
 
 <footer>
@@ -1244,11 +1262,11 @@
     <div class="footer-brand">
       <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
         <rect width="1024" height="1024" rx="220" fill="#14101f"/>
-        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#ff9f1c" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M 234 322 L 372 706 L 512 378 L 652 706 L 790 322" fill="none" stroke="#D4FF3F" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       MyWattUp — © 2026
     </div>
-    <a class="link-secondary" href="/login.html">Se connecter</a>
+    <button class="link-secondary js-go-login">Se connecter</button>
   </div>
 </footer>
 </div>
