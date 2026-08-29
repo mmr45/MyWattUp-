@@ -1074,6 +1074,7 @@
         <button class="btn-primary" id="btnInstall">Voir mon conseil du jour — gratuit</button>
         <a href="#comment" class="btn-ghost">Comment ça marche →</a>
       </div>
+      <button class="link-secondary" id="btnGoLogin2" style="border:none;background:none;padding:0;margin-top:18px;">Déjà un compte ? Se connecter</button>
     </div>
     <div class="dial-frame">
       <div class="dial-readout">
@@ -1271,6 +1272,21 @@
 </footer>
 </div>
 <!-- fin #view-vitrine -->
+<script>
+  // Les liens de nav de la vitrine (#comment, #confiance, #tarifs, #faq-public)
+  // scrollent en douceur SANS toucher à location.hash, pour ne jamais entrer
+  // en collision avec le routeur interne de l'app (#dashboard, #journal, ...).
+  document.querySelectorAll('#view-vitrine a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
 
 
 <!-- ======================================================================
