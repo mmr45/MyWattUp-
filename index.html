@@ -77,9 +77,13 @@
   }
   #view-vitrine .field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   #view-vitrine .field span { position: absolute; border-radius: 50%; filter: blur(70px); }
-  #view-vitrine .b1 { width: 480px; height: 480px; background: rgba(212,255,63,0.10); top: -140px; left: -100px; }
-  #view-vitrine .b2 { width: 420px; height: 420px; background: rgba(255,90,54,0.10); bottom: -120px; right: -80px; }
-  #view-vitrine .b3 { width: 300px; height: 300px; background: rgba(212,255,63,0.06); top: 40%; left: 60%; }
+  #view-vitrine .b1 { width: 480px; height: 480px; background: rgba(212,255,63,0.10); top: -140px; left: -100px; animation: vv-float-1 22s ease-in-out infinite; }
+  #view-vitrine .b2 { width: 420px; height: 420px; background: rgba(255,90,54,0.10); bottom: -120px; right: -80px; animation: vv-float-2 26s ease-in-out infinite; }
+  #view-vitrine .b3 { width: 300px; height: 300px; background: rgba(212,255,63,0.06); top: 40%; left: 60%; animation: vv-float-3 19s ease-in-out infinite; }
+  @keyframes vv-float-1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(40px, 60px) scale(1.08); } }
+  @keyframes vv-float-2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-50px, -30px) scale(1.06); } }
+  @keyframes vv-float-3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-30px, 40px) scale(0.94); } }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .b1, #view-vitrine .b2, #view-vitrine .b3 { animation: none; } }
   #view-vitrine .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.03; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
   #view-vitrine .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
@@ -125,6 +129,10 @@
   }
 
   #view-vitrine .hero { padding: 72px 0 96px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; }
+  #view-vitrine .hero > div:first-child { opacity: 0; transform: translateY(18px); animation: vv-hero-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards; }
+  #view-vitrine .hero .dial-frame { opacity: 0; transform: translateY(18px) scale(0.98); animation: vv-hero-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards; }
+  @keyframes vv-hero-in { to { opacity: 1; transform: translateY(0) scale(1); } }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .hero > div:first-child, #view-vitrine .hero .dial-frame { animation: none; opacity: 1; transform: none; } }
   #view-vitrine .eyebrow {
     font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
     color: var(--vv-volt); margin: 0 0 20px; display: inline-flex; align-items: center; gap: 8px;
@@ -154,12 +162,23 @@
   #view-vitrine .dial-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--vv-volt); }
   #view-vitrine .dial-body { display: flex; align-items: center; gap: 20px; padding: 16px 4px; position: relative; }
   #view-vitrine .dial-svg { flex-shrink: 0; }
+  #view-vitrine .vv-dial-ring { transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .vv-dial-ring { transition: none; } }
   #view-vitrine .dial-score { font-family: var(--display); font-weight: 800; font-size: 32px; }
   #view-vitrine .dial-legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; color: var(--vv-text); }
   #view-vitrine .dial-legend li { list-style: none; display: flex; align-items: center; gap: 8px; }
   #view-vitrine .dial-legend .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   #view-vitrine .sparks { position: absolute; inset: 0; pointer-events: none; }
-  #view-vitrine .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--vv-volt); opacity: 0.7; }
+  #view-vitrine .sparks i { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--vv-volt); opacity: 0; box-shadow: 0 0 6px 1px rgba(212,255,63,0.8); animation: vv-spark 3.2s ease-in-out infinite; }
+  #view-vitrine .sparks i:nth-child(1) { top: 10%; left: 6%; animation-delay: 0s; }
+  #view-vitrine .sparks i:nth-child(2) { top: 68%; left: 92%; background: var(--vv-coral); box-shadow: 0 0 6px 1px rgba(255,90,54,0.7); animation-delay: 0.8s; }
+  #view-vitrine .sparks i:nth-child(3) { top: 82%; left: 14%; animation-delay: 1.6s; }
+  #view-vitrine .sparks i:nth-child(4) { top: 4%; left: 82%; animation-delay: 2.4s; }
+  @keyframes vv-spark {
+    0%, 100% { opacity: 0; transform: translateY(0) scale(0.6); }
+    50% { opacity: 0.9; transform: translateY(-10px) scale(1.3); }
+  }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .sparks i { animation: none; opacity: 0; } }
   #view-vitrine .action-box { background: var(--vv-surface-2); border-radius: 12px; padding: 14px 16px; font-size: 13.5px; display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; }
   #view-vitrine .action-box .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vv-coral); margin-top: 6px; flex-shrink: 0; }
   #view-vitrine .action-box p { margin: 0; color: var(--vv-text); line-height: 1.5; }
@@ -1092,8 +1111,8 @@
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="42" transform="rotate(-90 50 50)"/>
-          <text x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#ECEAE4" font-family="Bricolage Grotesque, sans-serif">84</text>
+          <circle class="vv-dial-ring" cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" transform="rotate(-90 50 50)"/>
+          <text class="vv-dial-num" x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#ECEAE4" font-family="Bricolage Grotesque, sans-serif">0</text>
         </svg>
         <ul class="dial-legend">
           <li><span class="dot" style="background:#D4FF3F"></span>Sommeil — 7h40</li>
@@ -2458,6 +2477,39 @@
       btn.closest('.faq-row').classList.toggle('open');
     });
   });
+
+  // ---- Animation du dial de score dans le hero (cercle + compteur) ----
+  (function () {
+    var ring = document.querySelector('.vv-dial-ring');
+    var num = document.querySelector('.vv-dial-num');
+    if (!ring || !num) return;
+
+    var targetScore = 84;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion) {
+      ring.style.strokeDashoffset = 42;
+      num.textContent = targetScore;
+      return;
+    }
+
+    // Le cercle se dessine de 264 (vide) vers 42 (84/100 environ) une fois la page prête.
+    requestAnimationFrame(function () {
+      setTimeout(function () { ring.style.strokeDashoffset = 42; }, 250);
+    });
+
+    // Le chiffre compte de 0 jusqu'à 84 en même temps que le cercle se dessine.
+    var start = null;
+    var duration = 1400;
+    function tick(ts) {
+      if (!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      num.textContent = Math.round(eased * targetScore);
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    setTimeout(function () { requestAnimationFrame(tick); }, 250);
+  })();
 
   // Filet de sécurité : si le script principal (type="module", qui importe
   // supabaseClient.js / auth.js / onboarding.js) échoue à charger — fichiers
