@@ -5312,20 +5312,71 @@
     initSocialRefresh();
   }
 
+  // URL de base des Supabase Edge Functions (même projet que le client `supabase`).
+  const EDGE_FUNCTIONS_URL = 'https://vwodpdoloavliccnnenh.supabase.co/functions/v1';
+
+  // Appelle une Edge Function authentifiée (JWT de la session en cours) qui renvoie
+  // { url } vers Stripe (Checkout ou Portail client), puis redirige le navigateur.
+  async function goToStripe(functionName, button) {
+    const originalLabel = button ? button.textContent : null;
+    if (button) {
+      button.disabled = true;
+      button.textContent = '...';
+    }
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        showToast('Ta session a expiré — reconnecte-toi puis réessaie.', 'error');
+        return;
+      }
+
+      const res = await fetch(`${EDGE_FUNCTIONS_URL}/${functionName}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Réponse invalide du serveur de paiement.');
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error(err);
+      showToast(err.message || 'Erreur lors de la connexion à Stripe.', 'error');
+      if (button) {
+        button.disabled = false;
+        button.textContent = originalLabel;
+      }
+    }
+  }
+
   let abonnementBound = false;
   function initAbonnement() {
     if (abonnementBound) return;
     abonnementBound = true;
     const msg = document.getElementById('abonnementMsg');
-    document.getElementById('btnUpgradePro').addEventListener('click', () => {
-      showToast("L'intégration Stripe (Checkout + webhooks) n'est pas encore branchée. Le passage à l'offre Pro arrivera avec le Module Paiement du cahier des charges.", 'info');
-      if (msg) {
-        msg.textContent = "Paiement Stripe à venir — ton compte reste sur l'offre Gratuite pour le moment.";
-        msg.className = 'msg success';
-      }
+
+    // Si on revient de Stripe Checkout avec ?success=true ou ?canceled=true
+    if (location.hash.includes('success=true')) {
+      if (msg) { msg.textContent = 'Paiement en cours de confirmation — ton offre Pro sera activée dans quelques instants.'; msg.className = 'msg success'; }
+      showToast('Merci ! Ton passage en Pro est en cours de confirmation.', 'success');
+      // Le webhook Stripe met à jour la base à sa propre vitesse : on revérifie
+      // le plan après un court délai pour rafraîchir l'UI sans que l'utilisateur
+      // ait besoin de recharger la page manuellement.
+      setTimeout(async () => { await loadUserPlan(); }, 3000);
+    } else if (location.hash.includes('canceled=true')) {
+      if (msg) { msg.textContent = 'Paiement annulé — tu restes sur l\'offre Gratuite.'; msg.className = 'msg'; }
+    }
+
+    document.getElementById('btnUpgradePro').addEventListener('click', (e) => {
+      goToStripe('create-checkout-session', e.currentTarget);
     });
-    document.getElementById('btnManageBilling').addEventListener('click', () => {
-      showToast("Le portail client Stripe (gestion du moyen de paiement) arrivera avec le Module Paiement du cahier des charges.", 'info');
+    document.getElementById('btnManageBilling').addEventListener('click', (e) => {
+      goToStripe('create-portal-session', e.currentTarget);
     });
     loadBillingHistory();
   }
