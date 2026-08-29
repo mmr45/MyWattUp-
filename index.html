@@ -2553,6 +2553,10 @@
     });
     const footerLink = document.querySelector('#view-vitrine footer .link-secondary.js-go-login');
     if (footerLink) footerLink.textContent = connected ? 'Mon tableau de bord' : 'Se connecter';
+    const btnGoLoginFree = document.getElementById('btnGoLoginFree');
+    if (btnGoLoginFree) btnGoLoginFree.textContent = connected ? 'Ouvrir mon tableau de bord' : 'Commencer gratuitement';
+    const btnGoLoginPro = document.getElementById('btnGoLoginPro');
+    if (btnGoLoginPro) btnGoLoginPro.textContent = connected ? 'Gérer mon abonnement' : 'Passer Pro';
   }
 
   // Point d'entrée unique pour tous les CTA de la vitrine qui menaient
@@ -2677,7 +2681,9 @@
   document.querySelectorAll('.js-go-login').forEach(btn => btn.addEventListener('click', goToAppOrLogin));
   document.getElementById('btnGoLogin2').addEventListener('click', goToAppOrLogin);
   document.getElementById('btnGoLoginFree')?.addEventListener('click', goToAppOrLogin);
-  document.getElementById('btnGoLoginPro')?.addEventListener('click', goToAppOrLogin);
+  document.getElementById('btnGoLoginPro')?.addEventListener('click', () => {
+    if (user) { showApp(); location.hash = '#abonnement'; } else { showLogin(); }
+  });
   document.getElementById('btnGoVitrine')?.addEventListener('click', showVitrine);
 
   // ---- Menu déroulant mobile (vitrine) ----
