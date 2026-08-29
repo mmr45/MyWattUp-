@@ -19,7 +19,8 @@ Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.`;
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "User-Agent": "MyWattUp/1.0"
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
@@ -30,8 +31,10 @@ Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.`;
     });
 
     const data = await response.json();
+    console.log('Groq status:', response.status, 'Groq body:', JSON.stringify(data));
+
     const advice = data.choices?.[0]?.message?.content?.trim();
-    if (!advice) return res.status(502).json({ error: 'Réponse IA vide' });
+    if (!advice) return res.status(502).json({ error: 'Réponse IA vide', groqStatus: response.status, groqBody: data });
 
     await supabase.from('daily_logs')
       .update({ ai_recommendation: advice })
@@ -40,6 +43,7 @@ Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.`;
 
     res.status(200).json({ advice });
   } catch (err) {
-    res.status(500).json({ error: 'Erreur appel Groq' });
+    console.error('Erreur fetch Groq:', err);
+    res.status(500).json({ error: 'Erreur appel Groq', detail: err.message });
   }
 }
