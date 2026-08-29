@@ -1473,6 +1473,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1Z"/></svg>
                 Paramètres
               </a>
+              <button type="button" class="user-menu-item" id="btnGoVitrine">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/></svg>
+                Voir le site
+              </button>
               <div class="user-menu-divider"></div>
               <button type="button" class="user-menu-item danger" id="logoutBtn">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
@@ -2528,6 +2532,35 @@
     viewLogin.style.display = 'none';
     viewOnboarding.style.display = 'none';
     viewVitrine.style.display = 'block';
+    updateVitrineForAuthState();
+  }
+
+  // Adapte les CTA de la vitrine publique selon que l'utilisateur a déjà
+  // une session active ou non — évite de lui repropposer un formulaire de
+  // connexion (et donc de le forcer à se déconnecter) juste pour revenir
+  // voir la page d'accueil pendant qu'il est déjà connecté.
+  function updateVitrineForAuthState() {
+    const connected = !!user;
+    document.querySelectorAll('#view-vitrine .nav-cta').forEach(btn => {
+      btn.textContent = connected ? 'Mon tableau de bord' : 'Se connecter';
+    });
+    const btnGoLogin2 = document.getElementById('btnGoLogin2');
+    if (btnGoLogin2) btnGoLogin2.textContent = connected ? 'Retourner à mon tableau de bord' : 'Déjà un compte ? Se connecter';
+    const btnInstall = document.getElementById('btnInstall');
+    if (btnInstall) btnInstall.textContent = connected ? 'Retrouver mon tableau de bord' : 'Voir mon conseil du jour — gratuit';
+    document.querySelectorAll('#view-vitrine .final-cta .js-go-login').forEach(btn => {
+      btn.textContent = connected ? 'Retrouver mon tableau de bord' : 'Voir mon conseil du jour — gratuit';
+    });
+    const footerLink = document.querySelector('#view-vitrine footer .link-secondary.js-go-login');
+    if (footerLink) footerLink.textContent = connected ? 'Mon tableau de bord' : 'Se connecter';
+  }
+
+  // Point d'entrée unique pour tous les CTA de la vitrine qui menaient
+  // jusqu'ici vers showLogin() : si une session existe déjà, on ramène
+  // directement dans l'app plutôt que de réafficher un formulaire de
+  // connexion.
+  function goToAppOrLogin() {
+    if (user) showApp(); else showLogin();
   }
 
   function showLogin() {
@@ -2641,10 +2674,11 @@
     routeApp();
   }
 
-  document.querySelectorAll('.js-go-login').forEach(btn => btn.addEventListener('click', showLogin));
-  document.getElementById('btnGoLogin2').addEventListener('click', showLogin);
-  document.getElementById('btnGoLoginFree')?.addEventListener('click', showLogin);
-  document.getElementById('btnGoLoginPro')?.addEventListener('click', showLogin);
+  document.querySelectorAll('.js-go-login').forEach(btn => btn.addEventListener('click', goToAppOrLogin));
+  document.getElementById('btnGoLogin2').addEventListener('click', goToAppOrLogin);
+  document.getElementById('btnGoLoginFree')?.addEventListener('click', goToAppOrLogin);
+  document.getElementById('btnGoLoginPro')?.addEventListener('click', goToAppOrLogin);
+  document.getElementById('btnGoVitrine')?.addEventListener('click', showVitrine);
 
   // ---- Menu déroulant mobile (vitrine) ----
   const navBurgerBtn = document.getElementById('navBurgerBtn');
@@ -2693,7 +2727,7 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeUserMenu(); });
   }
 
-  document.getElementById('btnInstall').addEventListener('click', showLogin);
+  document.getElementById('btnInstall').addEventListener('click', goToAppOrLogin);
   document.getElementById('btnBackToVitrine').addEventListener('click', showVitrine);
 
   document.getElementById('authPasswordToggle').addEventListener('click', () => {
