@@ -4219,6 +4219,23 @@
         section.classList.add('card-flash');
       });
       sessionStorage.setItem('mywattup_just_updated', '1');
+
+      // Déclenche le conseil IA en arrière-plan, sans bloquer la redirection
+      supabase.from('profiles').select('sport_type, objective, allergies').eq('user_id', user.id).maybeSingle()
+        .then(({ data: profile }) => {
+          if (!profile) return;
+          fetch('/api/coach-advice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              profile,
+              dailyLog: { sleep_hours: sleepHours, sleep_quality: selectedQuality, activity_type: activityType, activity_duration_min: activityDuration, activity_intensity: activityIntensity, mood_score: moodScore, daily_score: dailyScore },
+              userId: user.id,
+              logDate: today
+            })
+          }).catch(() => {});
+        });
+
       setTimeout(() => { location.hash = '#dashboard'; }, 700);
     });
   }
@@ -4254,8 +4271,67 @@
       });
       repasDaysBuilt = true;
 
-      document.getElementById('generateBtn').addEventListener('click', () => {
-        showToast("La génération de repas via l'IA Claude n'est pas encore branchée. Elle arrivera dans une prochaine étape (Module 2 du cahier des charges).", 'info');
+      document.getElementById('generateBtn').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        showToast('Génération de ton plan de repas en cours…', 'info');
+
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('sport_type, objective, allergies')
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          const resp = await fetch('/api/generate-meals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: profile || {} })
+          });
+          const result = await resp.json();
+
+          if (!resp.ok || !result.meals) {
+            showToast("Erreur lors de la génération — réessaie dans un instant.", 'error');
+            return;
+          }
+
+          const monday = new Date();
+          monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+          const weekStart = monday.toISOString().split('T')[0];
+
+          const { data: newPlan, error: planErr } = await supabase
+            .from('meal_plans')
+            .insert({ user_id: user.id, week_start: weekStart, objective_snapshot: profile?.objective || '' })
+            .select('id')
+            .single();
+
+          if (planErr || !newPlan) {
+            showToast("Plan généré mais non sauvegardé — réessaie.", 'error');
+            return;
+          }
+
+          const mealTypeMap = { petit_dejeuner: 'petit_dejeuner', dejeuner: 'dejeuner', diner: 'diner' };
+          const rows = Object.entries(mealTypeMap).map(([key, mealType]) => {
+            const m = result.meals[key] || {};
+            return {
+              meal_plan_id: newPlan.id,
+              meal_type: mealType,
+              name: m.nom || 'Repas',
+              ingredients: m.justification || ''
+            };
+          });
+
+          await supabase.from('meals').insert(rows);
+
+          mealsCache = { type: 'data', meals: rows };
+          renderMealsFromCache();
+          showToast('Plan de repas généré !', 'success');
+        } catch (err) {
+          console.error(err);
+          showToast("Erreur lors de la génération — réessaie dans un instant.", 'error');
+        } finally {
+          btn.disabled = false;
+        }
       });
       document.getElementById('groceryBtn').addEventListener('click', () => {
         showToast("La liste de courses automatique sera générée en même temps que le plan de repas (Module 2).", 'info');
