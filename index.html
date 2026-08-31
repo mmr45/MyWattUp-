@@ -5391,9 +5391,13 @@
         }
         addBtn.disabled = true;
         try {
-          const { data: targetProfile, error: lookupError } = await supabase
-            .from('profiles').select('user_id').ilike('username', target).maybeSingle();
+          // On passe par la RPC get_public_profiles (SECURITY DEFINER) car la policy
+          // RLS de "profiles" ne laisse chacun voir que sa propre ligne : une requête
+          // directe sur la table ne trouverait jamais le profil d'un autre utilisateur.
+          const { data: matches, error: lookupError } = await supabase
+            .rpc('get_public_profiles', { username_filter: target });
           if (lookupError) throw lookupError;
+          const targetProfile = matches && matches[0];
           if (!targetProfile) {
             addMsg.textContent = 'Aucun compte avec ce pseudo.';
             addMsg.classList.add('error');
