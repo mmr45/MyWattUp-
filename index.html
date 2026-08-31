@@ -4606,10 +4606,34 @@
             .eq('user_id', user.id)
             .maybeSingle();
 
+          // Historique : on récupère les repas des 3 dernières semaines pour
+          // demander à l'IA de ne pas les reproposer (variété).
+          const historyCutoff = new Date();
+          historyCutoff.setDate(historyCutoff.getDate() - 21);
+          const { data: recentPlans } = await supabase
+            .from('meal_plans')
+            .select('id, week_start')
+            .eq('user_id', user.id)
+            .gte('week_start', historyCutoff.toISOString().slice(0, 10));
+
+          let previousMeals = [];
+          if (recentPlans && recentPlans.length > 0) {
+            const planIds = recentPlans.map(p => p.id);
+            const { data: pastMeals } = await supabase
+              .from('meals')
+              .select('name, meal_type, ingredients')
+              .in('meal_plan_id', planIds);
+            // On envoie nom + ingrédients (texte) pour permettre une
+            // comparaison de similarité côté serveur, pas juste sur le nom.
+            previousMeals = (pastMeals || [])
+              .filter(m => m.name)
+              .map(m => ({ name: m.name, ingredients: m.ingredients || '' }));
+          }
+
           const resp = await fetch('/api/generate-meals', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profile: profile || {} })
+            body: JSON.stringify({ profile: profile || {}, previous_meals: previousMeals })
           });
           const result = await resp.json();
 
@@ -4634,11 +4658,13 @@
           const mealTypeMap = { petit_dejeuner: 'petit_dejeuner', dejeuner: 'dejeuner', diner: 'diner' };
           const rows = Object.entries(mealTypeMap).map(([key, mealType]) => {
             const m = result.meals[key] || {};
+            const justification = m.justification || '';
+            const source = m.source ? ` (Source : ${m.source})` : '';
             return {
               meal_plan_id: newPlan.id,
               meal_type: mealType,
               name: m.nom || 'Repas',
-              ingredients: m.justification || ''
+              ingredients: `${justification}${source}`.trim()
             };
           });
 
