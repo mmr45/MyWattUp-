@@ -3010,6 +3010,7 @@
   let dashboardBound = false;
   let dashboardLoaded = false;
   let lastDashboardLog = null;
+  let adviceRefreshTimer = null;
   let trendLogsAll = [];
   let currentTrendRange = 7;
   let lastStreakStats = { currentStreak: 0, bestStreak: 0, bestQualityStreak: 0 };
@@ -3852,9 +3853,55 @@
       document.getElementById('mealsDetail').textContent = mealsCount > 0 ? mealsDone.join(', ') : 'Aucun repas suivi';
 
       const adviceText = document.getElementById('adviceText');
-      adviceText.textContent = log.ai_recommendation
-        ? log.ai_recommendation
-        : "Ton score du jour est calculé. Le conseil personnalisé par l'IA arrivera bientôt ici.";
+      // On arrête un éventuel suivi précédent avant d'en démarrer un nouveau,
+      // pour ne jamais avoir deux boucles de vérification actives en même temps
+      // (par ex. si l'utilisateur clique plusieurs fois sur "Rafraîchir").
+      if (adviceRefreshTimer) {
+        clearInterval(adviceRefreshTimer);
+        adviceRefreshTimer = null;
+      }
+
+      if (log.ai_recommendation) {
+        adviceText.textContent = log.ai_recommendation;
+      } else {
+        // Le conseil est généré en tâche de fond côté serveur après l'enregistrement
+        // du journal ; il n'est donc pas toujours prêt dès l'arrivée sur le dashboard.
+        // On l'indique clairement, puis on revérifie automatiquement en base
+        // pendant ~40s au lieu de laisser un message figé que l'utilisateur devrait
+        // rafraîchir lui-même pour voir apparaître.
+        adviceText.textContent = "Ton score du jour est calculé. Génération de ton conseil personnalisé par l'IA en cours…";
+        const logDateForPoll = log.log_date;
+        let attempts = 0;
+        const maxAttempts = 10; // 10 x 4s ≈ 40s d'attente max
+        adviceRefreshTimer = setInterval(async () => {
+          attempts += 1;
+          try {
+            const { data: refreshed, error: refreshError } = await supabase
+              .from('daily_logs')
+              .select('ai_recommendation')
+              .eq('user_id', user.id)
+              .eq('log_date', logDateForPoll)
+              .maybeSingle();
+            if (refreshError) throw refreshError;
+
+            if (refreshed && refreshed.ai_recommendation) {
+              adviceText.textContent = refreshed.ai_recommendation;
+              if (lastDashboardLog) lastDashboardLog.ai_recommendation = refreshed.ai_recommendation;
+              clearInterval(adviceRefreshTimer);
+              adviceRefreshTimer = null;
+              return;
+            }
+          } catch (err) {
+            console.error('Erreur lors de la vérification du conseil IA :', err);
+          }
+
+          if (attempts >= maxAttempts) {
+            adviceText.textContent = "Le conseil personnalisé n'a pas pu être généré cette fois-ci. Réessaie de valider ta journée depuis l'onglet Journal, ou reviens un peu plus tard.";
+            clearInterval(adviceRefreshTimer);
+            adviceRefreshTimer = null;
+          }
+        }, 4000);
+      }
 
       // Badge "Mis à jour" affiché juste après l'enregistrement du journal
       if (scoreBadgeEl && sessionStorage.getItem('mywattup_just_updated') === '1') {
@@ -4362,21 +4409,40 @@
       });
       sessionStorage.setItem('mywattup_just_updated', '1');
 
-      // Déclenche le conseil IA en arrière-plan, sans bloquer la redirection
-      supabase.from('profiles').select('sport_type, objective, allergies').eq('user_id', user.id).maybeSingle()
-        .then(({ data: profile }) => {
-          if (!profile) return;
-          fetch('/api/coach-advice', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              profile,
-              dailyLog: { sleep_hours: sleepHours, sleep_quality: selectedQuality, activity_type: activityType, activity_duration_min: activityDuration, activity_intensity: activityIntensity, mood_score: moodScore, daily_score: dailyScore },
-              userId: user.id,
-              logDate: today
-            })
-          }).catch(() => {});
+      // Déclenche le conseil IA en arrière-plan, sans bloquer la redirection.
+      // On journalise les échecs (au lieu de les avaler silencieusement) et on
+      // retente une fois en cas d'erreur réseau ou de réponse HTTP en erreur,
+      // pour limiter les cas où le conseil ne se génère jamais.
+      Promise.all([
+        supabase.from('profiles').select('sport_type, objective, allergies').eq('user_id', user.id).maybeSingle(),
+        supabase.auth.getSession(),
+      ]).then(([{ data: profile }, { data: { session } }]) => {
+        if (!profile || !session) return;
+        const payload = JSON.stringify({
+          profile,
+          dailyLog: { sleep_hours: sleepHours, sleep_quality: selectedQuality, activity_type: activityType, activity_duration_min: activityDuration, activity_intensity: activityIntensity, mood_score: moodScore, daily_score: dailyScore },
+          logDate: today
         });
+        const callCoachAdvice = (attempt) => fetch('/api/coach-advice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: payload
+        }).then(res => {
+          if (!res.ok) throw new Error(`coach-advice a répondu ${res.status}`);
+        }).catch(err => {
+          console.error(`Échec de la génération du conseil IA (tentative ${attempt}) :`, err);
+          if (attempt === 1) {
+            // Un seul essai supplémentaire après un court délai : suffisant pour
+            // couvrir une erreur réseau ou un cold start ponctuel côté serveur,
+            // sans multiplier les appels en cas de panne persistante.
+            setTimeout(() => callCoachAdvice(2), 2000);
+          }
+        });
+        callCoachAdvice(1);
+      });
 
       setTimeout(() => { location.hash = '#dashboard'; }, 700);
     });
