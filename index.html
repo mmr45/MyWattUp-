@@ -3095,7 +3095,7 @@
   async function logFoodEntry({ mealSlot, label, quantityG, kcal, proteinsG, carbsG, fatG, source, scannedProductId }) {
     const { error } = await supabase.from('food_entries').insert({
       user_id: user.id,
-      log_date: new Date().toISOString().split('T')[0],
+      log_date: localDateStr(),
       meal_slot: mealSlot,
       source,
       scanned_product_id: scannedProductId || null,
@@ -3183,7 +3183,7 @@
   }
 
   async function loadTodayNutrition() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = localDateStr();
     const [{ data: entries, error: entriesError }, { data: profile, error: profileError }] = await Promise.all([
       supabase.from('food_entries').select('*').eq('user_id', user.id).eq('log_date', today).order('created_at', { ascending: true }),
       supabase.from('profiles').select('weight_kg, height_cm, birth_year, sex, activity_level, objective').eq('user_id', user.id).maybeSingle(),
@@ -3355,7 +3355,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mywattup-recap-${new Date().toISOString().split('T')[0]}.png`;
+        a.download = `mywattup-recap-${localDateStr()}.png`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -3377,6 +3377,16 @@
     const h = Math.floor(hours);
     const m = Math.round((hours - h) * 60);
     return m > 0 ? `${h}h${String(m).padStart(2, '0')}` : `${h}h`;
+  }
+
+  // Date locale (YYYY-MM-DD) au lieu de toISOString(), qui convertit en UTC
+  // et fait donc "sauter" le jour entre minuit et l'heure du décalage France/UTC
+  // (ex : 1h du matin en France = encore la veille en UTC).
+  function localDateStr(d = new Date()) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 
   // Contenu "pourquoi" des mini-cartes, basé sur des repères de santé publique
@@ -3586,7 +3596,7 @@
   async function loadTrendData() {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
-    const fromDate = thirtyDaysAgo.toISOString().split('T')[0];
+    const fromDate = localDateStr(thirtyDaysAgo);
 
     const { data, error } = await supabase
       .from('daily_logs')
@@ -3759,7 +3769,7 @@
     loadStreaksData();
     loadTodayNutrition();
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = localDateStr();
 
     const { data: log, error } = await supabase
       .from('daily_logs')
@@ -4135,8 +4145,9 @@
     const prefillBtnLabel = document.getElementById('prefillBtnLabel');
     let prefillPayload = null;
 
-    function average(arr) { return arr.reduce((a, b) => a + b, 0) / arr.length; }
+    function average(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
     function mode(arr) {
+      if (!arr.length) return null;
       const counts = {};
       arr.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
       return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
@@ -4145,10 +4156,10 @@
 
     async function setupPrefill() {
       const today = new Date();
-      const todayStr = today.toISOString().split('T')[0];
+      const todayStr = localDateStr(today);
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
+      const yesterdayStr = localDateStr(yesterday);
 
       const { data: logs, error } = await supabase
         .from('daily_logs')
@@ -4371,7 +4382,7 @@
         intensity: activityIntensity, duration: activityDuration, mood: moodScore
       });
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = localDateStr();
 
       const { error } = await supabase
         .from('daily_logs')
@@ -4505,7 +4516,7 @@
 
           const monday = new Date();
           monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
-          const weekStart = monday.toISOString().split('T')[0];
+          const weekStart = localDateStr(monday);
 
           const { data: newPlan, error: planErr } = await supabase
             .from('meal_plans')
@@ -5498,7 +5509,7 @@
         const btn = e.currentTarget;
         btn.disabled = true;
         try {
-          const today = new Date().toISOString().split('T')[0];
+          const today = localDateStr();
           const { data: log, error } = await supabase
             .from('daily_logs').select('daily_score').eq('user_id', user.id).eq('log_date', today).maybeSingle();
           if (error) throw error;
@@ -6266,7 +6277,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `mywattup-export-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `mywattup-export-${localDateStr()}.json`;
         document.body.appendChild(a);
         a.click();
         a.remove();
