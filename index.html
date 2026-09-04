@@ -4651,7 +4651,13 @@
             .single();
 
           if (planErr || !newPlan) {
-            showToast("Plan généré mais non sauvegardé — réessaie.", 'error');
+            console.error(planErr);
+            showToast(
+              planErr && /Quota atteint/i.test(planErr.message || '')
+                ? "Tu as déjà généré ton plan cette semaine — passe en Pro pour régénérer à volonté."
+                : "Plan généré mais non sauvegardé — réessaie.",
+              'error'
+            );
             return;
           }
 
@@ -5026,8 +5032,16 @@
 
       let scanInFlight = false;
 
-      async function runScan(barcode) {
-        if (!barcode || scanInFlight) return;
+      async function runScan(rawBarcode) {
+        if (scanInFlight) return;
+        // Un code-barres EAN/UPC ne contient que des chiffres : on rejette
+        // tout le reste avant de l'envoyer dans une URL ou en base.
+        const barcode = String(rawBarcode || '').trim();
+        if (!barcode) return;
+        if (!/^[0-9]{6,14}$/.test(barcode)) {
+          showScanError('Code-barres invalide — il doit contenir entre 6 et 14 chiffres.');
+          return;
+        }
         scanInFlight = true;
 
         scanBtn.disabled = true;
@@ -5043,7 +5057,7 @@
             }
           }
 
-          const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json`);
+          const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(barcode)}.json`);
           const data = await res.json();
 
           if (data.status !== 1) {
@@ -5077,12 +5091,22 @@
           void resultCard.offsetWidth;
           resultCard.classList.add('card-flash');
 
-          await supabase.from('scanned_products').insert({
+          // Le quota est aussi appliqué en base (trigger) : si le serveur
+          // refuse, on l'affiche au lieu d'ignorer l'erreur silencieusement.
+          const { error: scanInsertError } = await supabase.from('scanned_products').insert({
             user_id: user.id,
             barcode,
             product_name: productName,
             personalized_score: score,
           });
+          if (scanInsertError) {
+            console.error(scanInsertError);
+            showScanError(
+              /Quota atteint/i.test(scanInsertError.message || '')
+                ? "Tu as atteint la limite de 5 scans aujourd'hui — passe en Pro pour scanner sans limite."
+                : "Produit affiché mais non enregistré dans ton historique — réessaie."
+            );
+          }
 
           updateScanQuotaUI();
           loadHistory();
@@ -5238,7 +5262,7 @@
         if (isOpen && !loaded) {
           loaded = true;
           try {
-            const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${item.barcode}.json`);
+            const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(item.barcode)}.json`);
             const apiData = await res.json();
             if (apiData.status !== 1) {
               detail.innerHTML = '<p class="history-detail-loading">Détail indisponible — ce produit n\'est plus référencé sur OpenFoodFacts.</p>';
@@ -5333,12 +5357,12 @@
           <div class="invoice-row">
             <div class="invoice-row-left">
               <div class="invoice-date">${date}</div>
-              <div class="invoice-plan">${inv.plan_label || 'Offre Pro'}</div>
+              <div class="invoice-plan">${escapeHtml(inv.plan_label || 'Offre Pro')}</div>
             </div>
             <div class="invoice-row-right">
               <span class="invoice-amount">${formatEuros(inv.amount_cents ?? 0)}</span>
               <span class="invoice-status ${statusClass}">${statusLabel}</span>
-              ${inv.pdf_url ? `<a href="${inv.pdf_url}" target="_blank" rel="noopener" class="invoice-download" aria-label="Télécharger la facture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></a>` : ''}
+              ${/^https:\/\//.test(inv.pdf_url || '') ? `<a href="${escapeAttr(inv.pdf_url)}" target="_blank" rel="noopener noreferrer" class="invoice-download" aria-label="Télécharger la facture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></a>` : ''}
             </div>
           </div>
         `;
@@ -5372,10 +5396,12 @@
   async function fetchProfilesByIds(ids) {
     const uniqueIds = [...new Set(ids)];
     if (!uniqueIds.length) return {};
+    // La RLS de "profiles" ne laisse voir que sa propre ligne : un select
+    // direct renvoyait toujours 0 résultat et la liste d'amis affichait
+    // « Utilisateur » pour tout le monde. On passe par une RPC SECURITY
+    // DEFINER limitée à soi-même, aux amitiés acceptées et aux demandes reçues.
     const { data, error } = await supabase
-      .from('profiles')
-      .select('user_id, username, avatar_seed, avatar_url')
-      .in('user_id', uniqueIds);
+      .rpc('get_friend_profiles', { ids: uniqueIds });
     if (error) { console.error(error); return {}; }
     const map = {};
     (data || []).forEach(p => { map[p.user_id] = p; });
@@ -5576,7 +5602,12 @@
       if (e.event_type === 'badge_unlocked') {
         text = `<b>${escapeHtml(name)}</b> a débloqué le badge « ${escapeHtml(e.payload.badge_label || '')} »`;
       } else if (e.event_type === 'shared_recap') {
-        text = `<b>${escapeHtml(name)}</b> a partagé son score du jour : <b>${e.payload.score ?? '--'}/100</b>`;
+        // payload est un jsonb librement écrit par l'auteur de l'événement :
+        // il doit être échappé au même titre que le pseudo, sinon un ami
+        // peut injecter du HTML dans le fil de tous ses contacts.
+        const rawScore = e.payload && e.payload.score;
+        const score = Number.isFinite(Number(rawScore)) ? String(Math.round(Number(rawScore))) : '--';
+        text = `<b>${escapeHtml(name)}</b> a partagé son score du jour : <b>${escapeHtml(score)}/100</b>`;
         iconSvg = SHARE_ICON_SVG;
         iconClass = 'shared';
       } else {
