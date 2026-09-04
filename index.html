@@ -4630,15 +4630,31 @@
               .map(m => ({ name: m.name, ingredients: m.ingredients || '' }));
           }
 
+          // L'endpoint vérifie désormais le JWT et le quota côté serveur :
+          // il faut donc lui transmettre la session en cours.
+          const { data: { session: mealSession } } = await supabase.auth.getSession();
+          if (!mealSession) {
+            showToast('Ta session a expiré — reconnecte-toi puis réessaie.', 'error');
+            return;
+          }
+
           const resp = await fetch('/api/generate-meals', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${mealSession.access_token}`,
+            },
             body: JSON.stringify({ profile: profile || {}, previous_meals: previousMeals })
           });
           const result = await resp.json();
 
+          if (resp.status === 429) {
+            showToast(result.error || "Tu as déjà généré ton plan cette semaine.", 'error');
+            return;
+          }
+
           if (!resp.ok || !result.meals) {
-            showToast("Erreur lors de la génération — réessaie dans un instant.", 'error');
+            showToast(result.error || "Erreur lors de la génération — réessaie dans un instant.", 'error');
             return;
           }
 
