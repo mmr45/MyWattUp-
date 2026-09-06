@@ -1,9 +1,8 @@
-// api/generate-meals.js — version diagnostique
+// api/generate-meals.js — détection automatique du fournisseur IA
 //
-// Différences avec la version précédente :
-//  - accepte plusieurs noms possibles pour les variables d'environnement
-//  - vérifie leur présence AVANT tout appel réseau et dit lesquelles manquent
-//  - renvoie le message d'erreur réel dans "detail" (à retirer une fois réglé)
+// Le endpoint cherche la première clé API disponible parmi les fournisseurs
+// connus et adapte l'appel. Aucune config à changer si ta clé porte un des
+// noms standards ci-dessous.
 
 const SUPABASE_URL =
   process.env.SUPABASE_URL ||
@@ -16,16 +15,83 @@ const SERVICE_KEY =
   process.env.SUPABASE_SERVICE_KEY ||
   process.env.SERVICE_ROLE_KEY;
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
-
 const MEAL_KEYS = ['petit_dejeuner', 'dejeuner', 'diner'];
 
-function missingEnv() {
-  const missing = [];
-  if (!SUPABASE_URL) missing.push('SUPABASE_URL');
-  if (!SERVICE_KEY) missing.push('SUPABASE_SERVICE_ROLE_KEY');
-  if (!ANTHROPIC_API_KEY) missing.push('ANTHROPIC_API_KEY');
-  return missing;
+// ---------------------------------------------------------------- provider
+// Ordre de priorité : le premier dont la clé existe est utilisé.
+const PROVIDERS = [
+  {
+    name: 'anthropic',
+    envs: ['ANTHROPIC_API_KEY', 'CLAUDE_API_KEY'],
+    url: 'https://api.anthropic.com/v1/messages',
+    model: 'claude-sonnet-4-6',
+    headers: (key) => ({ 'x-api-key': key, 'anthropic-version': '2023-06-01' }),
+    body: (model, prompt) => ({ model, max_tokens: 2000, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    extract: (d) => (d.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n'),
+  },
+  {
+    name: 'openai',
+    envs: ['OPENAI_API_KEY'],
+    url: 'https://api.openai.com/v1/chat/completions',
+    model: 'gpt-4o-mini',
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    extract: (d) => d.choices?.[0]?.message?.content || '',
+  },
+  {
+    name: 'openrouter',
+    envs: ['OPENROUTER_API_KEY'],
+    url: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'openai/gpt-4o-mini',
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    extract: (d) => d.choices?.[0]?.message?.content || '',
+  },
+  {
+    name: 'mistral',
+    envs: ['MISTRAL_API_KEY'],
+    url: 'https://api.mistral.ai/v1/chat/completions',
+    model: 'mistral-large-latest',
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    extract: (d) => d.choices?.[0]?.message?.content || '',
+  },
+  {
+    name: 'groq',
+    envs: ['GROQ_API_KEY'],
+    url: 'https://api.groq.com/openai/v1/chat/completions',
+    model: 'llama-3.3-70b-versatile',
+    headers: (key) => ({ Authorization: `Bearer ${key}` }),
+    body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    extract: (d) => d.choices?.[0]?.message?.content || '',
+  },
+  {
+    name: 'gemini',
+    envs: ['GEMINI_API_KEY', 'GOOGLE_API_KEY', 'GOOGLE_GENERATIVE_AI_API_KEY'],
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    model: 'gemini-2.0-flash',
+    headers: (key) => ({ 'x-goog-api-key': key }),
+    body: (_model, prompt) => ({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 1 } }),
+    extract: (d) => d.candidates?.[0]?.content?.parts?.map(p => p.text).join('\n') || '',
+  },
+];
+
+function resolveProvider() {
+  for (const p of PROVIDERS) {
+    for (const envName of p.envs) {
+      if (process.env[envName]) return { ...p, key: process.env[envName], envName };
+    }
+  }
+  return null;
+}
+
+// Noms (jamais les valeurs) des variables ressemblant à une clé API,
+// pour t'aider à repérer le nom réel si la détection échoue.
+function envKeyNames() {
+  return Object.keys(process.env)
+    .filter(k => /(_API_KEY|_KEY|_TOKEN|_SECRET)$/i.test(k))
+    .filter(k => !/^(SUPABASE|NEXT_PUBLIC_SUPABASE|VITE_SUPABASE|SERVICE_ROLE|STRIPE)/i.test(k))
+    .sort();
 }
 
 // ---------------------------------------------------------------- helpers
@@ -107,29 +173,21 @@ Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, sans balises M
 }
 
 // ---------------------------------------------------------------- modèle
-async function callModel(prompt) {
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
+async function callModel(provider, prompt) {
+  const r = await fetch(provider.url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
-      temperature: 1,
-      messages: [{ role: 'user', content: prompt }],
-    }),
+    headers: { 'Content-Type': 'application/json', ...provider.headers(provider.key) },
+    body: JSON.stringify(provider.body(provider.model, prompt)),
   });
 
   if (!r.ok) {
     const body = await r.text();
-    throw new Error(`API modèle ${r.status} : ${body.slice(0, 300)}`);
+    throw new Error(`${provider.name} ${r.status} : ${body.slice(0, 300)}`);
   }
 
-  const data = await r.json();
-  return (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+  const text = provider.extract(await r.json());
+  if (!text) throw new Error(`${provider.name} : réponse vide`);
+  return text;
 }
 
 function parseMeals(raw) {
@@ -160,12 +218,18 @@ function hasDuplicate(meals, previousMeals) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Méthode non autorisée' });
 
-  // 1) Variables d'environnement — cause n°1 des 500 après un déploiement.
-  const missing = missingEnv();
-  if (missing.length) {
+  if (!SUPABASE_URL || !SERVICE_KEY) {
     return res.status(500).json({
       error: 'Configuration serveur incomplète.',
-      detail: `Variables manquantes sur Vercel : ${missing.join(', ')}`,
+      detail: 'SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquante sur Vercel.',
+    });
+  }
+
+  const provider = resolveProvider();
+  if (!provider) {
+    return res.status(500).json({
+      error: 'Configuration serveur incomplète.',
+      detail: `Aucune clé IA reconnue. Clés présentes sur Vercel : ${envKeyNames().join(', ') || '(aucune)'}. Ajoute la tienne dans PROVIDERS.envs.`,
     });
   }
 
@@ -190,8 +254,8 @@ export default async function handler(req, res) {
       }
     }
 
-    step = 'modele';
-    const raw = await callModel(buildPrompt({ profile, needs, previousMeals: previous_meals, planDate, seed }));
+    step = `modele:${provider.name}`;
+    const raw = await callModel(provider, buildPrompt({ profile, needs, previousMeals: previous_meals, planDate, seed }));
 
     step = 'parse';
     let meals = parseMeals(raw);
@@ -199,7 +263,7 @@ export default async function handler(req, res) {
     step = 'retry';
     if (hasDuplicate(meals, previous_meals)) {
       try {
-        meals = parseMeals(await callModel(buildPrompt({
+        meals = parseMeals(await callModel(provider, buildPrompt({
           profile, needs, planDate,
           seed: `${seed}-retry-${Date.now()}`,
           previousMeals: [...previous_meals, ...MEAL_KEYS.map(k => ({ name: meals[k].nom, ingredients: '' }))],
