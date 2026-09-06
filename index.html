@@ -687,8 +687,11 @@
   #view-app .setting-row-desc { display: block; font-size: 12px; color: var(--gris); margin-top: 3px; line-height: 1.4; }
 
   #view-app .quality-btns, #view-app .meal-btns { display: flex; gap: 8px; }
-  #view-app .qbtn { flex: 1; padding: 10px; text-align: center; border-radius: 9px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 12px; cursor: pointer; color: var(--gris); transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
-  #view-app .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(255,90,54,0.12); }
+  #view-app .qbtn { flex: 1; padding: 13px 10px; text-align: center; border-radius: 10px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); font-size: 13px; cursor: pointer; color: var(--gris); transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+  #view-app .qbtn:hover { border-color: rgba(255,255,255,0.22); color: var(--blanc); }
+  /* Était un fond vermillon sous un texte vert : deux accents qui se
+     contredisaient. La sélection est verte, point. */
+  #view-app .qbtn.selected { border-color: var(--vert); color: var(--vert); background: rgba(212,255,63,0.10); font-weight: 600; }
   #view-app .slider-row { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
   #view-app input[type="range"] {
     flex: 1; -webkit-appearance: none; appearance: none; height: 6px; border-radius: 4px;
@@ -745,27 +748,35 @@
   #view-app .jsp-ring-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
   #view-app .jsp-ring-score { font-family: var(--display); font-weight: 800; font-size: 17px; }
   #view-app .jsp-text { flex: 1; min-width: 0; }
-  #view-app .jsp-label { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gris); margin-bottom: 3px; }
-  #view-app .jsp-detail { font-size: 12.5px; color: var(--blanc); line-height: 1.4; }
+  /* Le message utile passe devant : le libellé d'état n'est plus qu'une
+     mention secondaire, sous le texte. */
+  #view-app .jsp-label { order: 2; font-size: 11.5px; color: var(--gris); text-transform: none; letter-spacing: 0; font-family: inherit; margin: 3px 0 0; }
+  #view-app .jsp-detail { order: 1; font-size: 14px; color: var(--blanc); line-height: 1.4; }
+  #view-app .jsp-text { display: flex; flex-direction: column; }
 
   /* ---------- Journal : pré-remplissage intelligent ---------- */
+  /* Ce bouton est une aide facultative, pas une alerte : plus de bordure
+     tiretée vermillon, qui lui donnait le poids visuel d'une erreur. */
   #view-app .prefill-btn {
-    display: none; width: 100%; align-items: center; justify-content: center; gap: 8px;
+    display: none; width: 100%; align-items: center; gap: 10px;
     padding: 12px 14px; margin-bottom: 18px; border-radius: 12px; cursor: pointer;
-    background: rgba(255,90,54,0.08); border: 1px dashed rgba(255,90,54,0.4); color: var(--vert);
-    font-family: inherit; font-size: 12.5px; font-weight: 600; text-align: center; line-height: 1.4;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--blanc);
+    font-family: inherit; font-size: 13px; font-weight: 500; text-align: left; line-height: 1.4;
+    transition: background 0.15s ease, border-color 0.15s ease;
   }
   #view-app .prefill-btn.show { display: flex; }
-  #view-app .prefill-btn:hover { background: rgba(255,90,54,0.14); }
-  #view-app .prefill-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+  #view-app .prefill-btn:hover { background: rgba(212,255,63,0.07); border-color: rgba(212,255,63,0.35); }
+  #view-app .prefill-btn svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--vert); }
 
   /* ---------- Journal : barre de progression du wizard ---------- */
-  #view-app .wizard-progress { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; }
-  #view-app .wizard-dot { flex: 1; height: 4px; border-radius: 3px; background: rgba(255,255,255,0.08); transition: background 0.2s ease; }
+  #view-app .wizard-progress { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
+  #view-app .wizard-dot { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.08); transition: background 0.2s ease; }
   #view-app .wizard-dot.done { background: var(--vert); }
   #view-app .wizard-dot.active { background: var(--ambre); }
-  #view-app .wizard-step-label { font-family: var(--mono); font-size: 11px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
-  #view-app .wizard-step-label strong { color: var(--ambre); }
+  /* Le nom de l'étape est déjà porté par le titre de la carte : ici on ne
+     garde que la position dans le parcours. */
+  #view-app .wizard-step-label { font-size: 12px; color: var(--gris); margin-bottom: 16px; letter-spacing: 0; text-transform: none; font-family: inherit; }
+  #view-app .wizard-step-label strong { color: var(--blanc); font-weight: 600; }
 
   /* ---------- Journal : navigation du wizard (sticky) ---------- */
   #view-app .wizard-nav {
@@ -809,8 +820,12 @@
   #view-app .time-row { display: flex; gap: 12px; }
   #view-app .time-field { flex: 1; }
   #view-app .time-field label { margin-top: 0; }
-  #view-app .sleep-computed { margin-top: 14px; font-size: 12.5px; color: var(--gris); background: rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 12px; }
-  #view-app .sleep-computed strong { color: var(--vert); font-weight: 700; }
+  #view-app .time-field input[type="time"] { padding: 14px; font-size: 17px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  /* Tant qu'aucune heure n'est saisie, cette ligne n'affichait qu'un "--" :
+     une boîte grise pour rien. Elle n'apparaît qu'une fois le calcul possible. */
+  #view-app .sleep-computed { display: none; align-items: baseline; gap: 8px; margin-top: 14px; font-size: 13px; color: var(--gris); background: rgba(212,255,63,0.07); border: 1px solid rgba(212,255,63,0.18); border-radius: 10px; padding: 12px 14px; }
+  #view-app .sleep-computed.is-ready { display: flex; }
+  #view-app .sleep-computed strong { color: var(--vert); font-weight: 700; font-size: 16px; font-family: var(--display); }
 
   /* ---------- Journal : récapitulatif ---------- */
   #view-app .recap-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 0; }
@@ -837,6 +852,9 @@
   #view-app a:focus-visible,
   #view-app button:focus-visible,
   #view-app .day-chip:focus-visible,
+  #view-app .cal-day:focus-visible,
+  #view-app .cal-nav:focus-visible,
+  #view-app .cal-today:focus-visible,
   #view-app .toggle:focus-visible,
   #view-app .qbtn:focus-visible,
   #view-app .history-item:focus-visible,
@@ -1760,7 +1778,7 @@
         <div class="wizard-dot" data-step="3"></div>
         <div class="wizard-dot" data-step="4"></div>
       </div>
-      <div class="wizard-step-label" id="wizardStepLabel">Étape <strong>1/4</strong> — Sommeil</div>
+      <div class="wizard-step-label" id="wizardStepLabel">Étape <strong>1</strong> sur 5</div>
 
       <form id="journalForm">
         <div class="app-section wizard-step" data-step="0">
@@ -1775,7 +1793,7 @@
               <input type="time" id="wakeTime" required />
             </div>
           </div>
-          <div class="sleep-computed" id="sleepComputed">Durée calculée : <strong id="sleepComputedValue">--</strong></div>
+          <div class="sleep-computed" id="sleepComputed"><span>Tu as dormi</span><strong id="sleepComputedValue">--</strong></div>
 
           <label>Qualité perçue</label>
           <div class="quality-btns" id="sleepQuality">
@@ -4059,7 +4077,6 @@
   // -------------------------------------------------------------
   function initJournal() {
     let selectedQuality = null;
-    const STEP_LABELS = ['Sommeil', 'Activité', 'Forme ressentie', 'Repas suivis', 'Récapitulatif'];
 
     const bedTimeInput = document.getElementById('bedTime');
     const wakeTimeInput = document.getElementById('wakeTime');
@@ -4095,6 +4112,8 @@
     function updateSleepComputed() {
       const hours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
       sleepComputedValueEl.textContent = hours != null ? formatSleepDuration(hours) : '--';
+      const box = document.getElementById('sleepComputed');
+      if (box) box.classList.toggle('is-ready', hours != null);
       return hours;
     }
 
@@ -4457,7 +4476,9 @@
         d.classList.toggle('done', n < currentStep);
         d.classList.toggle('active', n === currentStep);
       });
-      stepLabelEl.innerHTML = `Étape <strong>${currentStep + 1}/${steps.length}</strong> — ${STEP_LABELS[currentStep]}`;
+      // Le nom de l'étape est déjà le titre de la carte juste en dessous :
+      // on ne le répète pas ici.
+      stepLabelEl.innerHTML = `Étape <strong>${currentStep + 1}</strong> sur ${steps.length}`;
       prevBtn.hidden = currentStep === 0;
       const isLast = currentStep === steps.length - 1;
       nextBtn.hidden = isLast;
