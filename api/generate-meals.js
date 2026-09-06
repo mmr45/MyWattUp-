@@ -62,7 +62,14 @@ const PROVIDERS = [
     url: 'https://api.groq.com/openai/v1/chat/completions',
     model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     headers: (key) => ({ Authorization: `Bearer ${key}` }),
-    body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
+    body: (model, prompt) => ({
+      model,
+      temperature: 1,
+      max_completion_tokens: 4000,
+      reasoning_effort: 'low',
+      response_format: { type: 'json_object' },
+      messages: [{ role: 'user', content: prompt }],
+    }),
     extract: (d) => d.choices?.[0]?.message?.content || '',
   },
   {
@@ -194,7 +201,9 @@ function parseMeals(raw) {
   const cleaned = String(raw).replace(/```json|```/g, '').trim();
   const start = cleaned.indexOf('{');
   const end = cleaned.lastIndexOf('}');
-  if (start === -1 || end === -1) throw new Error(`Réponse illisible : ${cleaned.slice(0, 200)}`);
+  if (start === -1 || end === -1 || end < start) {
+    throw new Error(`Réponse tronquée ou illisible (${cleaned.length} car.) : ${cleaned.slice(0, 200)}`);
+  }
   const parsed = JSON.parse(cleaned.slice(start, end + 1));
   for (const k of MEAL_KEYS) {
     if (!parsed[k] || !parsed[k].nom) throw new Error(`Repas manquant : ${k}`);
