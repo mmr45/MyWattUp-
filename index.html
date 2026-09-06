@@ -896,6 +896,25 @@
   #view-app .day-scroll { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
   #view-app .day-chip { flex: 0 0 auto; padding: 9px 16px; border-radius: 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); font-size: 13px; color: var(--gris); cursor: pointer; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
   #view-app .day-chip.active { background: var(--vert); color: #0E1410; border-color: var(--vert); font-weight: 700; }
+
+  /* ---- Calendrier des repas ---- */
+  #view-app .cal { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; margin-bottom: 20px; }
+  #view-app .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  #view-app .cal-title { font-size: 14px; font-weight: 700; color: var(--blanc); text-transform: capitalize; }
+  #view-app .cal-nav { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--blanc); font-size: 16px; line-height: 1; cursor: pointer; }
+  #view-app .cal-nav:disabled { opacity: 0.3; cursor: default; }
+  #view-app .cal-dow, #view-app .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  #view-app .cal-dow { margin-bottom: 6px; }
+  #view-app .cal-dow span { text-align: center; font-size: 11px; color: var(--gris); }
+  #view-app .cal-day { position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--blanc); font-size: 13px; cursor: pointer; transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease; }
+  #view-app .cal-day.empty { visibility: hidden; }
+  #view-app .cal-day.future { color: var(--gris); opacity: 0.35; cursor: default; }
+  #view-app .cal-day.today { border-color: rgba(212,255,63,0.5); }
+  #view-app .cal-day.active { background: var(--vert); color: #0E1410; border-color: var(--vert); font-weight: 700; }
+  #view-app .cal-day.has-plan::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; border-radius: 50%; background: var(--vert); }
+  #view-app .cal-day.active.has-plan::after { background: #0E1410; }
+  #view-app .cal-today { width: 100%; margin-top: 12px; padding: 8px; border-radius: 10px; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--blanc); font-size: 13px; cursor: pointer; }
+  #view-app .cal-today:disabled { opacity: 0.3; cursor: default; }
   #view-app .meal-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 12px 26px -18px rgba(0,0,0,0.55); transition: transform 0.15s ease, box-shadow 0.15s ease; }
   #view-app .meal-card:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -16px rgba(0,0,0,0.6); }
   #view-app .meal-type { font-family: var(--mono); font-size: 11px; color: var(--ambre); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 6px; }
@@ -1850,7 +1869,7 @@
         <a href="#abonnement" class="quota-banner-link">Passer Pro pour régénérer à volonté →</a>
       </div>
 
-      <div class="day-scroll" id="dayScroll"></div>
+      <div class="cal" id="mealCalendar"></div>
       <div id="mealsList"></div>
       <button class="app-cta" id="generateBtn">Générer mes repas du jour</button>
       <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
@@ -4565,17 +4584,34 @@
   let repasDaysBuilt = false;
   let selectedDateStr = localDateStr();
 
-  const DAY_SHORT = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+  const DOW_SHORT = ['L', 'M', 'M', 'J', 'V', 'S', 'D']; // semaine commençant lundi
+  const MONTH_NAMES = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
-  // 7 derniers jours, du plus ancien au plus récent (aujourd'hui en dernier).
-  function last7Dates() {
-    const out = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      out.push({ str: localDateStr(d), label: i === 0 ? "Aujourd'hui" : `${DAY_SHORT[d.getDay()]} ${d.getDate()}` });
-    }
-    return out;
+  // Premier jour du mois affiché. null = pas encore initialisé (on ouvre sur
+  // le mois du jour sélectionné).
+  let calCursor = null;
+
+  // Jours possédant déjà un plan, par mois : 'YYYY-MM' -> Set('YYYY-MM-DD').
+  // Sert à afficher la pastille verte sans requêter à chaque rendu.
+  const monthPlanCache = new Map();
+
+  const monthKey = (y, m) => `${y}-${String(m + 1).padStart(2, '0')}`;
+
+  async function loadMonthPlans(y, m) {
+    const key = monthKey(y, m);
+    if (monthPlanCache.has(key)) return monthPlanCache.get(key);
+    const first = localDateStr(new Date(y, m, 1));
+    const last = localDateStr(new Date(y, m + 1, 0));
+    const { data } = await supabase
+      .from('meal_plans')
+      .select('plan_date')
+      .eq('user_id', user.id)
+      .gte('plan_date', first)
+      .lte('plan_date', last);
+    const set = new Set((data || []).map(r => r.plan_date));
+    monthPlanCache.set(key, set);
+    return set;
   }
 
   // ---- Besoins nutritionnels : Mifflin-St Jeor + facteur d'activité -------
@@ -4620,10 +4656,8 @@
   }
 
   function initRepas() {
-    const dayScroll = document.getElementById('dayScroll');
-
     if (!repasDaysBuilt) {
-      renderDayChips();
+      renderCalendar();
       repasDaysBuilt = true;
       startDayWatcher();
 
@@ -4748,7 +4782,12 @@
 
           mealsCache.set(today, { type: 'data', meals: rows });
           selectedDateStr = today;
-          renderDayChips();
+          // Le mois courant a un plan de plus : on vide son cache pour que la
+          // pastille verte apparaisse sur la case du jour.
+          const gen = new Date();
+          monthPlanCache.delete(monthKey(gen.getFullYear(), gen.getMonth()));
+          calCursor = new Date(gen.getFullYear(), gen.getMonth(), 1);
+          renderCalendar();
           renderMealsFromCache();
           updateRepasQuotaUI();
           showToast('Repas du jour générés !', 'success');
@@ -4765,51 +4804,91 @@
       });
     }
 
-    renderDayChips();
+    renderCalendar();
     loadMealsForDay();
     updateRepasQuotaUI();
   }
 
-  function renderDayChips() {
-    const dayScroll = document.getElementById('dayScroll');
-    if (!dayScroll) return;
-    dayScroll.innerHTML = '';
-    let activeChip = null;
-    last7Dates().forEach(({ str, label }) => {
-      const chip = document.createElement('div');
-      const isActive = str === selectedDateStr;
-      chip.className = 'day-chip' + (isActive ? ' active' : '');
-      chip.textContent = label;
-      chip.dataset.date = str;
-      chip.tabIndex = 0;
-      chip.setAttribute('role', 'button');
-      if (isActive) activeChip = chip;
-      const selectDay = () => {
-        selectedDateStr = str;
-        renderDayChips();
-        loadMealsForDay();
-      };
-      chip.addEventListener('click', selectDay);
-      chip.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectDay(); }
+  function renderCalendar() {
+    const host = document.getElementById('mealCalendar');
+    if (!host) return;
+
+    if (!calCursor) {
+      const [y0, m0] = selectedDateStr.split('-').map(Number);
+      calCursor = new Date(y0, m0 - 1, 1);
+    }
+
+    const y = calCursor.getFullYear();
+    const m = calCursor.getMonth();
+    const todayStr = localDateStr();
+    const now = new Date();
+    const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+    const planned = monthPlanCache.get(monthKey(y, m)) || new Set();
+
+    // Décalage pour que la semaine commence un lundi (getDay() : 0 = dimanche).
+    const offset = (new Date(y, m, 1).getDay() + 6) % 7;
+    const nbDays = new Date(y, m + 1, 0).getDate();
+
+    let cells = '';
+    for (let i = 0; i < offset; i++) cells += '<div class="cal-day empty"></div>';
+    for (let d = 1; d <= nbDays; d++) {
+      const str = localDateStr(new Date(y, m, d));
+      const future = str > todayStr;
+      const cls = ['cal-day'];
+      if (str === selectedDateStr) cls.push('active');
+      if (str === todayStr) cls.push('today');
+      if (planned.has(str)) cls.push('has-plan');
+      if (future) cls.push('future');
+      cells += `<button type="button" class="${cls.join(' ')}" data-date="${str}"`
+        + `${future ? ' disabled' : ''} aria-label="${d} ${MONTH_NAMES[m]} ${y}">${d}</button>`;
+    }
+
+    host.innerHTML = `
+      <div class="cal-head">
+        <button type="button" class="cal-nav" data-nav="-1" aria-label="Mois précédent">&lsaquo;</button>
+        <span class="cal-title">${MONTH_NAMES[m]} ${y}</span>
+        <button type="button" class="cal-nav" data-nav="1" aria-label="Mois suivant"${isCurrentMonth ? ' disabled' : ''}>&rsaquo;</button>
+      </div>
+      <div class="cal-dow">${DOW_SHORT.map(d => `<span>${d}</span>`).join('')}</div>
+      <div class="cal-grid">${cells}</div>
+      <button type="button" class="cal-today"${selectedDateStr === todayStr ? ' disabled' : ''}>Revenir à aujourd'hui</button>`;
+
+    host.querySelectorAll('.cal-nav').forEach((b) => {
+      b.addEventListener('click', () => {
+        calCursor = new Date(y, m + Number(b.dataset.nav), 1);
+        renderCalendar();
       });
-      dayScroll.appendChild(chip);
     });
 
-    // Le jour actif est ramené au centre du carrousel. Sans ça, "Aujourd'hui"
-    // (dernier chip) reste hors écran à droite au chargement. On manipule
-    // scrollLeft plutôt que scrollIntoView, qui ferait aussi bouger la page.
-    if (activeChip) {
-      const target = activeChip.offsetLeft - (dayScroll.clientWidth - activeChip.offsetWidth) / 2;
-      dayScroll.scrollLeft = Math.max(0, target);
-    }
+    host.querySelectorAll('.cal-day[data-date]:not(.future)').forEach((b) => {
+      b.addEventListener('click', () => {
+        selectedDateStr = b.dataset.date;
+        renderCalendar();
+        loadMealsForDay();
+      });
+    });
+
+    host.querySelector('.cal-today').addEventListener('click', () => {
+      selectedDateStr = localDateStr();
+      calCursor = new Date(now.getFullYear(), now.getMonth(), 1);
+      renderCalendar();
+      loadMealsForDay();
+    });
+
+    // Les pastilles arrivent en différé : on ne bloque pas l'affichage de la
+    // grille sur la requête. On ne repeint que si le mois n'a pas changé.
+    loadMonthPlans(y, m).then((set) => {
+      if (calCursor.getFullYear() !== y || calCursor.getMonth() !== m) return;
+      host.querySelectorAll('.cal-day[data-date]').forEach((b) => {
+        b.classList.toggle('has-plan', set.has(b.dataset.date));
+      });
+    });
   }
 
   // ---- Calendrier en temps réel -----------------------------------------
-  // last7Dates() est évalué au moment du rendu : la fenêtre de 7 jours et le
-  // libellé "Aujourd'hui" se figent. Si l'app reste ouverte pendant minuit,
-  // ou revient d'arrière-plan le lendemain, ils deviennent faux. On surveille
-  // la date locale et on rebascule dès qu'elle change.
+  // La grille et la limite "pas de jour futur" sont calculées au rendu, donc
+  // figées. Si l'app reste ouverte pendant minuit, ou revient d'arrière-plan
+  // le lendemain, le calendrier ment. On surveille la date locale.
   let watchedDay = localDateStr();
   let dayWatcherStarted = false;
 
@@ -4819,8 +4898,14 @@
     const wasOnToday = selectedDateStr === watchedDay;
     watchedDay = now;
     mealsCache.delete(now);       // le nouveau jour n'a rien en cache
-    if (wasOnToday) selectedDateStr = now;
-    renderDayChips();
+    const d = new Date();
+    // Hier et aujourd'hui peuvent être dans deux mois différents (31 -> 1er).
+    monthPlanCache.clear();
+    if (wasOnToday) {
+      selectedDateStr = now;
+      calCursor = new Date(d.getFullYear(), d.getMonth(), 1);
+    }
+    renderCalendar();
     loadMealsForDay();
     updateRepasQuotaUI();         // le quota gratuit repart à zéro
   }
