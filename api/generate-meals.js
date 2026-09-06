@@ -60,7 +60,7 @@ const PROVIDERS = [
     name: 'groq',
     envs: ['GROQ_API_KEY'],
     url: 'https://api.groq.com/openai/v1/chat/completions',
-    model: 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
     headers: (key) => ({ Authorization: `Bearer ${key}` }),
     body: (model, prompt) => ({ model, temperature: 1, messages: [{ role: 'user', content: prompt }] }),
     extract: (d) => d.choices?.[0]?.message?.content || '',
