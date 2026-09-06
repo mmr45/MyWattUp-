@@ -1204,7 +1204,7 @@
         <ul class="pricing-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Profil, onboarding et journal quotidien illimités</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 conseil IA du jour, généré chaque jour</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de plan de repas par semaine</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de repas par jour</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>5 scans de produits par jour</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique des scans consultable</li>
         </ul>
@@ -1217,7 +1217,7 @@
         <ul class="pricing-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tout ce qui est inclus dans l'offre Gratuite</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de plans de repas illimitées, à la demande</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de repas illimitées, à la demande</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Réajustement immédiat des menus si l'objectif change</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
@@ -1263,11 +1263,11 @@
     <div class="faq-wrap">
       <div class="faq-row reveal">
         <button type="button" class="faq-row-q">MyWattUp est-il vraiment gratuit ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="faq-row-a"><p>Oui. L'offre Gratuite donne accès à tous les modules (coach IA, repas, scanner) sans limite de temps, avec des quotas quotidiens/hebdomadaires. L'offre Pro (9,99€/mois) retire ces quotas.</p></div>
+        <div class="faq-row-a"><p>Oui. L'offre Gratuite donne accès à tous les modules (coach IA, repas, scanner) sans limite de temps, avec des quotas quotidiens. L'offre Pro (9,99€/mois) retire ces quotas.</p></div>
       </div>
       <div class="faq-row reveal">
         <button type="button" class="faq-row-q">Quelles sont les limites de l'offre Gratuite ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-        <div class="faq-row-a"><p>5 scans de produits par jour, et 1 génération de plan de repas par semaine. Le journal quotidien, le score du jour et le conseil IA du jour restent illimités.</p></div>
+        <div class="faq-row-a"><p>5 scans de produits par jour, et 1 génération de repas par jour. Le journal quotidien, le score du jour et le conseil IA du jour restent illimités.</p></div>
       </div>
       <div class="faq-row reveal">
         <button type="button" class="faq-row-q">Comment est calculé le score du jour ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -1843,8 +1843,8 @@
 
       <div class="quota-banner" id="repasQuotaBanner">
         <div class="quota-banner-row">
-          <span class="quota-banner-label">Génération de plan — offre Gratuite</span>
-          <span class="quota-banner-count" id="repasQuotaCount">0 / 1 cette semaine</span>
+          <span class="quota-banner-label">Génération de repas — offre Gratuite</span>
+          <span class="quota-banner-count" id="repasQuotaCount">0 / 1 aujourd'hui</span>
         </div>
         <div class="quota-bar-track"><div class="quota-bar-fill" id="repasQuotaFill" style="width:0%;"></div></div>
         <a href="#abonnement" class="quota-banner-link">Passer Pro pour régénérer à volonté →</a>
@@ -1852,7 +1852,7 @@
 
       <div class="day-scroll" id="dayScroll"></div>
       <div id="mealsList"></div>
-      <button class="app-cta" id="generateBtn">Générer mon plan de la semaine</button>
+      <button class="app-cta" id="generateBtn">Générer mes repas du jour</button>
       <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
     </section>
 
@@ -2022,7 +2022,7 @@
         <div class="setting-row">
           <div>
             <span class="setting-row-title">Offre actuelle</span>
-            <span class="setting-row-desc" id="settingsPlanDesc">Gratuite — 5 scans/jour, 1 génération de repas/semaine.</span>
+            <span class="setting-row-desc" id="settingsPlanDesc">Gratuite — 5 scans/jour, 1 génération de repas/jour.</span>
           </div>
           <span class="plan-pill free" id="settingsPlanPill">Gratuit</span>
         </div>
@@ -2241,10 +2241,10 @@
         <ul class="plan-feature-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Journal quotidien et score du jour illimités</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 conseil IA du jour</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de plan de repas par semaine</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>1 génération de repas par jour</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>5 scans de produits par jour</li>
         </ul>
-        <p class="plan-quota-mini" id="abonnementQuotaSummary">Consommation aujourd'hui : 2/5 scans · 0/1 génération de repas cette semaine.</p>
+        <p class="plan-quota-mini" id="abonnementQuotaSummary">Consommation aujourd'hui : 2/5 scans · 0/1 génération de repas.</p>
       </div>
 
       <div class="plan-card upgrade">
@@ -2255,7 +2255,7 @@
         <div class="plan-card-price">9,99€<span> / mois</span></div>
         <ul class="plan-feature-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de plans de repas illimitées, à la demande</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de repas illimitées, à la demande</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Réajustement immédiat des menus si l'objectif change</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
@@ -2337,9 +2337,9 @@
           <button type="button" class="faq-q">Pourquoi mon scan de produit ne fonctionne plus ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="faq-a"><p>L'offre Gratuite est limitée à 5 scans par jour. Le compteur se réinitialise chaque jour à minuit. Passe en Pro pour scanner sans limite.</p></div>
         </div>
-        <div class="faq-item" data-q="génération repas semaine limite plan menu">
-          <button type="button" class="faq-q">Combien de fois puis-je générer mon plan de repas ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq-a"><p>En offre Gratuite, tu peux générer 1 plan de repas par semaine. En offre Pro, la génération est illimitée et tu peux régénérer un plan à tout moment, y compris si tu changes d'objectif en cours de semaine.</p></div>
+        <div class="faq-item" data-q="génération repas jour limite plan menu">
+          <button type="button" class="faq-q">Combien de fois puis-je générer mes repas ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="faq-a"><p>En offre Gratuite, tu peux générer tes repas 1 fois par jour, et ils changent chaque jour. En offre Pro, la génération est illimitée : tu peux régénérer à tout moment, y compris si tu changes d'objectif.</p></div>
         </div>
         <div class="faq-item" data-q="code barres introuvable produit non reconnu openfoodfacts">
           <button type="button" class="faq-q">Le scanner ne trouve pas mon produit, que faire ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -2699,7 +2699,7 @@
     if (settingsDesc) {
       settingsDesc.textContent = pro
         ? 'Pro — scans illimités, génération de repas illimitée.'
-        : 'Gratuite — 5 scans/jour, 1 génération de repas/semaine.';
+        : 'Gratuite — 5 scans/jour, 1 génération de repas/jour.';
     }
 
     const abonnementIntro = document.getElementById('abonnementIntro');
@@ -3402,7 +3402,7 @@
   // recompte les lignes de la journée/semaine en cours à chaque affichage.
   // -------------------------------------------------------------
   const FREE_SCAN_DAILY_LIMIT = 5;
-  const FREE_MEAL_GEN_WEEKLY_LIMIT = 1;
+  const FREE_MEAL_GEN_DAILY_LIMIT = 1;
 
   // Instant ISO correspondant à minuit aujourd'hui en heure locale, pour
   // filtrer les colonnes timestamptz (scanned_at) créées depuis ce matin.
@@ -3430,12 +3430,14 @@
     return count || 0;
   }
 
-  async function getWeekMealGenCount() {
+  // Le quota Gratuit est journalier (1 génération / jour), aligné sur le
+  // trigger Postgres enforce_free_meal_plan_quota qui compte sur plan_date.
+  async function getTodayMealGenCount() {
     const { count, error } = await supabase
       .from('meal_plans')
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
-      .eq('week_start', currentWeekStartStr());
+      .eq('plan_date', localDateStr());
     if (error) { console.error(error); return 0; }
     return count || 0;
   }
@@ -3462,12 +3464,12 @@
     if (!banner) return 0;
     if (isPro()) { banner.style.display = 'none'; return 0; }
     banner.style.display = '';
-    const count = await getWeekMealGenCount();
-    const shown = Math.min(count, FREE_MEAL_GEN_WEEKLY_LIMIT);
+    const count = await getTodayMealGenCount();
+    const shown = Math.min(count, FREE_MEAL_GEN_DAILY_LIMIT);
     const countEl = document.getElementById('repasQuotaCount');
     const fillEl = document.getElementById('repasQuotaFill');
-    if (countEl) countEl.textContent = `${shown} / ${FREE_MEAL_GEN_WEEKLY_LIMIT} cette semaine`;
-    if (fillEl) fillEl.style.width = `${Math.min(100, (count / FREE_MEAL_GEN_WEEKLY_LIMIT) * 100)}%`;
+    if (countEl) countEl.textContent = `${shown} / ${FREE_MEAL_GEN_DAILY_LIMIT} aujourd'hui`;
+    if (fillEl) fillEl.style.width = `${Math.min(100, (count / FREE_MEAL_GEN_DAILY_LIMIT) * 100)}%`;
     return count;
   }
 
@@ -3477,10 +3479,10 @@
     if (!el) return;
     if (isPro()) { el.style.display = 'none'; return; }
     el.style.display = '';
-    const [scanCount, mealCount] = await Promise.all([getTodayScanCount(), getWeekMealGenCount()]);
+    const [scanCount, mealCount] = await Promise.all([getTodayScanCount(), getTodayMealGenCount()]);
     const shownScans = Math.min(scanCount, FREE_SCAN_DAILY_LIMIT);
-    const shownMeals = Math.min(mealCount, FREE_MEAL_GEN_WEEKLY_LIMIT);
-    el.textContent = `Consommation aujourd'hui : ${shownScans}/${FREE_SCAN_DAILY_LIMIT} scans · ${shownMeals}/${FREE_MEAL_GEN_WEEKLY_LIMIT} génération de repas cette semaine.`;
+    const shownMeals = Math.min(mealCount, FREE_MEAL_GEN_DAILY_LIMIT);
+    el.textContent = `Consommation aujourd'hui : ${shownScans}/${FREE_SCAN_DAILY_LIMIT} scans · ${shownMeals}/${FREE_MEAL_GEN_DAILY_LIMIT} génération de repas.`;
   }
 
   // Contenu "pourquoi" des mini-cartes, basé sur des repères de santé publique
@@ -4556,82 +4558,119 @@
   // -------------------------------------------------------------
   // REPAS
   // -------------------------------------------------------------
+  // Le plan est JOURNALIER : une ligne meal_plans par (user_id, plan_date).
+  // Les chips ne servent plus à "choisir un jour de la semaine à venir" mais
+  // à naviguer dans les 7 derniers jours générés — c'est ce mélange
+  // semaine/jour qui faisait afficher les 3 mêmes repas tous les jours.
   let repasDaysBuilt = false;
-  let selectedDayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  let selectedDateStr = localDateStr();
+
+  const DAY_SHORT = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+
+  // 7 derniers jours, du plus ancien au plus récent (aujourd'hui en dernier).
+  function last7Dates() {
+    const out = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      out.push({ str: localDateStr(d), label: i === 0 ? "Aujourd'hui" : `${DAY_SHORT[d.getDay()]} ${d.getDate()}` });
+    }
+    return out;
+  }
+
+  // ---- Besoins nutritionnels : Mifflin-St Jeor + facteur d'activité -------
+  // Repères publics (OMS / ANSES). Ce sont des estimations, pas une
+  // prescription individuelle.
+  const ACTIVITY_FACTOR = {
+    sedentaire: 1.2, leger: 1.375, modere: 1.55, intense: 1.725, tres_intense: 1.9,
+  };
+
+  function computeNeeds(profile) {
+    const w = Number(profile?.weight_kg) || null;
+    const h = Number(profile?.height_cm) || null;
+    const by = Number(profile?.birth_year) || null;
+    if (!w || !h || !by) return null;
+
+    const age = new Date().getFullYear() - by;
+    const sex = (profile.sex || '').toLowerCase();
+    const bmr = 10 * w + 6.25 * h - 5 * age + (sex.startsWith('h') || sex.startsWith('m') ? 5 : -161);
+    const factor = ACTIVITY_FACTOR[profile.activity_level] || 1.375;
+    let kcal = bmr * factor;
+
+    const obj = (profile.objective || '').toLowerCase();
+    let proteinPerKg = 1.4;
+    if (/perte|maigrir|seche|sèche|poids/.test(obj)) { kcal *= 0.82; proteinPerKg = 1.8; }
+    else if (/masse|prise|muscle|volume/.test(obj)) { kcal *= 1.12; proteinPerKg = 1.8; }
+    else if (/endurance|perf/.test(obj)) { proteinPerKg = 1.6; }
+
+    kcal = Math.round(kcal / 10) * 10;
+    const proteins = Math.round(w * proteinPerKg);
+    const fat = Math.round((kcal * 0.28) / 9);
+    const carbs = Math.round((kcal - proteins * 4 - fat * 9) / 4);
+
+    return {
+      kcal_jour: kcal,
+      proteines_g: proteins,
+      lipides_g: fat,
+      glucides_g: Math.max(carbs, 0),
+      // Répartition indicative par repas
+      repartition: { petit_dejeuner: 0.25, dejeuner: 0.4, diner: 0.35 },
+      age,
+    };
+  }
 
   function initRepas() {
-    const days = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
     const dayScroll = document.getElementById('dayScroll');
 
     if (!repasDaysBuilt) {
-      dayScroll.innerHTML = '';
-      days.forEach((d, i) => {
-        const chip = document.createElement('div');
-        chip.className = 'day-chip' + (i === selectedDayIndex ? ' active' : '');
-        chip.textContent = d;
-        chip.tabIndex = 0;
-        chip.setAttribute('role', 'button');
-        const selectDay = () => {
-          selectedDayIndex = i;
-          renderDayChips();
-          loadMealsForDay();
-        };
-        chip.addEventListener('click', selectDay);
-        chip.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectDay(); }
-        });
-        dayScroll.appendChild(chip);
-      });
+      renderDayChips();
       repasDaysBuilt = true;
 
       document.getElementById('generateBtn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         btn.disabled = true;
-
-        if (!isPro()) {
-          const weekCount = await getWeekMealGenCount();
-          if (weekCount >= FREE_MEAL_GEN_WEEKLY_LIMIT) {
-            showToast('Limite hebdomadaire atteinte — passe en Pro pour régénérer à volonté.', 'error');
-            btn.disabled = false;
-            return;
-          }
-        }
-
-        showToast('Génération de ton plan de repas en cours…', 'info');
+        const today = localDateStr();
 
         try {
+          if (!isPro()) {
+            const dayCount = await getTodayMealGenCount();
+            if (dayCount >= FREE_MEAL_GEN_DAILY_LIMIT) {
+              showToast('Tu as déjà généré tes repas aujourd\'hui — passe en Pro pour régénérer à volonté.', 'error');
+              return;
+            }
+          }
+
+          showToast('Génération de tes repas du jour…', 'info');
+
           const { data: profile } = await supabase
             .from('profiles')
-            .select('sport_type, objective, allergies')
+            .select('sport_type, objective, allergies, weight_kg, height_cm, birth_year, sex, activity_level')
             .eq('user_id', user.id)
             .maybeSingle();
 
-          // Historique : on récupère les repas des 3 dernières semaines pour
-          // demander à l'IA de ne pas les reproposer (variété).
-          const historyCutoff = new Date();
-          historyCutoff.setDate(historyCutoff.getDate() - 21);
+          const needs = computeNeeds(profile);
+
+          // Historique : repas des 21 derniers jours, pour interdire à l'IA de
+          // les reproposer. C'est ce qui garantit la variété jour après jour.
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - 21);
           const { data: recentPlans } = await supabase
             .from('meal_plans')
-            .select('id, week_start')
+            .select('id')
             .eq('user_id', user.id)
-            .gte('week_start', historyCutoff.toISOString().slice(0, 10));
+            .gte('plan_date', localDateStr(cutoff));
 
           let previousMeals = [];
           if (recentPlans && recentPlans.length > 0) {
-            const planIds = recentPlans.map(p => p.id);
             const { data: pastMeals } = await supabase
               .from('meals')
               .select('name, meal_type, ingredients')
-              .in('meal_plan_id', planIds);
-            // On envoie nom + ingrédients (texte) pour permettre une
-            // comparaison de similarité côté serveur, pas juste sur le nom.
+              .in('meal_plan_id', recentPlans.map(p => p.id));
             previousMeals = (pastMeals || [])
               .filter(m => m.name)
-              .map(m => ({ name: m.name, ingredients: m.ingredients || '' }));
+              .map(m => ({ name: m.name, meal_type: m.meal_type, ingredients: m.ingredients || '' }));
           }
 
-          // L'endpoint vérifie désormais le JWT et le quota côté serveur :
-          // il faut donc lui transmettre la session en cours.
           const { data: { session: mealSession } } = await supabase.auth.getSession();
           if (!mealSession) {
             showToast('Ta session a expiré — reconnecte-toi puis réessaie.', 'error');
@@ -4644,25 +4683,34 @@
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${mealSession.access_token}`,
             },
-            body: JSON.stringify({ profile: profile || {}, previous_meals: previousMeals })
+            body: JSON.stringify({
+              profile: profile || {},
+              needs,                      // cibles kcal / macros calculées ici
+              plan_date: today,
+              previous_meals: previousMeals,
+              // Graine anti-répétition : change à chaque génération.
+              seed: `${today}-${Math.random().toString(36).slice(2, 10)}`,
+            })
           });
           const result = await resp.json();
 
           if (resp.status === 429) {
-            showToast(result.error || "Tu as déjà généré ton plan cette semaine.", 'error');
+            showToast(result.error || 'Tu as déjà généré tes repas aujourd\'hui.', 'error');
             return;
           }
-
           if (!resp.ok || !result.meals) {
-            showToast(result.error || "Erreur lors de la génération — réessaie dans un instant.", 'error');
+            showToast(result.error || 'Erreur lors de la génération — réessaie dans un instant.', 'error');
             return;
           }
-
-          const weekStart = currentWeekStartStr();
 
           const { data: newPlan, error: planErr } = await supabase
             .from('meal_plans')
-            .insert({ user_id: user.id, week_start: weekStart, objective_snapshot: profile?.objective || '' })
+            .insert({
+              user_id: user.id,
+              plan_date: today,
+              week_start: currentWeekStartStr(),
+              objective_snapshot: profile?.objective || '',
+            })
             .select('id')
             .single();
 
@@ -4670,41 +4718,49 @@
             console.error(planErr);
             showToast(
               planErr && /Quota atteint/i.test(planErr.message || '')
-                ? "Tu as déjà généré ton plan cette semaine — passe en Pro pour régénérer à volonté."
-                : "Plan généré mais non sauvegardé — réessaie.",
+                ? 'Tu as déjà généré tes repas aujourd\'hui — passe en Pro pour régénérer à volonté.'
+                : 'Repas générés mais non sauvegardés — réessaie.',
               'error'
             );
             return;
           }
 
-          const mealTypeMap = { petit_dejeuner: 'petit_dejeuner', dejeuner: 'dejeuner', diner: 'diner' };
-          const rows = Object.entries(mealTypeMap).map(([key, mealType]) => {
-            const m = result.meals[key] || {};
-            const justification = m.justification || '';
+          const num = (v) => (v === null || v === undefined || v === '' || isNaN(Number(v)) ? null : Number(v));
+          const rows = ['petit_dejeuner', 'dejeuner', 'diner'].map((mealType) => {
+            const m = result.meals[mealType] || {};
             const source = m.source ? ` (Source : ${m.source})` : '';
             return {
               meal_plan_id: newPlan.id,
               meal_type: mealType,
               name: m.nom || 'Repas',
-              ingredients: `${justification}${source}`.trim()
+              ingredients: Array.isArray(m.ingredients) ? m.ingredients.join(', ') : (m.ingredients || ''),
+              justification: `${m.justification || ''}${source}`.trim(),
+              kcal: num(m.kcal),
+              proteins_g: num(m.proteines_g),
+              carbs_g: num(m.glucides_g),
+              fat_g: num(m.lipides_g),
             };
           });
 
-          await supabase.from('meals').insert(rows);
+          const { error: mealsErr } = await supabase.from('meals').insert(rows);
+          if (mealsErr) console.error(mealsErr);
 
-          mealsCache = { type: 'data', meals: rows };
+          mealsCache.set(today, { type: 'data', meals: rows });
+          selectedDateStr = today;
+          renderDayChips();
           renderMealsFromCache();
           updateRepasQuotaUI();
-          showToast('Plan de repas généré !', 'success');
+          showToast('Repas du jour générés !', 'success');
         } catch (err) {
           console.error(err);
-          showToast("Erreur lors de la génération — réessaie dans un instant.", 'error');
+          showToast('Erreur lors de la génération — réessaie dans un instant.', 'error');
         } finally {
           btn.disabled = false;
         }
       });
+
       document.getElementById('groceryBtn').addEventListener('click', () => {
-        showToast("La liste de courses automatique sera générée en même temps que le plan de repas (Module 2).", 'info');
+        showToast('La liste de courses automatique sera générée en même temps que les repas (Module 2).', 'info');
       });
     }
 
@@ -4715,8 +4771,24 @@
 
   function renderDayChips() {
     const dayScroll = document.getElementById('dayScroll');
-    [...dayScroll.children].forEach((chip, i) => {
-      chip.classList.toggle('active', i === selectedDayIndex);
+    if (!dayScroll) return;
+    dayScroll.innerHTML = '';
+    last7Dates().forEach(({ str, label }) => {
+      const chip = document.createElement('div');
+      chip.className = 'day-chip' + (str === selectedDateStr ? ' active' : '');
+      chip.textContent = label;
+      chip.tabIndex = 0;
+      chip.setAttribute('role', 'button');
+      const selectDay = () => {
+        selectedDateStr = str;
+        renderDayChips();
+        loadMealsForDay();
+      };
+      chip.addEventListener('click', selectDay);
+      chip.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectDay(); }
+      });
+      dayScroll.appendChild(chip);
     });
   }
 
@@ -4738,66 +4810,82 @@
     </div>`;
   }
 
-  // Cache mémoire du plan de repas courant : le plan ne dépend pas du jour
-  // sélectionné, inutile de refaire l'aller-retour Supabase à chaque clic
-  // sur un day-chip.
-  let mealsCache = null; // null = pas encore chargé | { type: 'none' | 'empty' | 'data', meals? }
+  // Cache PAR DATE (et non plus un cache unique global) : c'est le cache
+  // global qui renvoyait le même plan quel que soit le jour sélectionné.
+  const mealsCache = new Map(); // dateStr -> { type: 'none' | 'empty' | 'data', meals? }
+
+  const MEAL_ICON = '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>';
 
   function renderMealsFromCache() {
     const mealsList = document.getElementById('mealsList');
-    if (!mealsCache || mealsCache.type === 'none') {
+    if (!mealsList) return;
+    const entry = mealsCache.get(selectedDateStr);
+    const isToday = selectedDateStr === localDateStr();
+
+    if (!entry || entry.type === 'none' || entry.type === 'empty') {
       mealsList.innerHTML = emptyStateHTML(
-        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
-        'Aucun plan de repas pour l\'instant',
-        'Génère ton premier plan de la semaine ci-dessous pour commencer.'
+        MEAL_ICON,
+        isToday ? 'Aucun repas pour aujourd\'hui' : 'Aucun repas généré ce jour-là',
+        isToday
+          ? 'Génère tes repas du jour ci-dessous — ils sont adaptés à ton profil et différents des jours précédents.'
+          : 'Reviens sur « Aujourd\'hui » pour générer de nouveaux repas.'
       );
       return;
     }
-    if (mealsCache.type === 'empty') {
-      mealsList.innerHTML = emptyStateHTML(
-        '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
-        'Aucun repas généré pour ce plan',
-        'Essaie de régénérer ton plan de la semaine.'
-      );
-      return;
-    }
+
     mealsList.innerHTML = '';
     const typeLabels = { petit_dejeuner: 'Petit-déjeuner', dejeuner: 'Déjeuner', diner: 'Dîner', collation: 'Collation' };
-    mealsCache.meals.forEach(m => {
-      const card = document.createElement('div');
-      card.className = 'meal-card';
-      card.innerHTML = `
-        <div class="meal-type">${escapeHtml(typeLabels[m.meal_type] || m.meal_type)}</div>
-        <div class="meal-name">${escapeHtml(m.name)}</div>
-        <div class="meal-cal">${escapeHtml(m.ingredients || '')}</div>
-      `;
-      mealsList.appendChild(card);
-    });
+    const order = { petit_dejeuner: 0, dejeuner: 1, diner: 2, collation: 3 };
+    [...entry.meals]
+      .sort((a, b) => (order[a.meal_type] ?? 9) - (order[b.meal_type] ?? 9))
+      .forEach(m => {
+        const macros = [
+          m.kcal ? `${Math.round(m.kcal)} kcal` : null,
+          m.proteins_g ? `${Math.round(m.proteins_g)} g prot.` : null,
+          m.carbs_g ? `${Math.round(m.carbs_g)} g gluc.` : null,
+          m.fat_g ? `${Math.round(m.fat_g)} g lip.` : null,
+        ].filter(Boolean).join(' · ');
+
+        const card = document.createElement('div');
+        card.className = 'meal-card';
+        card.innerHTML = `
+          <div class="meal-type">${escapeHtml(typeLabels[m.meal_type] || m.meal_type)}</div>
+          <div class="meal-name">${escapeHtml(m.name)}</div>
+          ${macros ? `<div class="meal-cal">${escapeHtml(macros)}</div>` : ''}
+          ${m.ingredients ? `<div class="meal-cal">${escapeHtml(m.ingredients)}</div>` : ''}
+          ${m.justification ? `<div class="meal-why">${escapeHtml(m.justification)}</div>` : ''}
+        `;
+        mealsList.appendChild(card);
+      });
   }
 
   async function loadMealsForDay() {
     const mealsList = document.getElementById('mealsList');
+    if (!mealsList) return;
+    const dateStr = selectedDateStr;
 
-    if (mealsCache) {
+    if (mealsCache.has(dateStr)) {
       renderMealsFromCache();
       return;
     }
 
     mealsList.innerHTML = mealSkeletonHTML();
 
+    // On filtre bien sur plan_date : plus de "dernier plan tous jours confondus".
     const { data: plan, error: planError } = await supabase
       .from('meal_plans')
       .select('id')
       .eq('user_id', user.id)
-      .order('week_start', { ascending: false })
+      .eq('plan_date', dateStr)
+      .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    if (planError) showToast('Impossible de charger ton plan de repas — vérifie ta connexion.', 'error');
+    if (planError) showToast('Impossible de charger tes repas — vérifie ta connexion.', 'error');
 
     if (!plan) {
-      mealsCache = { type: 'none' };
-      renderMealsFromCache();
+      mealsCache.set(dateStr, { type: 'none' });
+      if (dateStr === selectedDateStr) renderMealsFromCache();
       return;
     }
 
@@ -4806,8 +4894,8 @@
       .select('*')
       .eq('meal_plan_id', plan.id);
 
-    mealsCache = (meals && meals.length > 0) ? { type: 'data', meals } : { type: 'empty' };
-    renderMealsFromCache();
+    mealsCache.set(dateStr, (meals && meals.length > 0) ? { type: 'data', meals } : { type: 'empty' });
+    if (dateStr === selectedDateStr) renderMealsFromCache();
   }
 
   // -------------------------------------------------------------
