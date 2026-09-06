@@ -4625,6 +4625,7 @@
     if (!repasDaysBuilt) {
       renderDayChips();
       repasDaysBuilt = true;
+      startDayWatcher();
 
       document.getElementById('generateBtn').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
@@ -4773,12 +4774,16 @@
     const dayScroll = document.getElementById('dayScroll');
     if (!dayScroll) return;
     dayScroll.innerHTML = '';
+    let activeChip = null;
     last7Dates().forEach(({ str, label }) => {
       const chip = document.createElement('div');
-      chip.className = 'day-chip' + (str === selectedDateStr ? ' active' : '');
+      const isActive = str === selectedDateStr;
+      chip.className = 'day-chip' + (isActive ? ' active' : '');
       chip.textContent = label;
+      chip.dataset.date = str;
       chip.tabIndex = 0;
       chip.setAttribute('role', 'button');
+      if (isActive) activeChip = chip;
       const selectDay = () => {
         selectedDateStr = str;
         renderDayChips();
@@ -4790,6 +4795,44 @@
       });
       dayScroll.appendChild(chip);
     });
+
+    // Le jour actif est ramené au centre du carrousel. Sans ça, "Aujourd'hui"
+    // (dernier chip) reste hors écran à droite au chargement. On manipule
+    // scrollLeft plutôt que scrollIntoView, qui ferait aussi bouger la page.
+    if (activeChip) {
+      const target = activeChip.offsetLeft - (dayScroll.clientWidth - activeChip.offsetWidth) / 2;
+      dayScroll.scrollLeft = Math.max(0, target);
+    }
+  }
+
+  // ---- Calendrier en temps réel -----------------------------------------
+  // last7Dates() est évalué au moment du rendu : la fenêtre de 7 jours et le
+  // libellé "Aujourd'hui" se figent. Si l'app reste ouverte pendant minuit,
+  // ou revient d'arrière-plan le lendemain, ils deviennent faux. On surveille
+  // la date locale et on rebascule dès qu'elle change.
+  let watchedDay = localDateStr();
+  let dayWatcherStarted = false;
+
+  function syncDayIfChanged() {
+    const now = localDateStr();
+    if (now === watchedDay) return;
+    const wasOnToday = selectedDateStr === watchedDay;
+    watchedDay = now;
+    mealsCache.delete(now);       // le nouveau jour n'a rien en cache
+    if (wasOnToday) selectedDateStr = now;
+    renderDayChips();
+    loadMealsForDay();
+    updateRepasQuotaUI();         // le quota gratuit repart à zéro
+  }
+
+  function startDayWatcher() {
+    if (dayWatcherStarted) return;
+    dayWatcherStarted = true;
+    setInterval(syncDayIfChanged, 30000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) syncDayIfChanged();
+    });
+    window.addEventListener('focus', syncDayIfChanged);
   }
 
   function mealSkeletonHTML() {
