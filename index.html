@@ -846,6 +846,29 @@
   #view-app .activity-chip.selected { background: rgba(198,255,0,0.10); border-color: var(--vert); color: var(--blanc); }
   #view-app .activity-chip.selected svg { color: var(--vert); }
   #view-app .activity-hint { font-size: 11.5px; color: var(--gris); margin: 2px 0 14px; }
+
+  /* ---------- Note perso + historique du journal ---------- */
+  #view-app .note-counter { font-size: 11px; color: var(--gris); text-align: right; margin-top: 4px; font-family: var(--mono); }
+  #view-app .draft-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,184,0,0.08); border: 1px solid rgba(255,184,0,0.25); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12.5px; color: var(--blanc); }
+  #view-app .draft-banner.show { display: flex; }
+  #view-app .draft-banner button { background: none; border: none; color: var(--gris); font-size: 12px; text-decoration: underline; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  #view-app .history-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 18px; margin-top: 22px; }
+  #view-app .history-title { font-family: var(--mono); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ambre); margin-bottom: 12px; }
+  #view-app .history-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 12px; background: var(--fond); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 8px; cursor: pointer; text-align: left; font-family: inherit; color: var(--blanc); }
+  #view-app .history-row:hover { border-color: rgba(198,255,0,0.35); }
+  #view-app .history-score { flex-shrink: 0; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 14px; font-weight: 700; background: rgba(198,255,0,0.10); color: var(--vert); }
+  #view-app .history-score.mid { background: rgba(255,184,0,0.10); color: var(--ambre); }
+  #view-app .history-score.low { background: rgba(255,90,54,0.12); color: var(--rouge, #FF5A36); }
+  #view-app .history-day { font-size: 13px; font-weight: 600; text-transform: capitalize; }
+  #view-app .history-meta { font-size: 11.5px; color: var(--gris); margin-top: 2px; }
+  #view-app .history-chevron { margin-left: auto; color: var(--gris); width: 16px; height: 16px; flex-shrink: 0; transition: transform 0.15s ease; }
+  #view-app .history-row.open .history-chevron { transform: rotate(90deg); }
+  #view-app .history-detail { display: none; padding: 4px 12px 14px; font-size: 12.5px; color: var(--gris); }
+  #view-app .history-detail.show { display: block; }
+  #view-app .history-detail div { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  #view-app .history-detail b { color: var(--blanc); font-weight: 600; }
+  #view-app .history-note { display: block !important; margin-top: 8px; padding: 10px 12px; background: rgba(255,255,255,0.03); border-left: 2px solid var(--ambre); border-radius: 0 8px 8px 0; color: var(--blanc); line-height: 1.5; white-space: pre-wrap; }
+  #view-app .history-empty { font-size: 12.5px; color: var(--gris); text-align: center; padding: 12px 0; }
   @media (max-width: 380px) { #view-app .activity-grid { grid-template-columns: repeat(2, 1fr); } }
   #view-app .meal-chip.on { background: rgba(255,90,54,0.14); border-color: var(--vert); color: var(--vert); }
   #view-app .meal-chip .chip-check { width: 14px; height: 14px; opacity: 0; transition: opacity 0.15s ease; margin-top: -2px; }
@@ -1807,6 +1830,11 @@
         </div>
       </div>
 
+      <div class="draft-banner" id="draftBanner">
+        <span id="draftBannerText">Brouillon repris automatiquement.</span>
+        <button type="button" id="draftClearBtn">Repartir de zéro</button>
+      </div>
+
       <!-- Pré-remplissage intelligent -->
       <button type="button" class="prefill-btn" id="prefillBtn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15.3-6.4L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.3 6.4L3 16"/><path d="M3 21v-5h5"/></svg>
@@ -1949,6 +1977,10 @@
           <div class="recap-row"><span class="recap-label">Forme ressentie</span><span class="recap-value" id="recapMood">--</span></div>
           <div class="recap-row"><span class="recap-label">Repas suivis</span><span class="recap-value" id="recapMeals">--</span></div>
           <div class="recap-score"><span>Score du jour</span><strong id="recapScore">--</strong></div>
+
+          <label for="journalNotes" style="margin-top:18px;">Note perso (optionnel)</label>
+          <textarea id="journalNotes" rows="3" maxlength="1000" placeholder="ex. genou douloureux en fin de séance, réveil difficile, bonne énergie l'après-midi..."></textarea>
+          <div class="note-counter" id="notesCounter">0 / 1000</div>
         </div>
 
         <div class="wizard-nav">
@@ -1958,6 +1990,11 @@
         </div>
         <p class="msg" id="msg" role="status" aria-live="polite"></p>
       </form>
+
+      <div class="history-card" id="journalHistory">
+        <div class="history-title">Jours précédents</div>
+        <div id="historyList"><div class="history-empty">Chargement…</div></div>
+      </div>
     </section>
 
     <!-- ---------- REPAS ---------- -->
@@ -4511,6 +4548,7 @@
       document.querySelectorAll('#sleepQuality .qbtn').forEach(b => b.classList.toggle('selected', b.dataset.value === value));
       selectedQuality = value;
       updateLivePreview();
+      if (typeof saveDraft === 'function') saveDraft();
     }
     document.querySelectorAll('#sleepQuality .qbtn').forEach(btn => {
       btn.addEventListener('click', () => selectQuality(btn.dataset.value));
@@ -4592,6 +4630,7 @@
         const isOn = t.classList.contains('on');
         toggles[t.dataset.target] = isOn;
         t.setAttribute('aria-checked', String(isOn));
+        if (typeof saveDraft === 'function') saveDraft();
       };
       t.addEventListener('click', flip);
       t.addEventListener('keydown', (e) => {
@@ -4818,6 +4857,74 @@
 
     setupPrefill();
 
+    // ---- Historique : les 7 derniers jours enregistrés -------------------
+    async function loadJournalHistory() {
+      const listEl = document.getElementById('historyList');
+      if (!listEl) return;
+
+      const { data, error } = await supabase
+        .from('daily_logs')
+        .select('log_date, daily_score, sleep_hours, sleep_quality, activity_type, activity_duration_min, activity_intensity, mood_score, breakfast_done, lunch_done, dinner_done, notes')
+        .eq('user_id', user.id)
+        .order('log_date', { ascending: false })
+        .limit(7);
+
+      if (error) {
+        listEl.innerHTML = '<div class="history-empty">Historique indisponible pour le moment.</div>';
+        return;
+      }
+      const logs = (data || []).filter(l => l.log_date !== localDateStr());
+      if (!logs.length) {
+        listEl.innerHTML = '<div class="history-empty">Tes journées enregistrées apparaîtront ici.</div>';
+        return;
+      }
+
+      listEl.innerHTML = logs.map((l, i) => {
+        const score = Math.round(l.daily_score || 0);
+        const tone = score >= 70 ? '' : (score >= 50 ? 'mid' : 'low');
+        const day = new Date(l.log_date + 'T00:00:00')
+          .toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'short' });
+        const meals = ['breakfast_done', 'lunch_done', 'dinner_done'].filter(k => l[k]).length;
+        const act = l.activity_type === 'repos'
+          ? 'Repos'
+          : `${ACTIVITY_TYPE_LABEL[l.activity_type] || 'Séance'}${l.activity_duration_min ? ` ${l.activity_duration_min} min` : ''}`;
+
+        return `
+          <button type="button" class="history-row" data-history="${i}">
+            <span class="history-score ${tone}">${score}</span>
+            <span>
+              <span class="history-day">${day}</span>
+              <span class="history-meta">${formatSleepDuration(l.sleep_hours)} de sommeil · ${escapeHtml(act)}</span>
+            </span>
+            <svg class="history-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="history-detail" data-detail="${i}">
+            <div><span>Sommeil</span><b>${formatSleepDuration(l.sleep_hours)} · ${escapeHtml(l.sleep_quality || '--')}</b></div>
+            <div><span>Activité</span><b>${escapeHtml(act)}${l.activity_intensity ? ` · intensité ${l.activity_intensity}/10` : ''}</b></div>
+            <div><span>Forme ressentie</span><b>${l.mood_score ?? '--'}/10</b></div>
+            <div><span>Repas suivis</span><b>${meals}/3</b></div>
+            ${l.notes ? `<span class="history-note">${escapeHtml(l.notes)}</span>` : ''}
+          </div>`;
+      }).join('');
+
+      listEl.querySelectorAll('[data-history]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const detail = listEl.querySelector(`[data-detail="${btn.dataset.history}"]`);
+          const open = detail.classList.toggle('show');
+          btn.classList.toggle('open', open);
+        });
+      });
+    }
+
+    loadJournalHistory();
+
+    // ---- Note perso ------------------------------------------------------
+    const notesInput = document.getElementById('journalNotes');
+    const notesCounter = document.getElementById('notesCounter');
+    notesInput.addEventListener('input', () => {
+      notesCounter.textContent = `${notesInput.value.length} / 1000`;
+    });
+
     // ---------------------------------------------------------------
     // Navigation du wizard (une question à la fois)
     // ---------------------------------------------------------------
@@ -4931,7 +5038,7 @@
     });
     nextBtn.addEventListener('click', () => {
       if (!validateStep(currentStep)) return;
-      if (currentStep < steps.length - 1) { currentStep += 1; renderStep(); }
+      if (currentStep < steps.length - 1) { currentStep += 1; renderStep(); saveDraft(); }
     });
 
     // ---- Enchaînement automatique de la saisie -------------------------
@@ -4975,6 +5082,99 @@
       else if (!submitBtn.hidden) submitBtn.click();
     });
 
+    // ---- Brouillon local -------------------------------------------------
+    // Quitter la page (ou fermer l'onglet) ne doit plus effacer une saisie en
+    // cours. Le brouillon est daté : celui d'hier n'est jamais réinjecté dans
+    // le journal d'aujourd'hui.
+    const DRAFT_KEY = 'mywattup_journal_draft';
+    let draftRestored = false;
+
+    function readDraft() {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return null;
+        const d = JSON.parse(raw);
+        return d && d.date === localDateStr() ? d : null;
+      } catch (_) { return null; }
+    }
+
+    function saveDraft() {
+      if (!bedTimeInput.value && !wakeTimeInput.value && !activityTypeSelect.value
+          && !activityDurationInput.value && !notesInput.value && !selectedQuality) return;
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify({
+          date: localDateStr(),
+          step: currentStep,
+          bedTime: bedTimeInput.value,
+          wakeTime: wakeTimeInput.value,
+          quality: selectedQuality,
+          activityType: activityTypeSelect.value,
+          duration: activityDurationInput.value,
+          intensity: intensityInput.value,
+          mood: moodInput.value,
+          notes: notesInput.value,
+          toggles: { ...toggles },
+        }));
+      } catch (_) { /* stockage plein ou refusé : le formulaire marche quand même */ }
+    }
+
+    function clearDraft() {
+      try { localStorage.removeItem(DRAFT_KEY); } catch (_) {}
+    }
+
+    function restoreDraft() {
+      const d = readDraft();
+      if (!d) return;
+      draftRestored = true;
+
+      if (d.bedTime) bedTimeInput.value = d.bedTime;
+      if (d.wakeTime) wakeTimeInput.value = d.wakeTime;
+      updateSleepComputed();
+      if (d.quality) selectQuality(d.quality);
+      if (d.activityType) selectActivity(d.activityType);
+      if (d.duration) activityDurationInput.value = d.duration;
+      if (d.intensity) {
+        intensityInput.value = d.intensity;
+        document.getElementById('intensityValue').textContent = d.intensity;
+        fillSlider(intensityInput);
+      }
+      if (d.mood) {
+        moodInput.value = d.mood;
+        document.getElementById('moodValue').textContent = d.mood;
+        fillSlider(moodInput);
+      }
+      if (d.notes) {
+        notesInput.value = d.notes;
+        notesCounter.textContent = `${d.notes.length} / 1000`;
+      }
+      if (d.toggles) {
+        document.querySelectorAll('.meal-chip').forEach(chip => {
+          const isOn = !!d.toggles[chip.dataset.target];
+          chip.classList.toggle('on', isOn);
+          chip.setAttribute('aria-checked', String(isOn));
+          toggles[chip.dataset.target] = isOn;
+        });
+      }
+      currentStep = Math.min(Number(d.step) || 0, steps.length - 1);
+
+      const banner = document.getElementById('draftBanner');
+      banner.classList.add('show');
+      document.getElementById('draftBannerText').textContent =
+        `Brouillon d'aujourd'hui repris à l'étape ${currentStep + 1}.`;
+      updateLivePreview();
+    }
+
+    document.getElementById('draftClearBtn').addEventListener('click', () => {
+      clearDraft();
+      location.reload();
+    });
+
+    form.addEventListener('input', saveDraft);
+    form.addEventListener('change', saveDraft);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) saveDraft(); });
+    window.addEventListener('pagehide', saveDraft);
+
+    restoreDraft();
     renderStep();
     updateLivePreview();
 
@@ -5018,6 +5218,7 @@
           lunch_done: toggles.lunchDone,
           dinner_done: toggles.dinnerDone,
           daily_score: dailyScore,
+          notes: notesInput.value.trim() || null,
         }, { onConflict: 'user_id,log_date' });
 
       if (error) {
@@ -5028,6 +5229,7 @@
         return;
       }
 
+      clearDraft();
       msg.textContent = "Journée enregistrée !";
       msg.classList.add('success');
       document.querySelectorAll('#panel-journal .app-section').forEach(section => {
