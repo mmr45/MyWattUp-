@@ -548,11 +548,23 @@
   #view-app .trend-toggle { display: flex; background: var(--fond); border-radius: 8px; padding: 3px; }
   #view-app .trend-toggle-btn { border: none; background: none; color: var(--gris); font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; }
   #view-app .trend-toggle-btn.active { background: var(--vert); color: #0E1410; }
-  #view-app .trend-chart-wrap { width: 100%; height: 120px; }
-  #view-app .trend-chart-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  #view-app .trend-chart-wrap { position: relative; width: 100%; height: 168px; touch-action: pan-y; }
+  #view-app .trend-chart-wrap svg { width: 100%; height: 100%; display: block; }
+  #view-app .trend-grid { stroke: rgba(255,255,255,0.055); stroke-width: 1; }
+  #view-app .trend-axis { font-family: var(--mono); font-size: 9px; fill: rgba(255,255,255,0.32); letter-spacing: 0.04em; }
+  #view-app .trend-dot { fill: var(--vert); stroke: var(--fond-card); stroke-width: 2; }
+  #view-app .trend-last-halo { fill: var(--vert); opacity: 0.18; }
+  #view-app .trend-cursor { stroke: rgba(255,255,255,0.22); stroke-width: 1; stroke-dasharray: 3 3; }
+  #view-app .trend-tip { position: absolute; top: 4px; transform: translateX(-50%); background: var(--fond); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 5px 9px; font-size: 11px; color: var(--blanc); white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.12s ease; }
+  #view-app .trend-tip b { font-family: var(--mono); color: var(--vert); }
+  #view-app .trend-tip.show { opacity: 1; }
   #view-app .trend-empty { text-align: center; font-size: 12.5px; color: var(--gris); padding: 24px 0; }
-  #view-app .trend-avg { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--gris); margin-top: 8px; font-family: var(--mono); }
+  #view-app .trend-avg { display: flex; justify-content: space-between; align-items: center; font-size: 11.5px; color: var(--gris); margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); font-family: var(--mono); }
   #view-app .trend-avg strong { color: var(--blanc); font-weight: 600; }
+  #view-app .trend-delta { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; }
+  #view-app .trend-delta.up { color: var(--vert); }
+  #view-app .trend-delta.down { color: var(--ambre); }
+  #view-app .trend-delta.flat { color: var(--gris); }
   #view-app .advice-card { background: linear-gradient(135deg, rgba(255,90,54,0.14), rgba(255,184,0,0.06)); border: 1px solid rgba(255,90,54,0.25); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
   #view-app .advice-eyebrow { font-size: 11px; color: var(--vert); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px; }
   #view-app .advice-text { font-size: 14px; line-height: 1.5; color: var(--blanc); }
@@ -1734,7 +1746,8 @@
           </div>
         </div>
         <div class="trend-chart-wrap" id="trendChartWrap">
-          <svg id="trendChart" viewBox="0 0 320 120" preserveAspectRatio="none"></svg>
+          <svg id="trendChart" viewBox="0 0 320 168" role="img" aria-label="Évolution de ton score"></svg>
+          <div class="trend-tip" id="trendTip"></div>
         </div>
         <div class="trend-empty" id="trendEmpty" style="display:none;">Remplis ton journal quelques jours pour voir ta tendance.</div>
         <div class="trend-avg" id="trendAvg"></div>
@@ -3762,39 +3775,164 @@
     document.getElementById('miniWhyClose').addEventListener('click', closeMiniWhy);
   }
 
-  // Construit le tracé SVG (ligne + zone) du graphique de tendance
+  // ---------------------------------------------------------------- courbe
+  // Le viewBox suit la largeur réelle du conteneur : sans ça (preserveAspectRatio
+  // "none"), le tracé était étiré horizontalement, d'où le rendu anguleux.
+  let trendCoords = [];
+  let trendPoints = [];
+  let trendResizeBound = false;
+
+  // Catmull-Rom converti en Bézier cubique : courbe douce qui passe par tous
+  // les points. Tension basse + bornage vertical pour éviter les dépassements.
+  function smoothPath(pts, topY, bottomY) {
+    if (pts.length < 3) {
+      return pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    }
+    const t = 0.2;
+    const clampY = (y) => Math.max(topY, Math.min(bottomY, y));
+    let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1x = p1[0] + (p2[0] - p0[0]) * t;
+      const c1y = clampY(p1[1] + (p2[1] - p0[1]) * t);
+      const c2x = p2[0] - (p3[0] - p1[0]) * t;
+      const c2y = clampY(p2[1] - (p3[1] - p1[1]) * t);
+      d += ` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+    }
+    return d;
+  }
+
+  function shortDate(iso) {
+    return new Date(iso + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+  }
+
   function buildTrendSVG(points) {
     const svg = document.getElementById('trendChart');
-    if (!svg || points.length < 2) return;
+    const wrap = document.getElementById('trendChartWrap');
+    if (!svg || !wrap || points.length < 2) return;
 
-    const w = 320, h = 120, padX = 4, padY = 12;
+    trendPoints = points;
+
+    const w = Math.max(260, Math.round(wrap.clientWidth || 320));
+    const h = 168;
+    const padL = 30, padR = 14, padT = 18, padB = 26;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+    // Échelle : fenêtre autour des scores réels, jamais moins de 30 points
+    // d'amplitude, bornée à 0-100. Une amplitude figée 0-100 écrasait la courbe.
     const scores = points.map(p => p.score);
-    const min = Math.min(...scores, 40);
-    const max = Math.max(...scores, 100);
-    const range = (max - min) || 1;
-    const stepX = (w - padX * 2) / (points.length - 1);
+    let lo = Math.min(...scores);
+    let hi = Math.max(...scores);
+    const mid = (lo + hi) / 2;
+    if (hi - lo < 30) { lo = mid - 15; hi = mid + 15; }
+    else { const m = (hi - lo) * 0.15; lo -= m; hi += m; }
+    lo = Math.max(0, Math.floor(lo / 10) * 10);
+    hi = Math.min(100, Math.ceil(hi / 10) * 10);
+    const range = (hi - lo) || 1;
 
-    const coords = points.map((p, i) => {
-      const x = padX + i * stepX;
-      const y = h - padY - ((p.score - min) / range) * (h - padY * 2);
-      return [x, y];
-    });
+    const yOf = (v) => padT + plotH - ((v - lo) / range) * plotH;
+    const stepX = plotW / (points.length - 1);
+    const coords = points.map((p, i) => [padL + i * stepX, yOf(p.score)]);
+    trendCoords = coords;
 
-    const linePath = coords.map((c, i) => (i === 0 ? 'M' : 'L') + c[0].toFixed(1) + ',' + c[1].toFixed(1)).join(' ');
-    const areaPath = linePath + ` L${coords[coords.length - 1][0].toFixed(1)},${h} L${coords[0][0].toFixed(1)},${h} Z`;
-    const dots = coords.map(c => `<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="2.5" style="fill:var(--vert)" />`).join('');
+    // Lignes de repère : 3 paliers ronds entre lo et hi
+    const ticks = [lo, Math.round((lo + hi) / 2 / 5) * 5, hi];
+    const grid = [...new Set(ticks)].map(v => `
+      <line class="trend-grid" x1="${padL}" y1="${yOf(v).toFixed(1)}" x2="${w - padR}" y2="${yOf(v).toFixed(1)}" />
+      <text class="trend-axis" x="${padL - 8}" y="${(yOf(v) + 3).toFixed(1)}" text-anchor="end">${Math.round(v)}</text>`).join('');
+
+    // Dates : première, milieu, dernière — au-delà ça devient illisible sur mobile
+    const labelIdx = points.length > 3 ? [0, Math.floor((points.length - 1) / 2), points.length - 1] : [0, points.length - 1];
+    const xLabels = [...new Set(labelIdx)].map(i => {
+      const anchor = i === 0 ? 'start' : (i === points.length - 1 ? 'end' : 'middle');
+      return `<text class="trend-axis" x="${coords[i][0].toFixed(1)}" y="${h - 8}" text-anchor="${anchor}">${shortDate(points[i].date)}</text>`;
+    }).join('');
+
+    const linePath = smoothPath(coords, padT, padT + plotH);
+    const areaPath = `${linePath} L${coords[coords.length - 1][0].toFixed(1)},${padT + plotH} L${coords[0][0].toFixed(1)},${padT + plotH} Z`;
+
+    // Au-delà de 10 jours on masque les points intermédiaires : sinon la courbe
+    // devient un chapelet de pastilles.
+    const showDots = points.length <= 10;
+    const dots = showDots
+      ? coords.slice(0, -1).map(c => `<circle class="trend-dot" cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="3" />`).join('')
+      : '';
+    const last = coords[coords.length - 1];
 
     svg.innerHTML = `
       <defs>
         <linearGradient id="trendFillGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" style="stop-color:var(--vert); stop-opacity:0.35" />
+          <stop offset="0%" style="stop-color:var(--vert); stop-opacity:0.28" />
           <stop offset="100%" style="stop-color:var(--vert); stop-opacity:0" />
         </linearGradient>
       </defs>
+      ${grid}
       <path d="${areaPath}" fill="url(#trendFillGradient)" stroke="none" />
-      <path d="${linePath}" fill="none" style="stroke:var(--vert)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="${linePath}" fill="none" style="stroke:var(--vert)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
       ${dots}
+      <circle class="trend-last-halo" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="8" />
+      <circle class="trend-dot" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="4.5" />
+      ${xLabels}
+      <line id="trendCursorLine" class="trend-cursor" x1="0" y1="${padT}" x2="0" y2="${padT + plotH}" style="display:none" />
+      <circle id="trendCursorDot" class="trend-dot" r="4.5" style="display:none" />
+      <rect id="trendHit" x="${padL}" y="${padT}" width="${plotW}" height="${plotH}" fill="transparent" style="cursor:crosshair" />
     `;
+
+    bindTrendHover(svg, padL, stepX);
+
+    if (!trendResizeBound) {
+      trendResizeBound = true;
+      let t = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(t);
+        t = setTimeout(() => { if (trendPoints.length > 1) buildTrendSVG(trendPoints); }, 150);
+      });
+    }
+  }
+
+  // Survol / appui : repère vertical + bulle date & score. Sur mobile le doigt
+  // fait défiler la valeur le long de la courbe.
+  function bindTrendHover(svg, padL, stepX) {
+    const hit = svg.querySelector('#trendHit');
+    const line = svg.querySelector('#trendCursorLine');
+    const dot = svg.querySelector('#trendCursorDot');
+    const tip = document.getElementById('trendTip');
+    const wrap = document.getElementById('trendChartWrap');
+    if (!hit || !tip || !wrap) return;
+
+    const move = (evt) => {
+      const rect = svg.getBoundingClientRect();
+      const vb = svg.viewBox.baseVal;
+      const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+      const xUser = ((clientX - rect.left) / rect.width) * vb.width;
+      let i = Math.round((xUser - padL) / stepX);
+      i = Math.max(0, Math.min(trendCoords.length - 1, i));
+      const [cx, cy] = trendCoords[i];
+
+      line.setAttribute('x1', cx); line.setAttribute('x2', cx); line.style.display = '';
+      dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.style.display = '';
+
+      tip.innerHTML = `${shortDate(trendPoints[i].date)} · <b>${Math.round(trendPoints[i].score)}</b>/100`;
+      tip.style.left = `${(cx / vb.width) * 100}%`;
+      tip.classList.add('show');
+    };
+
+    const leave = () => {
+      line.style.display = 'none';
+      dot.style.display = 'none';
+      tip.classList.remove('show');
+    };
+
+    hit.addEventListener('mousemove', move);
+    hit.addEventListener('mouseleave', leave);
+    hit.addEventListener('touchstart', move, { passive: true });
+    hit.addEventListener('touchmove', move, { passive: true });
+    hit.addEventListener('touchend', leave);
   }
 
   // Affiche la tranche (7 ou 30 jours) demandée à partir des logs déjà chargés
@@ -3820,10 +3958,17 @@
     const points = slice.map(d => ({ date: d.log_date, score: d.daily_score }));
     buildTrendSVG(points);
 
+    // Les dates sont désormais sur l'axe du graphique : cette ligne sert à
+    // porter la lecture (moyenne, meilleur jour, tendance) plutôt qu'à répéter
+    // les bornes de la période.
     const avg = Math.round(points.reduce((sum, p) => sum + p.score, 0) / points.length);
-    const firstDate = new Date(points[0].date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-    const lastDate = new Date(points[points.length - 1].date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-    avgEl.innerHTML = `<span>${firstDate}</span><span>Moyenne : <strong>${avg}/100</strong></span><span>${lastDate}</span>`;
+    const best = Math.max(...points.map(p => p.score));
+    const delta = Math.round(points[points.length - 1].score - points[0].score);
+    const dir = delta > 1 ? 'up' : (delta < -1 ? 'down' : 'flat');
+    const arrow = dir === 'up' ? '▲' : (dir === 'down' ? '▼' : '=');
+    avgEl.innerHTML = `<span>Moyenne <strong>${avg}</strong>/100</span>`
+      + `<span>Record <strong>${Math.round(best)}</strong></span>`
+      + `<span class="trend-delta ${dir}">${arrow} ${delta > 0 ? '+' : ''}${delta} pts</span>`;
   }
 
   // Récupère les 30 derniers jours de score depuis Supabase et affiche la tranche courante
