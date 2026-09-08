@@ -3228,7 +3228,44 @@
 
   // Estimation de la cible calorique quotidienne (formule Mifflin-St Jeor + facteur d'activité).
   // Retourne null si le profil n'a pas encore été complété (taille/poids/âge/sexe requis).
-  function computeCalorieTarget(profile) {
+  // Modulation de la cible du jour par la séance réellement enregistrée.
+  //
+  // On N'ADDITIONNE PAS les calories brûlées : le facteur d'activité du profil
+  // (1,375 / 1,55 / 1,725…) inclut déjà les entraînements par définition.
+  // Les recompter par-dessus surestimerait la dépense de plusieurs centaines de
+  // kcal par jour. On fait donc varier la cible AUTOUR de cette base, dans une
+  // fourchette bornée : -8 % un jour de repos, +12 % au maximum sur une grosse
+  // séance. Une erreur d'estimation coûte alors ~100 kcal, pas 600.
+  //
+  // Référence : charge = 60 min à intensité 5/10 = journée type (facteur 1).
+  function dailyLoadModifier(log) {
+    if (!log || !log.activity_type) return { pct: 0, label: null };
+    const family = ACTIVITY_FAMILY[log.activity_type] || 'endurance';
+    if (family === 'repos') return { pct: -0.08, label: 'jour de repos' };
+
+    const duration = Number(log.activity_duration_min) || 0;
+    const intensity = Number(log.activity_intensity) || 5;
+    if (!duration) return { pct: 0, label: null };
+
+    const weight = family === 'douce' ? 0.5 : (family === 'intense' ? 1 : 0.9);
+    const charge = (duration / 60) * (intensity / 5) * weight;
+    const pct = Math.max(-0.08, Math.min(0.12, (charge - 1) * 0.09));
+
+    const type = ACTIVITY_TYPE_LABEL[log.activity_type] || 'séance';
+    const label = pct >= 0.03
+      ? `${type} ${duration} min · cible relevée`
+      : (pct <= -0.03 ? 'journée légère · cible abaissée' : 'journée type');
+    return { pct, label };
+  }
+
+  // Les glucides sont la variable qui bouge le plus : ce sont eux qui servent de
+  // carburant. Les lipides jouent le rôle d'ajustement, les protéines ne bougent
+  // pas (elles sont calées au poids de corps).
+  function fatShareFor(pct, base) {
+    return Math.min(base + 0.02, Math.max(base - 0.06, base - pct * 0.25));
+  }
+
+  function computeCalorieTarget(profile, dayLog) {
     if (!profile) return null;
     const { weight_kg, height_cm, birth_year, sex, activity_level, objective } = profile;
     if (!weight_kg || !height_cm || !birth_year || !sex) return null;
@@ -3238,7 +3275,9 @@
     bmr += sex === 'homme' ? 5 : sex === 'femme' ? -161 : -78; // moyenne homme/femme retenue pour "autre"
 
     const tdee = bmr * (ACTIVITY_FACTORS[activity_level] || 1.55);
-    const adjusted = tdee * (1 + (OBJECTIVE_ADJUSTMENT[objective] || 0));
+    const load = dailyLoadModifier(dayLog);
+    // Garde-fou : la cible ne descend jamais sous le métabolisme de base.
+    const adjusted = Math.max(bmr, tdee * (1 + (OBJECTIVE_ADJUSTMENT[objective] || 0)) * (1 + load.pct));
 
     // Protéines : calculées en g/kg de poids de corps selon l'objectif (et non plus
     // un pourcentage fixe des kcal, qui ignorait le poids réel de la personne).
@@ -3247,7 +3286,7 @@
     // Lipides : 30% des kcal totales (ANSES recommande une fourchette de 35 à 40%,
     // on retient une valeur prudente côté bas de fourchette pour laisser de la place
     // aux glucides sur les objectifs actifs).
-    const fatG = Math.round((adjusted * 0.30) / 9);
+    const fatG = Math.round((adjusted * fatShareFor(load.pct, 0.30)) / 9);
     const fatKcal = fatG * 9;
     // Glucides : le reste des kcal, jamais négatif même sur un profil très maigre
     // avec un objectif protéiné élevé.
@@ -3259,6 +3298,8 @@
       proteins_g: proteinsG,
       carbs_g: carbsG,
       fat_g: fatG,
+      load_pct: load.pct,
+      load_label: load.label,
     };
   }
 
@@ -3423,7 +3464,9 @@
         <span>G <b>${Math.round(totals.carbs_g)}</b>/${target.carbs_g}g</span>
         <span>L <b>${Math.round(totals.fat_g)}</b>/${target.fat_g}g</span>
       `;
-      targetHint.textContent = "Estimation basée sur ton profil (formule Mifflin-St Jeor) — à ajuster selon ton ressenti, pas une prescription médicale.";
+      targetHint.textContent = target.load_label
+        ? `Cible ajustée à ta journée : ${target.load_label} (${target.load_pct > 0 ? '+' : ''}${Math.round(target.load_pct * 100)} %). Base Mifflin-St Jeor — repère, pas une prescription médicale.`
+        : "Estimation basée sur ton profil (formule Mifflin-St Jeor) — à ajuster selon ton ressenti, pas une prescription médicale.";
     } else {
       barFill.style.width = '0%';
       barFill.classList.remove('over');
@@ -3458,14 +3501,15 @@
 
   async function loadTodayNutrition() {
     const today = localDateStr();
-    const [{ data: entries, error: entriesError }, { data: profile, error: profileError }] = await Promise.all([
+    const [{ data: entries, error: entriesError }, { data: profile, error: profileError }, { data: dayLog }] = await Promise.all([
       supabase.from('food_entries').select('*').eq('user_id', user.id).eq('log_date', today).order('created_at', { ascending: true }),
       supabase.from('profiles').select('weight_kg, height_cm, birth_year, sex, activity_level, objective').eq('user_id', user.id).maybeSingle(),
+      supabase.from('daily_logs').select('activity_type, activity_duration_min, activity_intensity').eq('user_id', user.id).eq('log_date', today).maybeSingle(),
     ]);
     if (entriesError) { console.error(entriesError); return; }
     if (profileError) console.error(profileError);
 
-    renderNutritionCard(entries || [], computeCalorieTarget(profile));
+    renderNutritionCard(entries || [], computeCalorieTarget(profile, dayLog));
   }
 
   // -------------------------------------------------------------
@@ -5323,7 +5367,7 @@
     sedentaire: 1.2, leger: 1.375, modere: 1.55, intense: 1.725, tres_intense: 1.9,
   };
 
-  function computeNeeds(profile) {
+  function computeNeeds(profile, dayLog) {
     const w = Number(profile?.weight_kg) || null;
     const h = Number(profile?.height_cm) || null;
     const by = Number(profile?.birth_year) || null;
@@ -5341,9 +5385,14 @@
     else if (/masse|prise|muscle|volume/.test(obj)) { kcal *= 1.12; proteinPerKg = 1.8; }
     else if (/endurance|perf/.test(obj)) { proteinPerKg = 1.6; }
 
+    // Même modulation que la cible du tracker : les deux chiffres doivent
+    // toujours raconter la même journée.
+    const load = dailyLoadModifier(dayLog);
+    kcal = Math.max(bmr, kcal * (1 + load.pct));
+
     kcal = Math.round(kcal / 10) * 10;
     const proteins = Math.round(w * proteinPerKg);
-    const fat = Math.round((kcal * 0.28) / 9);
+    const fat = Math.round((kcal * fatShareFor(load.pct, 0.28)) / 9);
     const carbs = Math.round((kcal - proteins * 4 - fat * 9) / 4);
 
     return {
@@ -5353,6 +5402,7 @@
       glucides_g: Math.max(carbs, 0),
       // Répartition indicative par repas
       repartition: { petit_dejeuner: 0.25, dejeuner: 0.4, diner: 0.35 },
+      contexte: load.label,
       age,
     };
   }
@@ -5385,7 +5435,14 @@
             .eq('user_id', user.id)
             .maybeSingle();
 
-          const needs = computeNeeds(profile);
+          const { data: todayLog } = await supabase
+            .from('daily_logs')
+            .select('activity_type, activity_duration_min, activity_intensity')
+            .eq('user_id', user.id)
+            .eq('log_date', today)
+            .maybeSingle();
+
+          const needs = computeNeeds(profile, todayLog);
 
           // Historique : repas des 21 derniers jours, pour interdire à l'IA de
           // les reproposer. C'est ce qui garantit la variété jour après jour.
