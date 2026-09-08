@@ -3239,14 +3239,21 @@
     });
   }
 
-  // Le repas proposé par défaut suit l'heure : une saisie de moins par jour.
+  // Le repas proposé par défaut suit l'heure. Entre minuit et 4h du matin on
+  // propose "Collation" : à cette heure-là c'est une fin de soirée, pas un
+  // petit-déjeuner. Le choix n'est proposé que tant que l'utilisateur n'a pas
+  // touché au menu lui-même (foodSlotTouched).
   function defaultMealSlot(d = new Date()) {
     const h = d.getHours();
+    if (h < 4) return 'collation';
     if (h < 11) return 'petit_dej';
     if (h < 15) return 'dejeuner';
     if (h < 18) return 'collation';
-    return 'diner';
+    if (h < 23) return 'diner';
+    return 'collation';
   }
+
+  let foodSlotTouched = false;
 
   async function deleteFoodEntry(id) {
     const { error } = await supabase.from('food_entries').delete().eq('id', id).eq('user_id', user.id);
@@ -3945,16 +3952,25 @@
       nutritionAddToggle.addEventListener('click', () => {
         nutritionAddForm.classList.toggle('show');
         if (nutritionAddForm.classList.contains('show')) {
-          document.getElementById('foodMealSlot').value = defaultMealSlot();
+          if (!foodSlotTouched) document.getElementById('foodMealSlot').value = defaultMealSlot();
           document.getElementById('foodLabel').focus();
           loadFoodShortcuts();
         }
       });
+      function clearFoodForm() {
+        document.getElementById('foodLabel').value = '';
+        ['foodKcal', 'foodQuantity', 'foodProteins', 'foodCarbs', 'foodFat']
+          .forEach(id => { document.getElementById(id).value = ''; });
+      }
+
       foodAddCancelBtn.addEventListener('click', () => {
-        nutritionAddForm.reset();
+        clearFoodForm();
         foodManualFields.style.display = 'none';
         foodManualToggle.textContent = 'Saisir les valeurs moi-même';
         nutritionAddForm.classList.remove('show');
+      });
+      document.getElementById('foodMealSlot').addEventListener('change', () => {
+        foodSlotTouched = true;
       });
       foodManualToggle.addEventListener('click', () => {
         const open = foodManualFields.style.display !== 'none';
@@ -3988,7 +4004,7 @@
           try {
             const est = await estimateFood(label);
             values = {
-              label: est.label || label,
+              label,
               quantityG: est.quantity_g ?? null,
               kcal: est.kcal ?? 0,
               proteinsG: est.proteins_g ?? null,
@@ -4017,7 +4033,7 @@
         foodAddSubmitBtn.textContent = 'Ajouter';
 
         if (ok) {
-          nutritionAddForm.reset();
+          clearFoodForm();
           foodManualFields.style.display = 'none';
           foodManualToggle.textContent = 'Saisir les valeurs moi-même';
           nutritionAddForm.classList.remove('show');
