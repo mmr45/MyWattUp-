@@ -142,7 +142,8 @@ function buildPrompt({ profile, needs, previousMeals, planDate, seed }) {
 - Glucides : ${needs.glucides_g} g
 - Lipides : ${needs.lipides_g} g
 Répartition attendue : petit-déjeuner ~25 %, déjeuner ~40 %, dîner ~35 % de l'énergie.
-La somme des kcal des 3 repas doit tomber à ±7 % de la cible.`
+La somme des kcal des 3 repas doit tomber à ±7 % de la cible.${needs.contexte ? `
+Contexte du jour : ${String(needs.contexte).slice(0, 80)}. Les cibles ci-dessus en tiennent déjà compte — n'ajoute aucune correction supplémentaire, adapte seulement le choix des aliments (glucides plus présents après une grosse séance, repas plus légers un jour calme).` : ''}`
     : `Profil morphologique incomplet : vise un total réaliste de 1900-2300 kcal sur les 3 repas et signale-le brièvement dans la justification du petit-déjeuner.`;
 
   return `Tu es diététicien. Tu composes les 3 repas du ${planDate} pour une seule personne.
