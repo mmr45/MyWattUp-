@@ -1665,7 +1665,7 @@
           <div class="food-quick-row" id="foodQuickRow"></div>
 
           <label for="foodLabel">Qu'est-ce que tu as mangé&nbsp;?</label>
-          <input type="text" id="foodLabel" placeholder="ex. un bol de riz et 150 g de poulet" autocomplete="off" required />
+          <input type="text" id="foodLabel" placeholder="ex. steak frites, pho bo, 2 œufs, Big Mac..." autocomplete="off" required />
 
           <label for="foodMealSlot">Repas</label>
           <select id="foodMealSlot" required>
@@ -1678,7 +1678,7 @@
           <button type="submit" class="app-cta secondary" id="foodAddSubmitBtn">Ajouter</button>
           <button type="button" class="settings-cancel" id="foodAddCancelBtn">Annuler</button>
 
-          <p class="food-estimate-hint">Calories et macros estimées automatiquement à partir de ta description. Plus tu précises la quantité, plus l'estimation est juste.</p>
+          <p class="food-estimate-hint">N'importe quel aliment, plat maison, resto ou marque : décris-le avec tes mots, MyWattUp estime les calories et les macros. Précise la quantité si tu veux plus de justesse.</p>
           <button type="button" class="food-manual-toggle" id="foodManualToggle">Saisir les valeurs moi-même</button>
 
           <div id="foodManualFields" style="display:none; margin-top:14px;">
@@ -3995,6 +3995,7 @@
               carbsG: est.carbs_g ?? null,
               fatG: est.fat_g ?? null,
               source: 'estimation',
+              assumption: est.assumption || '',
             };
           } catch (err) {
             foodAddSubmitBtn.disabled = false;
@@ -4006,9 +4007,10 @@
           }
         }
 
+        const { assumption, ...toInsert } = values;
         const ok = await logFoodEntry({
           mealSlot: document.getElementById('foodMealSlot').value,
-          ...values,
+          ...toInsert,
         });
 
         foodAddSubmitBtn.disabled = false;
@@ -4021,7 +4023,7 @@
           nutritionAddForm.classList.remove('show');
           showToast(
             values.source === 'estimation'
-              ? `${values.label} · ~${Math.round(values.kcal)} kcal (estimation)`
+              ? `${values.label} · ~${Math.round(values.kcal)} kcal${values.assumption ? ` · ${values.assumption}` : ''}`
               : 'Aliment ajouté à ton journal.',
             'success'
           );
