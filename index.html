@@ -630,6 +630,12 @@
   #view-app .nutrition-entries-list { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
   #view-app .nutrition-entry-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--fond); border-radius: 10px; font-size: 13px; }
   #view-app .nutrition-entry-row .entry-meta { color: var(--gris); font-size: 11.5px; margin-top: 2px; }
+  #view-app .food-quick-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  #view-app .food-quick-chip { padding: 7px 12px; border-radius: 999px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); color: var(--blanc); font-size: 12.5px; cursor: pointer; }
+  #view-app .food-quick-chip:hover { border-color: var(--vert); }
+  #view-app .food-quick-chip span { color: var(--gris); margin-left: 6px; font-size: 11.5px; }
+  #view-app .food-manual-toggle { display: block; margin: 10px auto 0; background: none; border: none; color: var(--gris); font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+  #view-app .food-estimate-hint { font-size: 12px; color: var(--gris); margin: 8px 0 0; }
 
   /* ---- Social : amis + fil d'activité ---- */
   #view-app .friend-code-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; margin-bottom: 18px; }
@@ -1656,8 +1662,10 @@
         </button>
 
         <form id="nutritionAddForm" class="settings-subform">
-          <label for="foodLabel">Nom</label>
-          <input type="text" id="foodLabel" placeholder="ex. Yaourt nature" required />
+          <div class="food-quick-row" id="foodQuickRow"></div>
+
+          <label for="foodLabel">Qu'est-ce que tu as mangé&nbsp;?</label>
+          <input type="text" id="foodLabel" placeholder="ex. un bol de riz et 150 g de poulet" autocomplete="off" required />
 
           <label for="foodMealSlot">Repas</label>
           <select id="foodMealSlot" required>
@@ -1667,33 +1675,38 @@
             <option value="collation">Collation</option>
           </select>
 
-          <div style="display:flex; gap:10px;">
-            <div style="flex:1;">
-              <label for="foodKcal">Calories (kcal)</label>
-              <input type="number" id="foodKcal" min="0" step="1" required />
-            </div>
-            <div style="flex:1;">
-              <label for="foodQuantity">Quantité (g)</label>
-              <input type="number" id="foodQuantity" min="0" step="1" placeholder="optionnel" />
-            </div>
-          </div>
-          <div style="display:flex; gap:10px;">
-            <div style="flex:1;">
-              <label for="foodProteins">Protéines (g)</label>
-              <input type="number" id="foodProteins" min="0" step="0.1" />
-            </div>
-            <div style="flex:1;">
-              <label for="foodCarbs">Glucides (g)</label>
-              <input type="number" id="foodCarbs" min="0" step="0.1" />
-            </div>
-            <div style="flex:1;">
-              <label for="foodFat">Lipides (g)</label>
-              <input type="number" id="foodFat" min="0" step="0.1" />
-            </div>
-          </div>
-
           <button type="submit" class="app-cta secondary" id="foodAddSubmitBtn">Ajouter</button>
           <button type="button" class="settings-cancel" id="foodAddCancelBtn">Annuler</button>
+
+          <p class="food-estimate-hint">Calories et macros estimées automatiquement à partir de ta description. Plus tu précises la quantité, plus l'estimation est juste.</p>
+          <button type="button" class="food-manual-toggle" id="foodManualToggle">Saisir les valeurs moi-même</button>
+
+          <div id="foodManualFields" style="display:none; margin-top:14px;">
+            <div style="display:flex; gap:10px;">
+              <div style="flex:1;">
+                <label for="foodKcal">Calories (kcal)</label>
+                <input type="number" id="foodKcal" min="0" step="1" />
+              </div>
+              <div style="flex:1;">
+                <label for="foodQuantity">Quantité (g)</label>
+                <input type="number" id="foodQuantity" min="0" step="1" placeholder="optionnel" />
+              </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <div style="flex:1;">
+                <label for="foodProteins">Protéines (g)</label>
+                <input type="number" id="foodProteins" min="0" step="0.1" />
+              </div>
+              <div style="flex:1;">
+                <label for="foodCarbs">Glucides (g)</label>
+                <input type="number" id="foodCarbs" min="0" step="0.1" />
+              </div>
+              <div style="flex:1;">
+                <label for="foodFat">Lipides (g)</label>
+                <input type="number" id="foodFat" min="0" step="0.1" />
+              </div>
+            </div>
+          </div>
         </form>
 
         <p class="section-desc" id="nutritionTargetHint" style="margin-top:12px;"></p>
@@ -3154,6 +3167,87 @@
     return true;
   }
 
+  // Estime kcal + macros à partir d'une description libre ("un bol de riz et
+  // 150 g de poulet"). L'appel modèle est côté serveur : la clé n'est jamais
+  // exposée au navigateur et le quota est vérifié en base.
+  async function estimateFood(description) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) throw new Error('Session expirée — reconnecte-toi.');
+
+    const r = await fetch('/api/estimate-food', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ description }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || "Estimation impossible pour l'instant.");
+    return data;
+  }
+
+  // Raccourcis : les aliments les plus repris ces 14 derniers jours, réinsérés
+  // en un tap avec leurs valeurs déjà connues (aucun appel modèle).
+  async function loadFoodShortcuts() {
+    const row = document.getElementById('foodQuickRow');
+    if (!row) return;
+    const since = localDateStr(new Date(Date.now() - 14 * 86400000));
+    const { data, error } = await supabase
+      .from('food_entries')
+      .select('label, quantity_g, kcal, proteins_g, carbs_g, fat_g')
+      .eq('user_id', user.id)
+      .gte('log_date', since)
+      .order('created_at', { ascending: false })
+      .limit(150);
+    if (error || !data || !data.length) { row.innerHTML = ''; return; }
+
+    const byLabel = new Map();
+    for (const e of data) {
+      const key = String(e.label || '').trim().toLowerCase();
+      if (!key) continue;
+      if (!byLabel.has(key)) byLabel.set(key, { entry: e, count: 0 });
+      byLabel.get(key).count++;
+    }
+    const top = [...byLabel.values()].sort((a, b) => b.count - a.count).slice(0, 6);
+
+    row.innerHTML = top.map((t, i) => `
+      <button type="button" class="food-quick-chip" data-shortcut="${i}">
+        ${escapeHtml(t.entry.label)}<span>${Math.round(t.entry.kcal || 0)} kcal</span>
+      </button>`).join('');
+
+    row.querySelectorAll('[data-shortcut]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const e = top[parseInt(btn.dataset.shortcut, 10)].entry;
+        btn.disabled = true;
+        const ok = await logFoodEntry({
+          mealSlot: document.getElementById('foodMealSlot').value,
+          label: e.label,
+          quantityG: e.quantity_g,
+          kcal: e.kcal,
+          proteinsG: e.proteins_g,
+          carbsG: e.carbs_g,
+          fatG: e.fat_g,
+          source: 'manuel',
+        });
+        btn.disabled = false;
+        if (ok) {
+          showToast(`${e.label} ajouté · ${Math.round(e.kcal || 0)} kcal`, 'success');
+          document.getElementById('nutritionAddForm').classList.remove('show');
+          loadTodayNutrition();
+        } else {
+          showToast("Erreur lors de l'ajout — vérifie ta connexion.", 'error');
+        }
+      });
+    });
+  }
+
+  // Le repas proposé par défaut suit l'heure : une saisie de moins par jour.
+  function defaultMealSlot(d = new Date()) {
+    const h = d.getHours();
+    if (h < 11) return 'petit_dej';
+    if (h < 15) return 'dejeuner';
+    if (h < 18) return 'collation';
+    return 'diner';
+  }
+
   async function deleteFoodEntry(id) {
     const { error } = await supabase.from('food_entries').delete().eq('id', id).eq('user_id', user.id);
     if (error) { console.error(error); showToast('Erreur lors de la suppression.', 'error'); return; }
@@ -3845,29 +3939,76 @@
       const foodAddCancelBtn = document.getElementById('foodAddCancelBtn');
       const foodAddSubmitBtn = document.getElementById('foodAddSubmitBtn');
 
+      const foodManualToggle = document.getElementById('foodManualToggle');
+      const foodManualFields = document.getElementById('foodManualFields');
+
       nutritionAddToggle.addEventListener('click', () => {
         nutritionAddForm.classList.toggle('show');
-        if (nutritionAddForm.classList.contains('show')) document.getElementById('foodLabel').focus();
+        if (nutritionAddForm.classList.contains('show')) {
+          document.getElementById('foodMealSlot').value = defaultMealSlot();
+          document.getElementById('foodLabel').focus();
+          loadFoodShortcuts();
+        }
       });
       foodAddCancelBtn.addEventListener('click', () => {
         nutritionAddForm.reset();
+        foodManualFields.style.display = 'none';
+        foodManualToggle.textContent = 'Saisir les valeurs moi-même';
         nutritionAddForm.classList.remove('show');
+      });
+      foodManualToggle.addEventListener('click', () => {
+        const open = foodManualFields.style.display !== 'none';
+        foodManualFields.style.display = open ? 'none' : 'block';
+        foodManualToggle.textContent = open ? 'Saisir les valeurs moi-même' : 'Laisser MyWattUp estimer';
       });
 
       nutritionAddForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const label = document.getElementById('foodLabel').value.trim();
+        if (!label) return;
+
+        const manual = foodManualFields.style.display !== 'none'
+          && document.getElementById('foodKcal').value !== '';
+
         foodAddSubmitBtn.disabled = true;
-        foodAddSubmitBtn.textContent = '...';
+        foodAddSubmitBtn.textContent = manual ? '...' : 'Estimation...';
+
+        let values;
+        if (manual) {
+          values = {
+            label,
+            quantityG: parseFloat(document.getElementById('foodQuantity').value) || null,
+            kcal: parseFloat(document.getElementById('foodKcal').value) || 0,
+            proteinsG: parseFloat(document.getElementById('foodProteins').value) || null,
+            carbsG: parseFloat(document.getElementById('foodCarbs').value) || null,
+            fatG: parseFloat(document.getElementById('foodFat').value) || null,
+            source: 'manuel',
+          };
+        } else {
+          try {
+            const est = await estimateFood(label);
+            values = {
+              label: est.label || label,
+              quantityG: est.quantity_g ?? null,
+              kcal: est.kcal ?? 0,
+              proteinsG: est.proteins_g ?? null,
+              carbsG: est.carbs_g ?? null,
+              fatG: est.fat_g ?? null,
+              source: 'estimation',
+            };
+          } catch (err) {
+            foodAddSubmitBtn.disabled = false;
+            foodAddSubmitBtn.textContent = 'Ajouter';
+            foodManualFields.style.display = 'block';
+            foodManualToggle.textContent = 'Laisser MyWattUp estimer';
+            showToast(err.message || "Estimation indisponible — saisis les valeurs.", 'error');
+            return;
+          }
+        }
 
         const ok = await logFoodEntry({
           mealSlot: document.getElementById('foodMealSlot').value,
-          label: document.getElementById('foodLabel').value.trim(),
-          quantityG: parseFloat(document.getElementById('foodQuantity').value) || null,
-          kcal: parseFloat(document.getElementById('foodKcal').value) || 0,
-          proteinsG: parseFloat(document.getElementById('foodProteins').value) || null,
-          carbsG: parseFloat(document.getElementById('foodCarbs').value) || null,
-          fatG: parseFloat(document.getElementById('foodFat').value) || null,
-          source: 'manuel',
+          ...values,
         });
 
         foodAddSubmitBtn.disabled = false;
@@ -3875,8 +4016,15 @@
 
         if (ok) {
           nutritionAddForm.reset();
+          foodManualFields.style.display = 'none';
+          foodManualToggle.textContent = 'Saisir les valeurs moi-même';
           nutritionAddForm.classList.remove('show');
-          showToast('Aliment ajouté à ton journal.', 'success');
+          showToast(
+            values.source === 'estimation'
+              ? `${values.label} · ~${Math.round(values.kcal)} kcal (estimation)`
+              : 'Aliment ajouté à ton journal.',
+            'success'
+          );
           loadTodayNutrition();
         } else {
           showToast("Erreur lors de l'ajout — vérifie ta connexion.", 'error');
