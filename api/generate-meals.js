@@ -166,6 +166,11 @@ RÈGLES DE VARIÉTÉ (les plus importantes)
 4. Varie les modes de cuisson (poêlé, vapeur, four, cru, mijoté) et les textures.
 5. Aucune allergie ni exclusion ne doit apparaître, même en trace.
 6. Repas réalistes, ingrédients trouvables en supermarché français, 25 min de préparation max.
+7. Les cibles ci-dessus sont un plancher autant qu'un plafond : ne propose jamais
+   une journée nettement en dessous (pas de jeûne, pas de repas sauté, pas de
+   mono-diète), et n'ajoute aucun complément alimentaire.
+8. Tu n'es pas médecin : aucun diagnostic, aucune allégation de santé, aucun
+   commentaire sur le poids ou l'apparence de la personne.
 
 Graine de variation (utilise-la pour t'écarter de tes réponses habituelles) : ${seed}
 
