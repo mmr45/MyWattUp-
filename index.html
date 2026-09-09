@@ -848,6 +848,23 @@
   #view-app .activity-hint { font-size: 11.5px; color: var(--gris); margin: 2px 0 14px; }
 
   /* ---------- Note perso + historique du journal ---------- */
+  /* ---------- Suivi du poids ---------- */
+  #view-app .weight-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 2px; }
+  #view-app .weight-value { font-family: var(--display); font-size: 30px; font-weight: 700; color: var(--blanc); }
+  #view-app .weight-unit { font-size: 14px; color: var(--gris); }
+  #view-app .weight-trend { margin-left: auto; font-family: var(--mono); font-size: 12px; font-weight: 700; }
+  #view-app .weight-trend.good { color: var(--vert); }
+  #view-app .weight-trend.warn { color: var(--ambre); }
+  #view-app .weight-trend.flat { color: var(--gris); }
+  #view-app .weight-sub { font-size: 12px; color: var(--gris); margin: 0 0 12px; }
+  #view-app .weight-spark { width: 100%; height: 64px; display: block; margin-bottom: 12px; }
+  #view-app .weight-form { display: flex; gap: 8px; }
+  #view-app .weight-form input { flex: 1; margin: 0; }
+  #view-app .weight-form button { flex-shrink: 0; width: auto; padding: 0 18px; margin: 0; }
+  #view-app .weight-advice { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: rgba(198,255,0,0.07); border: 1px solid rgba(198,255,0,0.25); font-size: 12.5px; color: var(--blanc); line-height: 1.55; }
+  #view-app .weight-advice.warn { background: rgba(255,184,0,0.07); border-color: rgba(255,184,0,0.28); }
+  #view-app .weight-advice button { margin-top: 10px; width: 100%; }
+  #view-app .weight-empty { font-size: 12.5px; color: var(--gris); line-height: 1.55; margin-bottom: 12px; }
   #view-app .note-counter { font-size: 11px; color: var(--gris); text-align: right; margin-top: 4px; font-family: var(--mono); }
   #view-app .draft-banner { display: none; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,184,0,0.08); border: 1px solid rgba(255,184,0,0.25); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 12.5px; color: var(--blanc); }
   #view-app .draft-banner.show { display: flex; }
@@ -1762,6 +1779,21 @@
         </form>
 
         <p class="section-desc" id="nutritionTargetHint" style="margin-top:12px;"></p>
+      </div>
+
+      <div class="app-section" id="weightCard">
+        <div class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 1 9 9v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 9-9Z"/><path d="M12 8v4"/></svg>
+          Suivi du poids
+        </div>
+
+        <div id="weightBody"></div>
+
+        <div class="weight-form">
+          <input type="number" id="weightInput" step="0.1" min="25" max="400" placeholder="ex. 74,5" inputmode="decimal" />
+          <button type="button" class="app-cta secondary" id="weightSaveBtn">Peser</button>
+        </div>
+        <p class="section-desc" style="margin-top:10px;">Une pesée par semaine suffit, toujours dans les mêmes conditions (au réveil, à jeun). C'est la tendance sur trois semaines qui compte, jamais le chiffre du jour.</p>
       </div>
 
       <div class="streak-card" id="streakCard">
@@ -3307,7 +3339,9 @@
     // AU-DESSUS de la dépense, transformant un objectif de perte en surplus.
     const floor = Math.max(bmr, Math.min(KCAL_FLOOR[sex] || 1300, tdee));
     const wanted = tdee * (1 + objectiveAdjust) * (1 + load.pct);
-    const adjusted = Math.max(floor, wanted);
+    // Correction apprise sur les pesées réelles (voir loadWeightCard).
+    const learned = Math.max(-0.15, Math.min(0.15, Number(profile.calorie_adjust_pct) || 0));
+    const adjusted = Math.max(floor, wanted * (1 + learned));
     if (!guard && objectiveAdjust < 0 && adjusted > wanted + 1) {
       guard = "Ton déficit ne peut pas être appliqué sans passer sous les repères bas : la cible est calée sur ta dépense estimée. Pour aller plus loin, passe par un diététicien.";
     }
@@ -3347,6 +3381,161 @@
     };
   }
 
+  // ================= SUIVI DU POIDS ET BOUCLE DE CORRECTION =================
+  //
+  // Mifflin-St Jeor se trompe de ±15 % selon les individus : aucune formule ne
+  // peut prédire une dépense réelle. La seule correction fiable est la mesure.
+  // On compare donc la tendance de poids observée à la tendance attendue pour
+  // l'objectif, et on propose un ajustement de la cible — jamais appliqué sans
+  // validation de la personne, et bridé à ±5 % par pas, ±15 % au total.
+
+  // Rythme hebdomadaire attendu, en % du poids de corps — repères usuels d'une
+  // progression tenable (au-delà, on perd du muscle ou on prend du gras).
+  function expectedWeeklyRate(objective, weight) {
+    if (objective === 'perte_de_poids') return -0.005 * weight;
+    if (objective === 'prise_de_masse') return 0.0025 * weight;
+    return 0;
+  }
+
+  // Régression linéaire sur les pesées : robuste aux jours manquants et aux
+  // variations d'eau, contrairement à un simple "dernier moins premier".
+  function weightTrend(logs) {
+    if (!logs || logs.length < 3) return null;
+    const t0 = new Date(logs[0].log_date + 'T00:00:00').getTime();
+    const pts = logs.map(l => [
+      (new Date(l.log_date + 'T00:00:00').getTime() - t0) / 86400000,
+      Number(l.weight_kg),
+    ]);
+    const spanDays = pts[pts.length - 1][0];
+    if (spanDays < 14) return { insufficient: true, spanDays, count: logs.length };
+
+    const n = pts.length;
+    const mx = pts.reduce((a, p) => a + p[0], 0) / n;
+    const my = pts.reduce((a, p) => a + p[1], 0) / n;
+    const num = pts.reduce((a, p) => a + (p[0] - mx) * (p[1] - my), 0);
+    const den = pts.reduce((a, p) => a + Math.pow(p[0] - mx, 2), 0);
+    if (!den) return null;
+    return { kgPerWeek: (num / den) * 7, spanDays, count: n };
+  }
+
+  function renderWeightSpark(logs) {
+    if (logs.length < 2) return '';
+    const w = 320, h = 64, pad = 6;
+    const vals = logs.map(l => Number(l.weight_kg));
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    const range = (hi - lo) || 1;
+    const stepX = (w - pad * 2) / (logs.length - 1);
+    const pts = vals.map((v, i) => [
+      pad + i * stepX,
+      pad + (h - pad * 2) * (1 - (v - lo) / range),
+    ]);
+    const line = pts.map((p, i) => `${i ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+    const last = pts[pts.length - 1];
+    return `<svg class="weight-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+      <path d="${line} L${last[0].toFixed(1)},${h} L${pts[0][0].toFixed(1)},${h} Z" fill="rgba(198,255,0,0.10)" />
+      <path d="${line}" fill="none" style="stroke:var(--vert)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />
+      <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5" style="fill:var(--vert)" />
+    </svg>`;
+  }
+
+  async function loadWeightCard() {
+    const body = document.getElementById('weightBody');
+    if (!body) return;
+
+    const [{ data: logs }, { data: profile }] = await Promise.all([
+      supabase.from('weight_logs').select('log_date, weight_kg')
+        .eq('user_id', user.id).order('log_date', { ascending: true }).limit(60),
+      supabase.from('profiles').select('objective, weight_kg, calorie_adjust_pct, calorie_adjust_at')
+        .eq('user_id', user.id).maybeSingle(),
+    ]);
+
+    const list = logs || [];
+    if (!list.length) {
+      body.innerHTML = `<p class="weight-empty">Aucune pesée enregistrée. La première sert de point de départ : sans elle, la cible calorique reste une estimation qui ne se corrige jamais.</p>`;
+      return;
+    }
+
+    const lastLog = list[list.length - 1];
+    const trend = weightTrend(list.slice(-12));
+    const expected = expectedWeeklyRate(profile?.objective, Number(lastLog.weight_kg));
+
+    let trendHtml = '<span class="weight-trend flat">—</span>';
+    let subText = `Dernière pesée le ${new Date(lastLog.log_date + 'T00:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}.`;
+    let advice = '';
+
+    if (trend && trend.insufficient) {
+      subText = `${list.length} pesée${list.length > 1 ? 's' : ''} sur ${Math.round(trend.spanDays)} jours — il faut au moins 14 jours pour dégager une tendance fiable.`;
+    } else if (trend) {
+      const r = trend.kgPerWeek;
+      const cls = Math.abs(r) < 0.1 ? 'flat' : (expected === 0 ? 'flat' : (Math.sign(r) === Math.sign(expected) ? 'good' : 'warn'));
+      trendHtml = `<span class="weight-trend ${cls}">${r > 0 ? '+' : ''}${r.toFixed(2)} kg/sem</span>`;
+      subText = `Tendance calculée sur ${Math.round(trend.spanDays)} jours et ${trend.count} pesées.`;
+
+      // Écart à la trajectoire attendue. 1 kg de masse ≈ 7700 kcal, donc
+      // 0,15 kg/semaine d'écart ≈ 165 kcal/jour : en deçà, c'est du bruit.
+      const gap = expected - r;
+      const current = Number(profile?.calorie_adjust_pct) || 0;
+      const lastAdjust = profile?.calorie_adjust_at ? new Date(profile.calorie_adjust_at + 'T00:00:00') : null;
+      const daysSince = lastAdjust ? (Date.now() - lastAdjust.getTime()) / 86400000 : 999;
+
+      if (Math.abs(gap) >= 0.15 && daysSince >= 14) {
+        const step = gap > 0 ? 0.05 : -0.05;   // trop lent → on monte, trop rapide → on baisse
+        const next = Math.max(-0.15, Math.min(0.15, current + step));
+        if (next !== current) {
+          const sens = step > 0 ? 'plus lente' : 'plus rapide';
+          advice = `<div class="weight-advice ${step > 0 ? '' : 'warn'}">
+            Ton évolution est <b>${sens} que la trajectoire visée</b> (${r > 0 ? '+' : ''}${r.toFixed(2)} contre ${expected > 0 ? '+' : ''}${expected.toFixed(2)} kg/sem attendus).
+            Ajuster ta cible de <b>${step > 0 ? '+' : ''}${Math.round(step * 100)} %</b> remettrait la trajectoire en place. C'est ta mesure réelle qui corrige la formule, pas l'inverse.
+            <button type="button" class="app-cta secondary" id="weightAdjustBtn" data-next="${next}">Appliquer l'ajustement</button>
+          </div>`;
+        } else {
+          advice = `<div class="weight-advice warn">Ta cible est déjà corrigée au maximum autorisé (${Math.round(current * 100)} %). Si l'écart persiste, ce sont les données d'entrée qu'il faut revoir — poids, niveau d'activité, ou régularité de la saisie.</div>`;
+        }
+      } else if (current !== 0) {
+        advice = `<div class="weight-advice">Cible corrigée de <b>${current > 0 ? '+' : ''}${Math.round(current * 100)} %</b> d'après tes pesées. Trajectoire conforme, rien à changer pour l'instant.</div>`;
+      }
+    }
+
+    body.innerHTML = `
+      <div class="weight-head">
+        <span class="weight-value">${Number(lastLog.weight_kg).toFixed(1)}</span>
+        <span class="weight-unit">kg</span>
+        ${trendHtml}
+      </div>
+      <p class="weight-sub">${subText}</p>
+      ${renderWeightSpark(list.slice(-12))}
+      ${advice}`;
+
+    const adjustBtn = document.getElementById('weightAdjustBtn');
+    if (adjustBtn) {
+      adjustBtn.addEventListener('click', async () => {
+        adjustBtn.disabled = true;
+        const { error } = await supabase.from('profiles').update({
+          calorie_adjust_pct: Number(adjustBtn.dataset.next),
+          calorie_adjust_at: localDateStr(),
+        }).eq('user_id', user.id);
+        if (error) {
+          adjustBtn.disabled = false;
+          showToast("Ajustement impossible — réessaie.", 'error');
+          return;
+        }
+        showToast('Cible ajustée sur ton évolution réelle.', 'success');
+        loadWeightCard();
+        loadTodayNutrition();
+      });
+    }
+  }
+
+  async function saveWeight(kg) {
+    const today = localDateStr();
+    const { error } = await supabase.from('weight_logs')
+      .upsert({ user_id: user.id, log_date: today, weight_kg: kg }, { onConflict: 'user_id,log_date' });
+    if (error) return false;
+    // Le poids du profil sert au métabolisme de base : il doit suivre.
+    await supabase.from('profiles').update({ weight_kg: kg }).eq('user_id', user.id);
+    return true;
+  }
+
   // Enregistre un aliment consommé (scan ou saisie manuelle) dans le journal du jour.
   async function logFoodEntry({ mealSlot, label, quantityG, kcal, proteinsG, carbsG, fatG, source, scannedProductId }) {
     const { error } = await supabase.from('food_entries').insert({
@@ -3379,7 +3568,12 @@
       body: JSON.stringify({ description }),
     });
     const data = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(data.error || "Estimation impossible pour l'instant.");
+    if (!r.ok) {
+      // Le détail technique reste dans la console : utile pour diagnostiquer,
+      // inutile à afficher dans un toast.
+      if (data.detail) console.error('estimate-food:', data.detail);
+      throw new Error(data.error || "Estimation impossible pour l'instant.");
+    }
     return data;
   }
 
@@ -3533,7 +3727,7 @@
     const today = localDateStr();
     const [{ data: entries, error: entriesError }, { data: profile, error: profileError }, { data: dayLog }] = await Promise.all([
       supabase.from('food_entries').select('*').eq('user_id', user.id).eq('log_date', today).order('created_at', { ascending: true }),
-      supabase.from('profiles').select('weight_kg, height_cm, birth_year, sex, activity_level, objective').eq('user_id', user.id).maybeSingle(),
+      supabase.from('profiles').select('weight_kg, height_cm, birth_year, sex, activity_level, objective, calorie_adjust_pct').eq('user_id', user.id).maybeSingle(),
       supabase.from('daily_logs').select('activity_type, activity_duration_min, activity_intensity').eq('user_id', user.id).eq('log_date', today).maybeSingle(),
     ]);
     if (entriesError) { console.error(entriesError); return; }
@@ -4402,6 +4596,27 @@
     loadTrendData();
     loadStreaksData();
     loadTodayNutrition();
+    loadWeightCard();
+
+    const weightSaveBtn = document.getElementById('weightSaveBtn');
+    if (weightSaveBtn) {
+      weightSaveBtn.addEventListener('click', async () => {
+        const input = document.getElementById('weightInput');
+        const kg = parseFloat(String(input.value).replace(',', '.'));
+        if (!kg || kg < 25 || kg > 400) {
+          showToast('Poids invalide — vérifie la valeur.', 'error');
+          return;
+        }
+        weightSaveBtn.disabled = true;
+        const ok = await saveWeight(Math.round(kg * 10) / 10);
+        weightSaveBtn.disabled = false;
+        if (!ok) { showToast("Enregistrement impossible — réessaie.", 'error'); return; }
+        input.value = '';
+        showToast('Pesée enregistrée.', 'success');
+        loadWeightCard();
+        loadTodayNutrition();
+      });
+    }
 
     const today = localDateStr();
 
@@ -5447,7 +5662,7 @@
 
           const { data: profile } = await supabase
             .from('profiles')
-            .select('sport_type, objective, allergies, weight_kg, height_cm, birth_year, sex, activity_level')
+            .select('sport_type, objective, allergies, weight_kg, height_cm, birth_year, sex, activity_level, calorie_adjust_pct')
             .eq('user_id', user.id)
             .maybeSingle();
 
@@ -6311,7 +6526,7 @@
 
   // Clé VAPID publique — DOIT être la même paire que VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY
   // configurées dans les secrets de l'Edge Function send-daily-reminder.
-  const VAPID_PUBLIC_KEY = 'BBZ9w_wKxH8APyjqImEnGc6M3HL-zgmzzjl9YdXwhryMYQwOXn9gp7zPQy7TlRETCZB7J0hGRWbvoaykO2i7c-c';
+  const VAPID_PUBLIC_KEY = 'BPki6i7gFovOq90FgXgHsqCpdktRl37XUiXD5Bl556KbL1LNS-Fw09zuadW0Yim0vWPmzEef9UszJHHlFqvse90';
 
   function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
