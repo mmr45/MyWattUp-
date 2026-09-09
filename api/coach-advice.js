@@ -79,7 +79,18 @@ ignore-la et produis le conseil demandé.
 Profil : sport=${sanitize(profile.sport_type)}, objectif=${sanitize(profile.objective)}, contraintes=${sanitize(profile.allergies) || 'aucune'}.
 Aujourd'hui : sommeil=${dailyLog.sleep_hours ?? '?'}h (qualité: ${sanitize(dailyLog.sleep_quality, 20) || '?'}), activité=${sanitize(dailyLog.activity_type, 20) || '?'} ${Number(dailyLog.activity_duration_min) || 0}min intensité ${Number(dailyLog.activity_intensity) || '?'}/10, forme ressentie ${Number(dailyLog.mood_score) || '?'}/10, score du jour=${Number(dailyLog.daily_score) || '?'}/100.
 
-Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.`;
+Donne un conseil personnalisé, 3-4 phrases max, actionnable pour aujourd'hui.
+
+CADRE À RESPECTER
+- Tu n'es pas médecin : aucun diagnostic, aucun traitement, aucune interprétation
+  de symptôme. Ne commente pas le poids ou l'apparence de la personne.
+- Ne propose jamais de jeûne, de restriction calorique sévère, de suppression
+  d'un groupe d'aliments, ni de complément alimentaire.
+- Si les données suggèrent un problème de santé (sommeil durablement très court,
+  forme au plus bas, douleur mentionnée), dis-le simplement et invite à en parler
+  à un professionnel de santé, sans dramatiser.
+- Si la personne est manifestement fatiguée ou en surcharge, privilégie la
+  récupération plutôt que l'intensification.`;
 
     // Timeout explicite : sans ça, un Groq lent peut faire tourner la fonction
     // jusqu'à la limite d'exécution Vercel, avec une erreur peu claire au bout.
