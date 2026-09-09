@@ -10,7 +10,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// Réception d'une notification push envoyée par l'Edge Function
+// Réception d'une notification push envoyée par /api/send-reminders
 self.addEventListener('push', (event) => {
   let payload = {};
   try {
