@@ -132,7 +132,11 @@ Si la description ne désigne rien de comestible, réponds exactement :
         body: JSON.stringify({
           model: 'openai/gpt-oss-120b',
           messages: [{ role: 'user', content: prompt }],
-          max_completion_tokens: 600,
+          // gpt-oss raisonne AVANT de répondre, et ce raisonnement consomme le
+          // même budget de tokens. Avec un budget serré il était entièrement
+          // absorbé : content revenait vide, d'où "Estimation indisponible".
+          reasoning_effort: 'low',
+          max_completion_tokens: 1500,
           temperature: 0.2,
           response_format: { type: 'json_object' },
         }),
@@ -148,13 +152,25 @@ Si la description ne désigne rien de comestible, réponds exactement :
       return res.status(502).json({ error: "Estimation indisponible — saisis les valeurs à la main." });
     }
 
-    const raw = data.choices?.[0]?.message?.content || '';
+    const choice = data.choices?.[0];
+    const raw = choice?.message?.content || '';
+    if (!raw) {
+      console.error('Reponse vide estimate-food:', choice?.finish_reason, JSON.stringify(data).slice(0, 400));
+      return res.status(502).json({
+        error: "Estimation indisponible — saisis les valeurs à la main.",
+        detail: `reponse vide (finish_reason: ${choice?.finish_reason || 'inconnu'})`,
+      });
+    }
+
     let parsed;
     try {
       parsed = JSON.parse(String(raw).replace(/```json|```/g, '').trim());
     } catch (_) {
       console.error('JSON illisible estimate-food:', raw.slice(0, 300));
-      return res.status(502).json({ error: "Estimation indisponible — saisis les valeurs à la main." });
+      return res.status(502).json({
+        error: "Estimation indisponible — saisis les valeurs à la main.",
+        detail: `JSON illisible : ${raw.slice(0, 120)}`,
+      });
     }
 
     if (parsed.error === 'not_food') {
