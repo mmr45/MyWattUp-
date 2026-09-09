@@ -75,12 +75,10 @@ Code-barres lu via Open Food Facts, avec un score recalculé selon ton profil sp
 ## 📱 Aperçu
 
 <p align="center">
-  <img src="docs/screenshot-journal.png" alt="Journal du jour" width="30%" />
-  <img src="docs/screenshot-score.png" alt="Score et évolution" width="30%" />
-  <img src="docs/screenshot-repas.png" alt="Repas du jour" width="30%" />
+  <img src="docs/showcase-mywattup.svg" alt="Journal, score et repas du jour" width="100%" />
 </p>
 
-<p align="center"><i>Journal guidé · Score et courbe d'évolution · Repas générés</i></p>
+<p align="center"><i>Journal guidé · Score et courbe d'évolution · Repas calés sur la séance</i></p>
 
 ---
 
