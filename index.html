@@ -3265,6 +3265,12 @@
     return Math.min(base + 0.02, Math.max(base - 0.06, base - pct * 0.25));
   }
 
+  // Planchers de sécurité : une cible calorique ne doit jamais descendre sous le
+  // métabolisme de base, ni sous les repères bas admis chez l'adulte
+  // (1500 kcal homme / 1200 kcal femme). En dessous, on ne parle plus
+  // d'alimentation mais de restriction, et ça ne se pilote pas via une app.
+  const KCAL_FLOOR = { homme: 1500, femme: 1200, autre: 1300 };
+
   function computeCalorieTarget(profile, dayLog) {
     if (!profile) return null;
     const { weight_kg, height_cm, birth_year, sex, activity_level, objective } = profile;
@@ -3275,21 +3281,57 @@
     bmr += sex === 'homme' ? 5 : sex === 'femme' ? -161 : -78; // moyenne homme/femme retenue pour "autre"
 
     const tdee = bmr * (ACTIVITY_FACTORS[activity_level] || 1.55);
-    const load = dailyLoadModifier(dayLog);
-    // Garde-fou : la cible ne descend jamais sous le métabolisme de base.
-    const adjusted = Math.max(bmr, tdee * (1 + (OBJECTIVE_ADJUSTMENT[objective] || 0)) * (1 + load.pct));
 
-    // Protéines : calculées en g/kg de poids de corps selon l'objectif (et non plus
-    // un pourcentage fixe des kcal, qui ignorait le poids réel de la personne).
-    const proteinsG = Math.round((OBJECTIVE_PROTEIN_G_PER_KG[objective] || 1.6) * weight_kg);
+    // ---- Garde-fous avant tout déficit ---------------------------------
+    // IMC sous 18,5 = maigreur (repère OMS) : on n'applique aucun déficit,
+    // quel que soit l'objectif déclaré. Idem avant 18 ans : Mifflin-St Jeor
+    // est établie chez l'adulte, et un déficit sur un organisme en croissance
+    // n'a rien à faire dans une estimation automatique.
+    const bmi = weight_kg / Math.pow(height_cm / 100, 2);
+    const underweight = bmi < 18.5;
+    const minor = age < 18;
+    let objectiveAdjust = OBJECTIVE_ADJUSTMENT[objective] || 0;
+    let guard = null;
+    if ((underweight || minor) && objectiveAdjust < 0) {
+      objectiveAdjust = 0;
+      guard = underweight
+        ? "Ton IMC est sous le repère de maigreur (18,5) : aucun déficit calorique n'est appliqué. Parles-en à un médecin ou à un diététicien avant de viser une perte de poids."
+        : "Avant 18 ans, cette estimation n'applique aucun déficit : les besoins d'un organisme en croissance se règlent avec un professionnel de santé.";
+    } else if (minor) {
+      guard = "Estimation calculée avec une formule établie chez l'adulte : avant 18 ans, prends-la comme un ordre de grandeur et vois avec un professionnel de santé.";
+    }
+
+    const load = dailyLoadModifier(dayLog);
+    // Le plancher absolu est lui-même borné par la dépense estimée : sur un petit
+    // gabarit sédentaire, appliquer 1200 kcal "minimum" pouvait donner une cible
+    // AU-DESSUS de la dépense, transformant un objectif de perte en surplus.
+    const floor = Math.max(bmr, Math.min(KCAL_FLOOR[sex] || 1300, tdee));
+    const wanted = tdee * (1 + objectiveAdjust) * (1 + load.pct);
+    const adjusted = Math.max(floor, wanted);
+    if (!guard && objectiveAdjust < 0 && adjusted > wanted + 1) {
+      guard = "Ton déficit ne peut pas être appliqué sans passer sous les repères bas : la cible est calée sur ta dépense estimée. Pour aller plus loin, passe par un diététicien.";
+    }
+
+    // Protéines : g/kg de poids de corps selon l'objectif (et non un pourcentage
+    // fixe des kcal, qui ignorait le poids réel). Bornées à 35 % de l'apport :
+    // au-delà, la place manque pour les glucides et les lipides.
+    // Les g/kg de la littérature sportive se réfèrent à la masse maigre. Sur un IMC
+    // élevé, les appliquer au poids total gonfle artificiellement la cible
+    // protéique : on la calcule donc sur un poids de référence plafonné à IMC 25.
+    const refWeight = Math.min(weight_kg, 25 * Math.pow(height_cm / 100, 2));
+    const proteinsG = Math.round(Math.min(
+      (OBJECTIVE_PROTEIN_G_PER_KG[objective] || 1.6) * refWeight,
+      (adjusted * 0.35) / 4
+    ));
     const proteinsKcal = proteinsG * 4;
-    // Lipides : 30% des kcal totales (ANSES recommande une fourchette de 35 à 40%,
-    // on retient une valeur prudente côté bas de fourchette pour laisser de la place
-    // aux glucides sur les objectifs actifs).
-    const fatG = Math.round((adjusted * fatShareFor(load.pct, 0.30)) / 9);
+
+    // Lipides : l'ANSES situe le repère adulte entre 35 et 40 % de l'apport
+    // énergétique. On retient 33 % — légèrement sous le bas de fourchette pour
+    // laisser de la place aux glucides sur des objectifs sportifs — et cette
+    // part varie avec la charge du jour (voir fatShareFor).
+    const fatG = Math.round((adjusted * fatShareFor(load.pct, 0.33)) / 9);
     const fatKcal = fatG * 9;
-    // Glucides : le reste des kcal, jamais négatif même sur un profil très maigre
-    // avec un objectif protéiné élevé.
+    // Glucides : le reste des kcal, jamais négatif.
     const carbsKcal = Math.max(0, adjusted - proteinsKcal - fatKcal);
     const carbsG = Math.round(carbsKcal / 4);
 
@@ -3300,22 +3342,9 @@
       fat_g: fatG,
       load_pct: load.pct,
       load_label: load.label,
+      guard,
+      bmr: Math.round(bmr),
     };
-  }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str || '';
-    return div.innerHTML;
-  }
-
-  // Comme escapeHtml, mais échappe aussi les guillemets — nécessaire pour toute
-  // valeur non fiable insérée dans un ATTRIBUT HTML (ex. src="${...}"), car
-  // escapeHtml seul (basé sur textContent) ne protège que le contenu texte,
-  // pas les attributs : une valeur contenant un guillemet peut sinon "casser"
-  // l'attribut et injecter du code (ex. avatar_url malveillant → XSS stocké).
-  function escapeAttr(str) {
-    return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   // Enregistre un aliment consommé (scan ou saisie manuelle) dans le journal du jour.
@@ -3464,9 +3493,10 @@
         <span>G <b>${Math.round(totals.carbs_g)}</b>/${target.carbs_g}g</span>
         <span>L <b>${Math.round(totals.fat_g)}</b>/${target.fat_g}g</span>
       `;
-      targetHint.textContent = target.load_label
+      const baseHint = target.load_label
         ? `Cible ajustée à ta journée : ${target.load_label} (${target.load_pct > 0 ? '+' : ''}${Math.round(target.load_pct * 100)} %). Base Mifflin-St Jeor — repère, pas une prescription médicale.`
         : "Estimation basée sur ton profil (formule Mifflin-St Jeor) — à ajuster selon ton ressenti, pas une prescription médicale.";
+      targetHint.textContent = target.guard ? `${target.guard} ${baseHint}` : baseHint;
     } else {
       barFill.style.width = '0%';
       barFill.classList.remove('over');
@@ -4987,6 +5017,14 @@
       msg.className = 'msg';
       if (i === 0) {
         const hours = computeSleepHours(bedTimeInput.value, wakeTimeInput.value);
+        // 20 h de "sommeil" vient d'une inversion coucher/réveil, pas d'une nuit
+        // réelle : on refuse plutôt que d'enregistrer une donnée aberrante qui
+        // fausserait le score et les moyennes.
+        if (hours != null && (hours < 1 || hours > 14)) {
+          msg.textContent = "Durée de sommeil improbable — vérifie tes heures de coucher et de réveil.";
+          msg.classList.add('error');
+          return false;
+        }
         if (hours == null) {
           bedTimeInput.classList.add('field-error');
           wakeTimeInput.classList.add('field-error');
@@ -5363,47 +5401,25 @@
   // ---- Besoins nutritionnels : Mifflin-St Jeor + facteur d'activité -------
   // Repères publics (OMS / ANSES). Ce sont des estimations, pas une
   // prescription individuelle.
-  const ACTIVITY_FACTOR = {
-    sedentaire: 1.2, leger: 1.375, modere: 1.55, intense: 1.725, tres_intense: 1.9,
-  };
-
+  // Les besoins envoyés au générateur de repas sont EXACTEMENT ceux affichés
+  // dans le suivi calorique : même formule, mêmes facteurs, mêmes garde-fous.
+  // Avant, deux tables de facteurs coexistaient avec des clés différentes
+  // ("actif"/"tres_actif" ici, "intense"/"tres_intense" là) : un profil "actif"
+  // retombait sur le facteur par défaut et les repas visaient plusieurs
+  // centaines de kcal en dessous de la cible affichée.
   function computeNeeds(profile, dayLog) {
-    const w = Number(profile?.weight_kg) || null;
-    const h = Number(profile?.height_cm) || null;
-    const by = Number(profile?.birth_year) || null;
-    if (!w || !h || !by) return null;
-
-    const age = new Date().getFullYear() - by;
-    const sex = (profile.sex || '').toLowerCase();
-    const bmr = 10 * w + 6.25 * h - 5 * age + (sex.startsWith('h') || sex.startsWith('m') ? 5 : -161);
-    const factor = ACTIVITY_FACTOR[profile.activity_level] || 1.375;
-    let kcal = bmr * factor;
-
-    const obj = (profile.objective || '').toLowerCase();
-    let proteinPerKg = 1.4;
-    if (/perte|maigrir|seche|sèche|poids/.test(obj)) { kcal *= 0.82; proteinPerKg = 1.8; }
-    else if (/masse|prise|muscle|volume/.test(obj)) { kcal *= 1.12; proteinPerKg = 1.8; }
-    else if (/endurance|perf/.test(obj)) { proteinPerKg = 1.6; }
-
-    // Même modulation que la cible du tracker : les deux chiffres doivent
-    // toujours raconter la même journée.
-    const load = dailyLoadModifier(dayLog);
-    kcal = Math.max(bmr, kcal * (1 + load.pct));
-
-    kcal = Math.round(kcal / 10) * 10;
-    const proteins = Math.round(w * proteinPerKg);
-    const fat = Math.round((kcal * fatShareFor(load.pct, 0.28)) / 9);
-    const carbs = Math.round((kcal - proteins * 4 - fat * 9) / 4);
+    const target = computeCalorieTarget(profile, dayLog);
+    if (!target) return null;
 
     return {
-      kcal_jour: kcal,
-      proteines_g: proteins,
-      lipides_g: fat,
-      glucides_g: Math.max(carbs, 0),
+      kcal_jour: target.kcal,
+      proteines_g: target.proteins_g,
+      lipides_g: target.fat_g,
+      glucides_g: target.carbs_g,
       // Répartition indicative par repas
       repartition: { petit_dejeuner: 0.25, dejeuner: 0.4, diner: 0.35 },
-      contexte: load.label,
-      age,
+      contexte: target.load_label,
+      age: new Date().getFullYear() - Number(profile.birth_year),
     };
   }
 
