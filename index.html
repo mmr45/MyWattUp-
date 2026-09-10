@@ -3536,6 +3536,17 @@
     return true;
   }
 
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // Comme escapeHtml, mais échappe aussi les guillemets (valeurs dans un attribut HTML).
+  function escapeAttr(str) {
+    return escapeHtml(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
   // Enregistre un aliment consommé (scan ou saisie manuelle) dans le journal du jour.
   async function logFoodEntry({ mealSlot, label, quantityG, kcal, proteinsG, carbsG, fatG, source, scannedProductId }) {
     const { error } = await supabase.from('food_entries').insert({
