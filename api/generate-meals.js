@@ -206,21 +206,76 @@ Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, sans balises M
 }
 
 // ---------------------------------------------------------------- modèle
-async function callModel(provider, prompt) {
-  const r = await fetch(provider.url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...provider.headers(provider.key) },
-    body: JSON.stringify(provider.body(provider.model, prompt)),
-  });
+// Au-delà de ce délai, on n'attend pas : on renvoie le temps d'attente à l'utilisateur.
+const MAX_AUTO_WAIT_S = 10;
 
-  if (!r.ok) {
-    const body = await r.text();
-    throw new Error(`${provider.name} ${r.status} : ${body.slice(0, 300)}`);
+class RateLimitError extends Error {
+  constructor(waitS) {
+    super(`limite fournisseur atteinte, attendre ${waitS}s`);
+    this.waitS = waitS;
   }
+}
 
-  const text = provider.extract(await r.json());
-  if (!text) throw new Error(`${provider.name} : réponse vide`);
-  return text;
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// "5.289s", "1m3.5s", "520ms" -> secondes
+function parseDuration(str) {
+  let total = 0;
+  const re = /([\d.]+)(ms|h|m|s)/g;
+  let m;
+  while ((m = re.exec(str))) {
+    const v = Number(m[1]);
+    total += m[2] === 'ms' ? v / 1000 : m[2] === 'h' ? v * 3600 : m[2] === 'm' ? v * 60 : v;
+  }
+  return total;
+}
+
+// Délai imposé par le fournisseur : message « try again in 5.2s » (précis),
+// sinon en-tête retry-after, sinon 60 s par prudence.
+function readRetryAfter(r, body) {
+  const fromMsg = body.match(/try again in ([\dhms.]+)/i);
+  if (fromMsg) {
+    const s = parseDuration(fromMsg[1]);
+    if (s > 0) return s;
+  }
+  const fromHeader = Number(r.headers.get('retry-after'));
+  if (Number.isFinite(fromHeader) && fromHeader > 0) return fromHeader;
+  return 60;
+}
+
+// autoWait : si le fournisseur sature et que l'attente est courte, on attend
+// puis on relance une fois, sans que l'utilisateur voie d'erreur.
+async function callModel(provider, prompt, { autoWait = true } = {}) {
+  for (let attempt = 0; ; attempt++) {
+    const r = await fetch(provider.url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...provider.headers(provider.key) },
+      body: JSON.stringify(provider.body(provider.model, prompt)),
+    });
+
+    if (r.status === 429) {
+      const waitS = readRetryAfter(r, await r.text());
+      if (autoWait && attempt === 0 && waitS <= MAX_AUTO_WAIT_S) {
+        await sleep(Math.ceil((waitS + 0.5) * 1000));
+        continue;
+      }
+      throw new RateLimitError(waitS);
+    }
+
+    if (!r.ok) {
+      const body = await r.text();
+      throw new Error(`${provider.name} ${r.status} : ${body.slice(0, 300)}`);
+    }
+
+    const text = provider.extract(await r.json());
+    if (!text) throw new Error(`${provider.name} : réponse vide`);
+    return text;
+  }
+}
+
+function formatWait(waitS) {
+  const s = Math.max(1, Math.ceil(waitS));
+  return s < 60 ? `${s} s` : `${Math.ceil(s / 60)} min`;
 }
 
 function parseMeals(raw) {
@@ -299,7 +354,7 @@ export default async function handler(req, res) {
           profile, needs, planDate,
           seed: `${seed}-retry-${Date.now()}`,
           previousMeals: [...previousMeals, ...MEAL_KEYS.map(k => ({ name: meals[k].nom, ingredients: '' }))],
-        })));
+        }), { autoWait: false }));
       } catch (_) { /* on garde la 1re version */ }
     }
 
@@ -308,6 +363,11 @@ export default async function handler(req, res) {
     // Le détail reste dans les logs Vercel, jamais dans la réponse.
     console.error('generate-meals', step, err);
     await refundQuota(supabaseAdmin, usageId);
+    if (err instanceof RateLimitError) {
+      return res.status(503).json({
+        error: `Beaucoup de demandes en ce moment — réessaie dans ${formatWait(err.waitS)}.`,
+      });
+    }
     return res.status(500).json({ error: 'Erreur lors de la génération — réessaie dans un instant.' });
   }
 }
