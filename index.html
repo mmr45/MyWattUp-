@@ -661,12 +661,15 @@
   #view-app .friend-code-actions { display: flex; gap: 8px; flex-shrink: 0; }
   #view-app .friend-code-actions button { width: 38px; height: 38px; border-radius: 10px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); color: var(--blanc); display: flex; align-items: center; justify-content: center; cursor: pointer; }
   #view-app .friend-code-actions svg { width: 16px; height: 16px; }
-  #view-app .add-friend-row { display: flex; gap: 8px; }
+  #view-app .add-friend-row { display: flex; align-items: stretch; gap: 8px; }
   /* min-width:0 est indispensable : sans lui, Safari/iOS ignore flex-grow sur
      les <input> dans une rangée flex et l'input reste coincé à sa taille
      intrinsèque (carré minuscule) au lieu de remplir l'espace disponible. */
   #view-app .add-friend-row input { flex: 1; min-width: 0; }
-  #view-app .add-friend-row button { width: auto; padding: 0 18px; margin-top: 0; flex-shrink: 0; }
+  /* button[type="submit"] dans le sélecteur : sinon la règle générique
+     « #view-app button[type="submit"] { width:100% } », plus bas, l'écrase
+     (même spécificité, déclarée après) et le bouton déborde de l'écran. */
+  #view-app .add-friend-row button[type="submit"] { width: auto; padding: 0 20px; margin-top: 0; flex: 0 0 auto; }
   #view-app .friend-row, #view-app .request-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--fond); border-radius: 12px; margin-bottom: 8px; }
   #view-app .friend-avatar { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; background: var(--fond-card); object-fit: cover; }
   #view-app .friend-name { font-weight: 600; font-size: 13.5px; }
@@ -7093,23 +7096,25 @@
     const profiles = await fetchProfilesByIds(data.map(e => e.user_id));
     listEl.innerHTML = data.map(e => {
       const p = profiles[e.user_id];
-      const name = e.user_id === user.id ? 'Toi' : ((p && p.username) || 'Utilisateur');
+      const isMe = e.user_id === user.id;
+      const name = isMe ? 'Tu' : ((p && p.username) || 'Utilisateur');
+      const verb = isMe ? { a: 'as', son: 'ton' } : { a: 'a', son: 'son' };
       let text = '';
       let iconSvg = BADGE_ICON_SVG;
       let iconClass = '';
       if (e.event_type === 'badge_unlocked') {
-        text = `<b>${escapeHtml(name)}</b> a débloqué le badge « ${escapeHtml(e.payload.badge_label || '')} »`;
+        text = `<b>${escapeHtml(name)}</b> ${verb.a} débloqué le badge « ${escapeHtml(e.payload.badge_label || '')} »`;
       } else if (e.event_type === 'shared_recap') {
         // payload est un jsonb librement écrit par l'auteur de l'événement :
         // il doit être échappé au même titre que le pseudo, sinon un ami
         // peut injecter du HTML dans le fil de tous ses contacts.
         const rawScore = e.payload && e.payload.score;
         const score = Number.isFinite(Number(rawScore)) ? String(Math.round(Number(rawScore))) : '--';
-        text = `<b>${escapeHtml(name)}</b> a partagé son score du jour : <b>${escapeHtml(score)}/100</b>`;
+        text = `<b>${escapeHtml(name)}</b> ${verb.a} partagé ${verb.son} score du jour : <b>${escapeHtml(score)}/100</b>`;
         iconSvg = SHARE_ICON_SVG;
         iconClass = 'shared';
       } else {
-        text = `<b>${escapeHtml(name)}</b> a une nouvelle activité`;
+        text = `<b>${escapeHtml(name)}</b> ${verb.a} une nouvelle activité`;
       }
       return `
         <div class="feed-item">
