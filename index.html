@@ -1024,18 +1024,46 @@
   #view-app .app-cta:active { transform: scale(0.98); }
   #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   #view-app .app-cta.secondary svg { width: 15px; height: 15px; flex-shrink: 0; }
-  #view-app .grocery-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px 18px; margin-top: 12px; }
-  #view-app .grocery-card[hidden] { display: none; }
-  #view-app .grocery-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  #view-app .grocery-title { font-weight: 700; color: var(--blanc); }
-  #view-app .grocery-copy { background: none; border: 1px solid rgba(255,255,255,0.15); color: var(--blanc); border-radius: 10px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
-  #view-app .grocery-ul { list-style: none; margin: 0; padding: 0; }
-  #view-app .grocery-ul li { border-top: 1px solid rgba(255,255,255,0.06); }
-  #view-app .grocery-ul label { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; }
-  #view-app .grocery-ul input { width: 18px; height: 18px; accent-color: var(--ambre); flex-shrink: 0; }
-  #view-app .grocery-name { flex: 1; color: var(--blanc); }
-  #view-app .grocery-qty { opacity: 0.6; font-size: 14px; }
-  #view-app .grocery-ul input:checked ~ span { text-decoration: line-through; opacity: 0.4; }
+  /* ---- Liste de courses (feuille) ---- */
+  #view-app .grocery-sheet { position: fixed; inset: auto 0 0 0; margin: 0 auto; width: 100%; max-width: 560px; max-height: 88dvh; padding: 0; border: none; border-radius: 22px 22px 0 0; background: var(--fond-card); color: var(--blanc); box-shadow: 0 -20px 50px -20px rgba(0,0,0,0.7); transform: translateY(100%); transition: transform 0.26s cubic-bezier(.2,.8,.2,1); overflow: hidden; }
+  #view-app .grocery-sheet[open] { display: flex; }
+  #view-app .grocery-sheet.is-open { transform: translateY(0); }
+  #view-app .grocery-sheet::backdrop { background: rgba(5,7,9,0.62); }
+  #view-app .gs-inner { outline: none; display: flex; flex-direction: column; width: 100%; min-height: 0; }
+  #view-app .gs-grip { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.14); margin: 10px auto 0; flex-shrink: 0; }
+  #view-app .gs-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 20px 0; flex-shrink: 0; }
+  #view-app .gs-title { font-family: var(--display); font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin: 0; line-height: 1.15; }
+  #view-app .gs-sub { font-size: 13px; color: var(--gris); margin: 4px 0 0; }
+  #view-app .gs-icon { width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.06); color: var(--blanc); display: grid; place-items: center; cursor: pointer; flex-shrink: 0; }
+  #view-app .gs-icon svg { width: 18px; height: 18px; }
+  #view-app .gs-progress { display: flex; align-items: center; gap: 12px; padding: 16px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+  #view-app .gs-track { flex: 1; height: 6px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; }
+  #view-app .gs-fill { height: 100%; width: 0; border-radius: 6px; background: var(--vert); transition: width 0.3s ease; }
+  #view-app .gs-count { font-size: 12px; color: var(--gris); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #view-app .grocery-sheet.is-done .gs-count { color: var(--vert); font-weight: 600; }
+  #view-app .gs-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 20px 8px; -webkit-overflow-scrolling: touch; }
+  #view-app .gs-group { padding-top: 18px; }
+  #view-app .gs-group-title { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--blanc); margin: 0 0 4px; }
+  #view-app .gs-group-count { font-family: var(--body); font-size: 11px; font-weight: 600; color: var(--gris); background: rgba(255,255,255,0.06); border-radius: 20px; padding: 2px 8px; min-width: 22px; text-align: center; }
+  #view-app .gs-list { list-style: none; margin: 0; padding: 0; }
+  #view-app .gs-item { position: relative; display: flex; align-items: center; gap: 14px; min-height: 52px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  #view-app .gs-list li:last-child .gs-item { border-bottom: none; }
+  #view-app .gs-item input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  #view-app .gs-box { width: 24px; height: 24px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.22); display: grid; place-items: center; flex-shrink: 0; transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease; }
+  #view-app .gs-box svg { width: 14px; height: 14px; fill: none; stroke: #0E1410; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset 0.2s ease 0.05s; }
+  #view-app .gs-item input:checked + .gs-box { background: var(--vert); border-color: var(--vert); transform: scale(1.08); }
+  #view-app .gs-item input:checked + .gs-box svg { stroke-dashoffset: 0; }
+  #view-app .gs-item input:focus-visible + .gs-box { outline: 2px solid var(--vert); outline-offset: 3px; }
+  #view-app .gs-name { flex: 1; font-size: 15px; line-height: 1.3; color: var(--blanc); transition: color 0.15s ease; }
+  #view-app .gs-qty { font-size: 14px; font-weight: 600; color: var(--blanc); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  #view-app .gs-item input:checked ~ .gs-name { color: var(--gris); text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.3); }
+  #view-app .gs-item input:checked ~ .gs-qty { color: var(--gris); font-weight: 400; }
+  #view-app .gs-foot { display: flex; align-items: center; gap: 12px; padding: 12px 20px calc(14px + env(safe-area-inset-bottom)); border-top: 1px solid rgba(255,255,255,0.06); flex-shrink: 0; }
+  #view-app .gs-reset { background: none; border: none; color: var(--gris); font: inherit; font-size: 13px; cursor: pointer; padding: 8px 0; }
+  #view-app .gs-reset[hidden] { display: none; }
+  #view-app .gs-share { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: none; border-radius: 12px; background: var(--vert); color: #0E1410; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+  #view-app .gs-share svg { width: 16px; height: 16px; }
+  @media (prefers-reduced-motion: reduce) { #view-app .grocery-sheet, #view-app .gs-box, #view-app .gs-box svg, #view-app .gs-fill { transition: none; } }
   #view-app .app-cta.secondary:hover { filter: none; border-color: var(--ambre); color: var(--ambre-bright, var(--ambre)); }
   #view-app .app-cta.danger { background: rgba(255,107,107,0.12); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
   #view-app .settings-link { display: block; font-size: 13px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
@@ -2069,7 +2097,27 @@
       <div id="mealsList"></div>
       <button class="app-cta" id="generateBtn">Générer mes repas du jour</button>
       <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
-      <div class="grocery-card" id="groceryList" hidden></div>
+      <dialog class="grocery-sheet" id="grocerySheet" aria-labelledby="gsTitle">
+        <div class="gs-inner" tabindex="-1" autofocus>
+          <div class="gs-grip" aria-hidden="true"></div>
+          <header class="gs-head">
+            <div>
+              <h2 class="gs-title" id="gsTitle">Liste de courses</h2>
+              <p class="gs-sub" id="gsSub"></p>
+            </div>
+            <button type="button" class="gs-icon" id="gsClose" aria-label="Fermer la liste"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </header>
+          <div class="gs-progress">
+            <div class="gs-track"><div class="gs-fill" id="gsFill"></div></div>
+            <span class="gs-count" id="gsCount" aria-live="polite"></span>
+          </div>
+          <div class="gs-body" id="gsBody"></div>
+          <footer class="gs-foot">
+            <button type="button" class="gs-reset" id="gsReset" hidden>Tout décocher</button>
+            <button type="button" class="gs-share" id="gsShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span>Partager la liste</span></button>
+          </footer>
+        </div>
+      </dialog>
     </section>
 
     <!-- ---------- SCANNER ---------- -->
@@ -5837,8 +5885,9 @@
         }
       });
 
-      // ---- Liste de courses (agrège les ingrédients des repas du jour affiché) ----
+      // ---- Liste de courses : feuille plein écran, rangée par rayon ----
       const UNIT_NORM = { g: ['g', 1], kg: ['g', 1000], mg: ['g', 0.001], ml: ['ml', 1], cl: ['ml', 10], l: ['ml', 1000] };
+      const normTxt = s => String(s).toLowerCase().replace(/œ/g, 'oe').replace(/’/g, "'").normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
       function splitIngredients(str) {
         const s = String(str || ''); const out = []; let cur = ''; let depth = 0;
@@ -5863,6 +5912,29 @@
         return { qty, unit, name: m[3].trim() };
       }
 
+      // Retire les mots de préparation : on achète « Patate douce », pas « Patate douce rôtie ».
+      const PREP_WORDS = new Set(['cuit', 'cuite', 'cuits', 'cuites', 'cru', 'crue', 'crus', 'crues', 'roti', 'rotie', 'rotis', 'roties',
+        'grille', 'grillee', 'grilles', 'grillees', 'vapeur', 'frais', 'fraiche', 'fraiches', 'poele', 'poelee', 'poeles', 'poelees', 'tiede']);
+      function cleanName(name) {
+        const words = name.replace(/\s*\([^)]*\)/g, '').replace(/\bau four\b/gi, '').split(/\s+/).filter(Boolean);
+        const kept = words.filter((w, i) => i === 0 || !PREP_WORDS.has(normTxt(w)));
+        const out = (kept.join(' ') || name).trim();
+        return out.charAt(0).toUpperCase() + out.slice(1);
+      }
+
+      const AISLES = [
+        ['epicerie', /\b(beurre de cacahuete|beurre d'amande|puree d'amande|lait de coco|creme de coco|fruits? secs|raisins? secs|abricots? secs|dattes?)/],
+        ['viande', /\b(poulet|dinde|boeuf|veau|porc|jambon|steak|viande|agneau|canard|lardons?|bacon|chorizo|saumon|cabillaud|thon|colin|merlu|sardines?|maquereau|crevettes?|poisson|truite|lieu|dorade)/],
+        ['fruits', /\b(salade|laitue|kale|chou|epinards?|tomates?|concombres?|courgettes?|carottes?|poivrons?|oignons?|echalotes?|ail\b|brocolis?|haricots? verts?|petits? pois|avocats?|bananes?|pommes?|poires?|fruits?|myrtilles?|fraises?|framboises?|citrons?|oranges?|kiwis?|mangues?|ananas|raisins?|patates?|champignons?|poireaux?|asperges?|betteraves?|radis|roquette|mache|persil|basilic|coriandre|menthe|ciboulette|gingembre|legumes?|aubergines?|courges?|potiron|butternut|celeri|fenouil|peches?|clementines?|pamplemousse|grenade|cerises?)/],
+        ['legumineuses', /\b(tofu|tempeh|seitan|lentilles?|pois chiches?|haricots?|edamame|feves?|houmous|hummus)/],
+        ['cremerie', /\b(lait|yaourts?|yogourt|fromage|feta|mozzarella|parmesan|emmental|comte|chevre|ricotta|skyr|creme|beurre|oeufs?|cottage|mascarpone|gruyere|burrata|kefir)/],
+        ['feculents', /\b(riz|quinoa|pates|spaghetti|penne|tagliatelles?|semoule|boulgour|pain|avoine|flocons|farine|tortillas?|wraps?|galettes?|muesli|granola|cereales|sarrasin|millet|orge|polenta|couscous|nouilles|gnocchis?|biscottes?)/],
+        ['epicerie', /\b(huile|vinaigre|amandes?|noix|noisettes?|cajou|pistaches?|graines?|chia|lin\b|sesame|miel|sirop|sauce|moutarde|epices?|sel\b|poivre\b|cumin|curry|paprika|cannelle|chocolat|cacao|confiture|tahini|bouillon|sucre|levure|olives?|cornichons?|conserve|whey|proteine)/],
+      ];
+      const AISLE_ORDER = ['fruits', 'viande', 'cremerie', 'feculents', 'legumineuses', 'epicerie', 'divers'];
+      const AISLE_LABELS = { fruits: 'Fruits et légumes', viande: 'Viandes et poissons', cremerie: 'Crèmerie et œufs', feculents: 'Féculents et céréales', legumineuses: 'Tofu et légumineuses', epicerie: 'Épicerie', divers: 'Divers' };
+      const aisleOf = name => { const n = normTxt(name); for (const [id, re] of AISLES) if (re.test(n)) return id; return 'divers'; };
+
       function fmtQty(qty, unit) {
         if (qty == null) return '';
         const fr = n => String(n).replace('.', ',');
@@ -5875,46 +5947,127 @@
         const map = new Map();
         meals.forEach(meal => splitIngredients(meal.ingredients).forEach(raw => {
           const it = parseIngredient(raw);
-          const name = it.name.charAt(0).toUpperCase() + it.name.slice(1);
-          const key = name.toLowerCase() + '|' + it.unit;
+          const name = cleanName(it.name);
+          const key = normTxt(name) + '|' + it.unit;
           const prev = map.get(key);
           if (prev) { if (prev.qty != null && it.qty != null) prev.qty += it.qty; }
-          else map.set(key, { name, qty: it.qty, unit: it.unit });
+          else map.set(key, { key, name, qty: it.qty, unit: it.unit, aisle: aisleOf(name) });
         }));
-        return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+        return [...map.values()].sort((a, b) =>
+          AISLE_ORDER.indexOf(a.aisle) - AISLE_ORDER.indexOf(b.aisle) || a.name.localeCompare(b.name, 'fr'));
+      }
+
+      // Cases cochées gardées par jour, pour ne rien perdre si l'app se ferme en magasin.
+      const groceryStoreKey = d => `mwu:courses:${d}`;
+      const loadChecked = d => { try { return new Set(JSON.parse(localStorage.getItem(groceryStoreKey(d)) || '[]')); } catch (_) { return new Set(); } };
+      const saveChecked = (d, set) => { try { localStorage.setItem(groceryStoreKey(d), JSON.stringify([...set])); } catch (_) {} };
+
+      const sheet = document.getElementById('grocerySheet');
+      const gs = { items: [], checked: new Set(), date: '' };
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      function updateGroceryProgress() {
+        const total = gs.items.length;
+        const done = gs.items.filter(i => gs.checked.has(i.key)).length;
+        document.getElementById('gsFill').style.width = total ? `${(done / total) * 100}%` : '0%';
+        document.getElementById('gsCount').textContent = done === total && total ? 'Tout est dans le panier' : `${done} sur ${total} dans le panier`;
+        sheet.classList.toggle('is-done', done === total && total > 0);
+        document.getElementById('gsReset').hidden = done === 0;
+        sheet.querySelectorAll('.gs-group').forEach(g => {
+          const boxes = g.querySelectorAll('input');
+          const left = [...boxes].filter(b => !b.checked).length;
+          g.querySelector('.gs-group-count').textContent = left ? left : '✓';
+        });
+      }
+
+      function renderGrocerySheet() {
+        const body = document.getElementById('gsBody');
+        const groups = AISLE_ORDER.map(id => [id, gs.items.filter(i => i.aisle === id)]).filter(([, list]) => list.length);
+        body.innerHTML = groups.map(([id, list]) => `
+          <section class="gs-group">
+            <h3 class="gs-group-title">${AISLE_LABELS[id]}<span class="gs-group-count"></span></h3>
+            <ul class="gs-list">
+              ${list.map(i => `
+                <li><label class="gs-item">
+                  <input type="checkbox" data-key="${escapeAttr(i.key)}" ${gs.checked.has(i.key) ? 'checked' : ''}>
+                  <span class="gs-box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+                  <span class="gs-name">${escapeHtml(i.name)}</span>
+                  <span class="gs-qty">${escapeHtml(fmtQty(i.qty, i.unit))}</span>
+                </label></li>`).join('')}
+            </ul>
+          </section>`).join('');
+        const d = new Date(gs.date + 'T12:00:00');
+        document.getElementById('gsSub').textContent = gs.date === localDateStr()
+          ? 'Pour tes repas d\'aujourd\'hui'
+          : 'Pour tes repas du ' + d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+        updateGroceryProgress();
+      }
+
+      function openGrocerySheet() {
+        sheet.showModal();
+        document.documentElement.style.overflow = 'hidden';
+        document.getElementById('gsBody').scrollTop = 0;
+        requestAnimationFrame(() => sheet.classList.add('is-open'));
+      }
+
+      function closeGrocerySheet() {
+        const finish = () => { sheet.close(); document.documentElement.style.overflow = ''; };
+        sheet.classList.remove('is-open');
+        if (reduceMotion.matches) finish(); else setTimeout(finish, 260);
       }
 
       document.getElementById('groceryBtn').addEventListener('click', () => {
-        const host = document.getElementById('groceryList');
-        if (!host.hidden) { host.hidden = true; return; }
-
         const entry = mealsCache.get(selectedDateStr);
         if (!entry || entry.type !== 'data' || !entry.meals?.length) {
           showToast('Génère d\'abord tes repas du jour pour obtenir la liste de courses.', 'info');
           return;
         }
-
-        const items = buildGroceryList(entry.meals);
-        const lines = items.map(i => `${fmtQty(i.qty, i.unit)} ${i.name}`.trim());
-        host.innerHTML = `
-          <div class="grocery-head">
-            <span class="grocery-title">Liste de courses · ${items.length} articles</span>
-            <button type="button" class="grocery-copy">Copier</button>
-          </div>
-          <ul class="grocery-ul">
-            ${items.map(i => `
-              <li><label><input type="checkbox">
-                <span class="grocery-name">${escapeHtml(i.name)}</span>
-                <span class="grocery-qty">${escapeHtml(fmtQty(i.qty, i.unit))}</span>
-              </label></li>`).join('')}
-          </ul>`;
-        host.querySelector('.grocery-copy').addEventListener('click', async () => {
-          try { await navigator.clipboard.writeText(lines.join('\n')); showToast('Liste copiée !', 'success'); }
-          catch { showToast('Copie impossible sur cet appareil.', 'error'); }
-        });
-        host.hidden = false;
-        host.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        gs.date = selectedDateStr;
+        gs.items = buildGroceryList(entry.meals);
+        gs.checked = loadChecked(gs.date);
+        renderGrocerySheet();
+        openGrocerySheet();
       });
+
+      document.getElementById('gsBody').addEventListener('change', (e) => {
+        const box = e.target.closest('input[type="checkbox"]');
+        if (!box) return;
+        if (box.checked) gs.checked.add(box.dataset.key); else gs.checked.delete(box.dataset.key);
+        saveChecked(gs.date, gs.checked);
+        if (box.checked && navigator.vibrate) navigator.vibrate(8);
+        updateGroceryProgress();
+      });
+
+      document.getElementById('gsReset').addEventListener('click', () => {
+        gs.checked.clear();
+        saveChecked(gs.date, gs.checked);
+        sheet.querySelectorAll('#gsBody input').forEach(b => { b.checked = false; });
+        updateGroceryProgress();
+      });
+
+      document.getElementById('gsShare').addEventListener('click', async () => {
+        const label = document.querySelector('#gsShare span');
+        const text = AISLE_ORDER
+          .map(id => [id, gs.items.filter(i => i.aisle === id && !gs.checked.has(i.key))])
+          .filter(([, list]) => list.length)
+          .map(([id, list]) => `${AISLE_LABELS[id]}\n${list.map(i => `- ${i.name}${i.qty != null ? ' (' + fmtQty(i.qty, i.unit) + ')' : ''}`).join('\n')}`)
+          .join('\n\n');
+        if (!text) { label.textContent = 'Rien à acheter'; setTimeout(() => { label.textContent = 'Partager la liste'; }, 1800); return; }
+        const full = `Courses du ${new Date(gs.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}\n\n${text}`;
+        try {
+          if (navigator.share) { await navigator.share({ title: 'Liste de courses', text: full }); return; }
+          await navigator.clipboard.writeText(full);
+          label.textContent = 'Liste copiée';
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          label.textContent = 'Copie impossible';
+        }
+        setTimeout(() => { label.textContent = 'Partager la liste'; }, 1800);
+      });
+
+      document.getElementById('gsClose').addEventListener('click', closeGrocerySheet);
+      sheet.addEventListener('cancel', (e) => { e.preventDefault(); closeGrocerySheet(); });
+      sheet.addEventListener('click', (e) => { if (e.target === sheet) closeGrocerySheet(); });
     }
 
     renderCalendar();
@@ -6060,7 +6213,6 @@
   function renderMealsFromCache() {
     const mealsList = document.getElementById('mealsList');
     if (!mealsList) return;
-    const gl = document.getElementById('groceryList'); if (gl) gl.hidden = true;
     const entry = mealsCache.get(selectedDateStr);
     const isToday = selectedDateStr === localDateStr();
 
