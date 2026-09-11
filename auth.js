@@ -116,9 +116,11 @@ export async function ensureProfile(user) {
 // (utile pour rediriger vers onboarding ou dashboard)
 // ============================================
 export async function hasProfile(userId) {
+  // Profil "complet" = onboarding terminé (consentement donné). Une ligne
+  // créée par ensureProfile sans onboarding ne compte pas.
   const { data, error } = await supabase
     .from('profiles')
-    .select('id')
+    .select('consent_given')
     .eq('user_id', userId)
     .maybeSingle();
 
@@ -127,7 +129,7 @@ export async function hasProfile(userId) {
     return false;
   }
 
-  return !!data;
+  return data?.consent_given === true;
 }
 
 // ============================================

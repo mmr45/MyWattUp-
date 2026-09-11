@@ -18,14 +18,14 @@ export async function createProfile({ sportType, objective, allergies, consentGi
 
   const { data, error } = await supabase
     .from('profiles')
-    .insert({
+    .upsert({
       user_id: user.id,
       sport_type: sportType,     // 'force' | 'endurance' | 'general'
       objective: objective,      // 'perte_de_poids' | 'prise_de_masse' | 'performance' | 'maintien' | 'recuperation'
       allergies: allergies || null,
       consent_given: true,
       consent_date: new Date().toISOString(),
-    })
+    }, { onConflict: 'user_id' }) // la ligne existe déjà (créée par ensureProfile)
     .select()
     .single();
 
