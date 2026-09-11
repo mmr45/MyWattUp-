@@ -1032,10 +1032,10 @@
   #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   #view-app .app-cta.secondary svg { width: 15px; height: 15px; flex-shrink: 0; }
   /* ---- Liste de courses (feuille) ---- */
-  #view-app .grocery-sheet { position: fixed; inset: auto 0 0 0; margin: 0 auto; width: 100%; max-width: 560px; max-height: 88dvh; padding: 0; border: none; border-radius: 22px 22px 0 0; background: var(--fond-card); color: var(--blanc); box-shadow: 0 -20px 50px -20px rgba(0,0,0,0.7); transform: translateY(100%); transition: transform 0.26s cubic-bezier(.2,.8,.2,1); overflow: hidden; }
-  #view-app .grocery-sheet[open] { display: flex; }
-  #view-app .grocery-sheet.is-open { transform: translateY(0); }
-  #view-app .grocery-sheet::backdrop { background: rgba(5,7,9,0.62); }
+  #view-app .app-sheet { position: fixed; inset: auto 0 0 0; margin: 0 auto; width: 100%; max-width: 560px; max-height: 88dvh; padding: 0; border: none; border-radius: 22px 22px 0 0; background: var(--fond-card); color: var(--blanc); box-shadow: 0 -20px 50px -20px rgba(0,0,0,0.7); transform: translateY(100%); transition: transform 0.26s cubic-bezier(.2,.8,.2,1); overflow: hidden; }
+  #view-app .app-sheet[open] { display: flex; }
+  #view-app .app-sheet.is-open { transform: translateY(0); }
+  #view-app .app-sheet::backdrop { background: rgba(5,7,9,0.62); }
   #view-app .gs-inner { outline: none; display: flex; flex-direction: column; width: 100%; min-height: 0; }
   #view-app .gs-grip { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.14); margin: 10px auto 0; flex-shrink: 0; }
   #view-app .gs-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 20px 0; flex-shrink: 0; }
@@ -1070,7 +1070,46 @@
   #view-app .gs-reset[hidden] { display: none; }
   #view-app .gs-share { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: none; border-radius: 12px; background: var(--vert); color: #0E1410; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
   #view-app .gs-share svg { width: 16px; height: 16px; }
-  @media (prefers-reduced-motion: reduce) { #view-app .grocery-sheet, #view-app .gs-box, #view-app .gs-box svg, #view-app .gs-fill { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { #view-app .app-sheet, #view-app .gs-box, #view-app .gs-box svg, #view-app .gs-fill { transition: none; } }
+  /* ---- Recette ---- */
+  #view-app .meal-card.has-recipe { cursor: pointer; }
+  #view-app .meal-recipe-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(212,255,63,0.25); background: rgba(212,255,63,0.06); color: var(--vert); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  #view-app .meal-recipe-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  #view-app .meal-card.has-recipe:hover .meal-recipe-btn { background: rgba(212,255,63,0.12); }
+  #view-app .recipe-sheet { max-height: 94dvh; }
+  #view-app .rc-type { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--ambre); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  #view-app .rc-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 16px 20px 0; border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.06); flex-shrink: 0; }
+  #view-app .rc-fact { display: flex; flex-direction: column; gap: 2px; padding: 10px 8px; background: var(--fond); text-align: center; }
+  #view-app .rc-fact-value { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--blanc); font-variant-numeric: tabular-nums; }
+  #view-app .rc-fact-label { font-size: 11px; color: var(--gris); }
+  #view-app .rc-body { padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+  #view-app .rc-section { padding-top: 20px; }
+  #view-app .rc-h3 { font-family: var(--display); font-size: 17px; font-weight: 700; margin: 0 0 10px; color: var(--blanc); }
+  #view-app .rc-ingredients { list-style: none; margin: 0; padding: 0; }
+  #view-app .rc-ingredients li { display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; line-height: 1.35; }
+  #view-app .rc-ingredients li:last-child { border-bottom: none; }
+  #view-app .rc-qty { flex: 0 0 76px; font-weight: 600; color: var(--vert); font-variant-numeric: tabular-nums; }
+  #view-app .rc-tools { margin: 14px 0 0; font-size: 13px; color: var(--gris); line-height: 1.5; }
+  #view-app .rc-tools span { color: var(--blanc); font-weight: 600; margin-right: 4px; }
+  #view-app .rc-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  #view-app .rc-step { display: flex; align-items: flex-start; gap: 14px; width: 100%; padding: 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.06); background: var(--fond); color: var(--blanc); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity 0.15s ease, border-color 0.15s ease; }
+  #view-app .rc-step-num { flex: 0 0 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--vert); color: #0E1410; font-family: var(--display); font-size: 14px; font-weight: 700; transition: background 0.15s ease, color 0.15s ease; }
+  #view-app .rc-step-text { font-size: 15px; line-height: 1.5; padding-top: 3px; }
+  #view-app .rc-step[aria-pressed="true"] { opacity: 0.45; }
+  #view-app .rc-step[aria-pressed="true"] .rc-step-num { background: rgba(255,255,255,0.12); color: var(--blanc); }
+  #view-app .rc-step[aria-pressed="true"] .rc-step-text { text-decoration: line-through; text-decoration-color: rgba(255,255,255,0.35); }
+  #view-app .rc-step:focus-visible { outline: 2px solid var(--vert); outline-offset: 2px; }
+  #view-app .rc-hint { font-size: 12px; color: var(--gris); margin: 10px 0 0; }
+  #view-app .rc-tip { margin: 20px 0 0; padding: 14px; border-radius: 14px; background: rgba(212,255,63,0.07); font-size: 14px; line-height: 1.5; color: var(--blanc); }
+  #view-app .rc-tip strong { display: block; color: var(--vert); margin-bottom: 2px; }
+  #view-app .rc-loading-text { font-size: 13px; color: var(--gris); margin: 0 0 12px; }
+  #view-app .rc-skel { height: 52px; border-radius: 14px; margin-bottom: 8px; background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.09), rgba(255,255,255,0.04)); background-size: 200% 100%; animation: rcShimmer 1.2s linear infinite; }
+  #view-app .rc-skel.short { width: 60%; }
+  @keyframes rcShimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  #view-app .rc-error { font-size: 14px; color: var(--ambre); margin: 0 0 12px; }
+  #view-app .rc-retry { padding: 12px 18px; border: none; border-radius: 12px; background: var(--vert); color: #0E1410; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+  @media (max-width: 360px) { #view-app .rc-facts { grid-template-columns: repeat(2, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { #view-app .rc-skel { animation: none; } #view-app .rc-step, #view-app .rc-step-num { transition: none; } }
   #view-app .app-cta.secondary:hover { filter: none; border-color: var(--ambre); color: var(--ambre-bright, var(--ambre)); }
   #view-app .app-cta.danger { background: rgba(255,107,107,0.12); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
   #view-app .settings-link { display: block; font-size: 13px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
@@ -2104,7 +2143,7 @@
       <div id="mealsList"></div>
       <button class="app-cta" id="generateBtn">Générer mes repas du jour</button>
       <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
-      <dialog class="grocery-sheet" id="grocerySheet" aria-labelledby="gsTitle">
+      <dialog class="app-sheet grocery-sheet" id="grocerySheet" aria-labelledby="gsTitle">
         <div class="gs-inner" tabindex="-1" autofocus>
           <div class="gs-grip" aria-hidden="true"></div>
           <header class="gs-head">
@@ -2123,6 +2162,20 @@
             <button type="button" class="gs-reset" id="gsReset" hidden>Tout décocher</button>
             <button type="button" class="gs-share" id="gsShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg><span>Partager la liste</span></button>
           </footer>
+        </div>
+      </dialog>
+      <dialog class="app-sheet recipe-sheet" id="recipeSheet" aria-labelledby="rcTitle">
+        <div class="gs-inner" tabindex="-1" autofocus>
+          <div class="gs-grip" aria-hidden="true"></div>
+          <header class="gs-head">
+            <div>
+              <div class="rc-type" id="rcType"></div>
+              <h2 class="gs-title" id="rcTitle"></h2>
+            </div>
+            <button type="button" class="gs-icon" id="rcClose" aria-label="Fermer la recette"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          </header>
+          <div class="rc-facts" id="rcFacts"></div>
+          <div class="gs-body rc-body" id="rcBody"></div>
         </div>
       </dialog>
     </section>
@@ -5843,10 +5896,11 @@
             };
           });
 
-          const { error: mealsErr } = await supabase.from('meals').insert(rows);
+          // .select() renvoie les lignes avec leur id : indispensable pour ouvrir la recette.
+          const { data: insertedMeals, error: mealsErr } = await supabase.from('meals').insert(rows).select();
           if (mealsErr) console.error(mealsErr);
 
-          mealsCache.set(today, { type: 'data', meals: rows });
+          mealsCache.set(today, { type: 'data', meals: insertedMeals && insertedMeals.length ? insertedMeals : rows });
           selectedDateStr = today;
           // Le mois courant a un plan de plus : on vide son cache pour que la
           // pastille verte apparaisse sur la case du jour.
@@ -5866,32 +5920,6 @@
       });
 
       // ---- Liste de courses : feuille plein écran, rangée par rayon ----
-      const UNIT_NORM = { g: ['g', 1], kg: ['g', 1000], mg: ['g', 0.001], ml: ['ml', 1], cl: ['ml', 10], l: ['ml', 1000] };
-      const normTxt = s => String(s).toLowerCase().replace(/œ/g, 'oe').replace(/’/g, "'").normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-      function splitIngredients(str) {
-        const s = String(str || ''); const out = []; let cur = ''; let depth = 0;
-        for (let i = 0; i < s.length; i++) {
-          const ch = s[i];
-          if (ch === '(') depth++;
-          if (ch === ')') depth = Math.max(0, depth - 1);
-          const decimal = ch === ',' && /\d/.test(s[i - 1] || '') && /\d/.test(s[i + 1] || '');
-          if ((ch === ',' || ch === ';') && depth === 0 && !decimal) { if (cur.trim()) out.push(cur.trim()); cur = ''; }
-          else cur += ch;
-        }
-        if (cur.trim()) out.push(cur.trim());
-        return out;
-      }
-
-      function parseIngredient(raw) {
-        const m = raw.match(/^(\d+(?:[.,]\d+)?)\s*(kg|mg|g|ml|cl|l)?\.?\s+(?:de\s+|d['’]\s*)?(.+)$/i);
-        if (!m) return { qty: null, unit: '', name: raw };
-        let qty = parseFloat(m[1].replace(',', '.'));
-        let unit = '';
-        if (m[2]) { const [u, f] = UNIT_NORM[m[2].toLowerCase()]; unit = u; qty *= f; }
-        return { qty, unit, name: m[3].trim() };
-      }
-
       // Retire les mots de préparation : on achète « Patate douce », pas « Patate douce rôtie ».
       const PREP_WORDS = new Set(['cuit', 'cuite', 'cuits', 'cuites', 'cru', 'crue', 'crus', 'crues', 'roti', 'rotie', 'rotis', 'roties',
         'grille', 'grillee', 'grilles', 'grillees', 'vapeur', 'frais', 'fraiche', 'fraiches', 'poele', 'poelee', 'poeles', 'poelees', 'tiede']);
@@ -5914,14 +5942,6 @@
       const AISLE_ORDER = ['fruits', 'viande', 'cremerie', 'feculents', 'legumineuses', 'epicerie', 'divers'];
       const AISLE_LABELS = { fruits: 'Fruits et légumes', viande: 'Viandes et poissons', cremerie: 'Crèmerie et œufs', feculents: 'Féculents et céréales', legumineuses: 'Tofu et légumineuses', epicerie: 'Épicerie', divers: 'Divers' };
       const aisleOf = name => { const n = normTxt(name); for (const [id, re] of AISLES) if (re.test(n)) return id; return 'divers'; };
-
-      function fmtQty(qty, unit) {
-        if (qty == null) return '';
-        const fr = n => String(n).replace('.', ',');
-        if (unit === 'g' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} kg`;
-        if (unit === 'ml' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} L`;
-        return `${fr(Math.round(qty * 10) / 10)}${unit ? ' ' + unit : ''}`;
-      }
 
       function buildGroceryList(meals) {
         const map = new Map();
@@ -6184,6 +6204,208 @@
     </div>`;
   }
 
+  // ---- Ingrédients : découpe et lecture des quantités ------------------
+  // Partagé par la liste de courses et la recette.
+  const UNIT_NORM = { g: ['g', 1], kg: ['g', 1000], mg: ['g', 0.001], ml: ['ml', 1], cl: ['ml', 10], l: ['ml', 1000] };
+  const WORD_UNITS = [
+    [/^c\.\s*à\s*s\.?$|^cuill?[eè]re?s?\s+à\s+soupe$/i, 'c. à s.'],
+    [/^c\.\s*à\s*c\.?$|^cuill?[eè]re?s?\s+à\s+caf[eé]$/i, 'c. à c.'],
+    [/^tranches?$/i, 'tranche'], [/^gousses?$/i, 'gousse'], [/^pinc[eé]es?$/i, 'pincée'], [/^poign[eé]es?$/i, 'poignée'],
+  ];
+  const normTxt = s => String(s).toLowerCase().replace(/œ/g, 'oe').replace(/’/g, "'").normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  function splitIngredients(str) {
+    const s = String(str || ''); const out = []; let cur = ''; let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (ch === '(') depth++;
+      if (ch === ')') depth = Math.max(0, depth - 1);
+      const decimal = ch === ',' && /\d/.test(s[i - 1] || '') && /\d/.test(s[i + 1] || '');
+      if ((ch === ',' || ch === ';') && depth === 0 && !decimal) { if (cur.trim()) out.push(cur.trim()); cur = ''; }
+      else cur += ch;
+    }
+    if (cur.trim()) out.push(cur.trim());
+    return out;
+  }
+
+  function parseIngredient(raw) {
+    const m = raw.match(/^(\d+(?:[.,]\d+)?)\s*(kg|mg|g|ml|cl|l|c\.\s*à\s*[sc]\.?|cuill?[eè]re?s?\s+à\s+(?:soupe|caf[eé])|tranches?|gousses?|pinc[eé]es?|poign[eé]es?)?\.?\s+(?:de\s+|d['’]\s*)?(.+)$/i);
+    if (!m) return { qty: null, unit: '', name: raw };
+    let qty = parseFloat(m[1].replace(',', '.'));
+    let unit = '';
+    if (m[2]) {
+      const metric = UNIT_NORM[m[2].toLowerCase()];
+      if (metric) { unit = metric[0]; qty *= metric[1]; }
+      else { const w = WORD_UNITS.find(([re]) => re.test(m[2].trim())); unit = w ? w[1] : m[2]; }
+    }
+    return { qty, unit, name: m[3].trim() };
+  }
+
+  function fmtQty(qty, unit) {
+    if (qty == null) return '';
+    const fr = n => String(n).replace('.', ',');
+    if (unit === 'g' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} kg`;
+    if (unit === 'ml' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} L`;
+    const n = Math.round(qty * 10) / 10;
+    const u = unit && n > 1 && /^(tranche|gousse|pincée|poignée)$/.test(unit) ? unit + 's' : unit;
+    return `${fr(n)}${u ? ' ' + u : ''}`;
+  }
+
+  // ---- Recette d'un repas (feuille plein écran) ------------------------
+  // Générée par /api/recipe à la première ouverture, puis gardée en base :
+  // les ouvertures suivantes sont instantanées.
+  const MEAL_TYPE_LABELS = { petit_dejeuner: 'Petit-déjeuner', dejeuner: 'Déjeuner', diner: 'Dîner', collation: 'Collation' };
+  let recipeMeal = null;
+  let recipeWakeLock = null;
+  let recipeSheetBound = false;
+
+  // La colonne recipe est modifiable par son propriétaire : on vérifie la forme.
+  function normalizeRecipe(r) {
+    if (!r || typeof r !== 'object' || !Array.isArray(r.etapes)) return null;
+    const etapes = r.etapes.filter(x => typeof x === 'string' && x.trim()).slice(0, 12);
+    if (etapes.length < 2) return null;
+    const num = v => (Number.isFinite(Number(v)) && Number(v) > 0 ? Math.round(Number(v)) : null);
+    return {
+      preparation_min: num(r.preparation_min),
+      cuisson_min: num(r.cuisson_min),
+      ustensiles: Array.isArray(r.ustensiles) ? r.ustensiles.filter(x => typeof x === 'string' && x.trim()).slice(0, 8) : [],
+      etapes,
+      astuce: typeof r.astuce === 'string' ? r.astuce.trim() : '',
+    };
+  }
+
+  const fmtMinutes = m => (m == null ? '—' : m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? String(m % 60).padStart(2, '0') : ''}` : `${m} min`);
+
+  function renderRecipeFacts(meal, recipe) {
+    const facts = [
+      ['Préparation', recipe ? fmtMinutes(recipe.preparation_min) : '…'],
+      ['Cuisson', recipe ? (recipe.cuisson_min ? fmtMinutes(recipe.cuisson_min) : 'Aucune') : '…'],
+      ['Énergie', meal.kcal ? `${Math.round(meal.kcal)} kcal` : '—'],
+      ['Protéines', meal.proteins_g ? `${Math.round(meal.proteins_g)} g` : '—'],
+    ];
+    document.getElementById('rcFacts').innerHTML = facts.map(([label, value]) => `
+      <div class="rc-fact"><span class="rc-fact-value">${escapeHtml(value)}</span><span class="rc-fact-label">${label}</span></div>`).join('');
+  }
+
+  function recipeIngredientsHTML(meal) {
+    const items = splitIngredients(meal.ingredients).map(parseIngredient);
+    if (!items.length) return '';
+    return `
+      <section class="rc-section">
+        <h3 class="rc-h3">Ingrédients</h3>
+        <ul class="rc-ingredients">
+          ${items.map(i => `<li><span class="rc-qty">${escapeHtml(fmtQty(i.qty, i.unit))}</span><span>${escapeHtml(i.name.charAt(0).toUpperCase() + i.name.slice(1))}</span></li>`).join('')}
+        </ul>
+      </section>`;
+  }
+
+  function renderRecipeBody(state, payload) {
+    const body = document.getElementById('rcBody');
+    const meal = recipeMeal;
+    if (state === 'loading') {
+      body.innerHTML = recipeIngredientsHTML(meal) + `
+        <section class="rc-section" aria-busy="true">
+          <h3 class="rc-h3">Préparation</h3>
+          <p class="rc-loading-text">Écriture de la recette… quelques secondes la première fois.</p>
+          <div class="rc-skel"></div><div class="rc-skel"></div><div class="rc-skel short"></div>
+        </section>`;
+      return;
+    }
+    if (state === 'error') {
+      body.innerHTML = recipeIngredientsHTML(meal) + `
+        <section class="rc-section">
+          <h3 class="rc-h3">Préparation</h3>
+          <p class="rc-error">${escapeHtml(payload)}</p>
+          <button type="button" class="rc-retry" id="rcRetry">Réessayer</button>
+        </section>`;
+      document.getElementById('rcRetry').addEventListener('click', () => loadRecipe(meal));
+      return;
+    }
+    const r = payload;
+    body.innerHTML = recipeIngredientsHTML(meal) + `
+      ${r.ustensiles.length ? `<p class="rc-tools"><span>Matériel</span> ${escapeHtml(r.ustensiles.join(', '))}</p>` : ''}
+      <section class="rc-section">
+        <h3 class="rc-h3">Préparation</h3>
+        <ol class="rc-steps">
+          ${r.etapes.map((txt, i) => `
+            <li><button type="button" class="rc-step" aria-pressed="false">
+              <span class="rc-step-num" aria-hidden="true">${i + 1}</span>
+              <span class="rc-step-text">${escapeHtml(txt)}</span>
+            </button></li>`).join('')}
+        </ol>
+        <p class="rc-hint">Touche une étape pour la marquer comme faite.</p>
+      </section>
+      ${r.astuce ? `<p class="rc-tip"><strong>Astuce</strong> ${escapeHtml(r.astuce)}</p>` : ''}`;
+  }
+
+  async function loadRecipe(meal) {
+    renderRecipeFacts(meal, null);
+    renderRecipeBody('loading');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error('Ta session a expiré — reconnecte-toi puis réessaie.');
+      const resp = await fetch('/api/recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+        body: JSON.stringify({ meal_id: meal.id }),
+      });
+      const result = await resp.json().catch(() => ({}));
+      const recipe = normalizeRecipe(result.recipe);
+      if (!resp.ok || !recipe) throw new Error(result.error || 'Impossible d\'écrire la recette — réessaie dans un instant.');
+      meal.recipe = recipe; // gardée dans le cache du jour : réouverture instantanée
+      if (recipeMeal !== meal) return; // la feuille a changé de repas entre-temps
+      renderRecipeFacts(meal, recipe);
+      renderRecipeBody('ready', recipe);
+    } catch (err) {
+      if (recipeMeal !== meal) return;
+      renderRecipeBody('error', err.message || 'Connexion impossible — vérifie ton réseau.');
+    }
+  }
+
+  function bindRecipeSheet() {
+    if (recipeSheetBound) return;
+    recipeSheetBound = true;
+    const sheet = document.getElementById('recipeSheet');
+    document.getElementById('rcClose').addEventListener('click', closeRecipe);
+    sheet.addEventListener('cancel', (e) => { e.preventDefault(); closeRecipe(); });
+    sheet.addEventListener('click', (e) => { if (e.target === sheet) closeRecipe(); });
+    document.getElementById('rcBody').addEventListener('click', (e) => {
+      const step = e.target.closest('.rc-step');
+      if (!step) return;
+      const done = step.getAttribute('aria-pressed') !== 'true';
+      step.setAttribute('aria-pressed', String(done));
+    });
+  }
+
+  async function openRecipe(meal) {
+    if (!meal || !meal.id) return;
+    bindRecipeSheet();
+    recipeMeal = meal;
+    const sheet = document.getElementById('recipeSheet');
+    document.getElementById('rcType').textContent = MEAL_TYPE_LABELS[meal.meal_type] || meal.meal_type || '';
+    document.getElementById('rcTitle').textContent = meal.name || 'Recette';
+
+    const cached = normalizeRecipe(meal.recipe);
+    if (cached) { renderRecipeFacts(meal, cached); renderRecipeBody('ready', cached); }
+    else loadRecipe(meal);
+
+    sheet.showModal();
+    document.documentElement.style.overflow = 'hidden';
+    document.getElementById('rcBody').scrollTop = 0;
+    requestAnimationFrame(() => sheet.classList.add('is-open'));
+    // Écran allumé pendant qu'on cuisine (si le navigateur le permet).
+    try { if ('wakeLock' in navigator) recipeWakeLock = await navigator.wakeLock.request('screen'); } catch (_) { recipeWakeLock = null; }
+  }
+
+  function closeRecipe() {
+    const sheet = document.getElementById('recipeSheet');
+    const finish = () => { sheet.close(); document.documentElement.style.overflow = ''; };
+    sheet.classList.remove('is-open');
+    recipeMeal = null;
+    if (recipeWakeLock) { recipeWakeLock.release().catch(() => {}); recipeWakeLock = null; }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) finish(); else setTimeout(finish, 260);
+  }
+
   // Cache PAR DATE (et non plus un cache unique global) : c'est le cache
   // global qui renvoyait le même plan quel que soit le jour sélectionné.
   const mealsCache = new Map(); // dateStr -> { type: 'none' | 'empty' | 'data', meals? }
@@ -6228,7 +6450,12 @@
           ${macros ? `<div class="meal-cal">${escapeHtml(macros)}</div>` : ''}
           ${m.ingredients ? `<div class="meal-cal">${escapeHtml(m.ingredients)}</div>` : ''}
           ${m.justification ? `<div class="meal-why">${escapeHtml(m.justification)}</div>` : ''}
+          ${m.id ? `<button type="button" class="meal-recipe-btn">Voir la recette<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>` : ''}
         `;
+        if (m.id) {
+          card.classList.add('has-recipe');
+          card.addEventListener('click', () => openRecipe(m));
+        }
         mealsList.appendChild(card);
       });
   }
