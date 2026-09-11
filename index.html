@@ -901,8 +901,12 @@
 
   /* ---------- Journal : coucher / réveil ---------- */
   #view-app .time-row { display: flex; gap: 12px; }
-  #view-app .time-field { flex: 1; }
+  #view-app .time-field { flex: 1; min-width: 0; }
   #view-app .time-field label { margin-top: 0; }
+  /* iOS donne une largeur minimale fixe aux <input type="time"> : sans
+     appearance:none + min-width:0, la case réveil sort de la carte. */
+  #view-app .time-field input[type="time"] { display: block; min-width: 0; max-width: 100%; -webkit-appearance: none; appearance: none; text-align: center; }
+  #view-app .time-field input[type="time"]::-webkit-date-and-time-value { text-align: center; }
   #view-app .time-field input[type="time"] { padding: 14px; font-size: 17px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
   /* Tant qu'aucune heure n'est saisie, cette ligne n'affichait qu'un "--" :
      une boîte grise pour rien. Elle n'apparaît qu'une fois le calcul possible. */
@@ -4993,7 +4997,6 @@
       if (resting) activityDurationInput.value = '';
 
       activityTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      if (advance && !resting) activityDurationInput.focus();
     }
 
     activityGrid.addEventListener('click', (e) => {
@@ -5435,32 +5438,6 @@
     nextBtn.addEventListener('click', () => {
       if (!validateStep(currentStep)) return;
       if (currentStep < steps.length - 1) { currentStep += 1; renderStep(); saveDraft(); }
-    });
-
-    // ---- Enchaînement automatique de la saisie -------------------------
-    // Un <input type="time"> ne vaut '' que tant que l'heure ET les minutes ne
-    // sont pas saisies : dès qu'il porte une valeur, la case est complète et on
-    // peut passer à la suivante. On ne saute qu'au premier remplissage
-    // (advanced), sinon corriger une heure renverrait le curseur ailleurs.
-    const advanced = new Set();
-    function autoAdvance(fromEl, toEl) {
-      if (!fromEl || !toEl) return;
-      fromEl.addEventListener('input', () => {
-        if (!fromEl.value || advanced.has(fromEl.id)) return;
-        advanced.add(fromEl.id);
-        toEl.focus();
-        if (toEl.select) { try { toEl.select(); } catch (_) {} }
-      });
-      fromEl.addEventListener('blur', () => { if (!fromEl.value) advanced.delete(fromEl.id); });
-    }
-
-    autoAdvance(bedTimeInput, wakeTimeInput);
-    autoAdvance(wakeTimeInput, document.querySelector('#sleepQuality .qbtn'));
-
-    // Choisir la qualité de sommeil ou le type de séance amène au bouton
-    // Suivant : la personne peut enchaîner à la touche Entrée sans viser.
-    document.querySelectorAll('#sleepQuality .qbtn').forEach(btn => {
-      btn.addEventListener('click', () => { if (!nextBtn.hidden) nextBtn.focus(); });
     });
 
     // Entrée ne doit jamais enregistrer la journée depuis une case du milieu :
