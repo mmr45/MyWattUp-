@@ -1,0 +1,124 @@
+diff --git a/index.html b/index.html
+index d6acad3..38dc4f7 100644
+--- a/index.html
++++ b/index.html
+@@ -1024,6 +1024,18 @@
+   #view-app .app-cta:active { transform: scale(0.98); }
+   #view-app .app-cta.secondary { background: var(--fond-card); color: var(--blanc); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+   #view-app .app-cta.secondary svg { width: 15px; height: 15px; flex-shrink: 0; }
++  #view-app .grocery-card { background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 16px 18px; margin-top: 12px; }
++  #view-app .grocery-card[hidden] { display: none; }
++  #view-app .grocery-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
++  #view-app .grocery-title { font-weight: 700; color: var(--blanc); }
++  #view-app .grocery-copy { background: none; border: 1px solid rgba(255,255,255,0.15); color: var(--blanc); border-radius: 10px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; }
++  #view-app .grocery-ul { list-style: none; margin: 0; padding: 0; }
++  #view-app .grocery-ul li { border-top: 1px solid rgba(255,255,255,0.06); }
++  #view-app .grocery-ul label { display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer; }
++  #view-app .grocery-ul input { width: 18px; height: 18px; accent-color: var(--ambre); flex-shrink: 0; }
++  #view-app .grocery-name { flex: 1; color: var(--blanc); }
++  #view-app .grocery-qty { opacity: 0.6; font-size: 14px; }
++  #view-app .grocery-ul input:checked ~ span { text-decoration: line-through; opacity: 0.4; }
+   #view-app .app-cta.secondary:hover { filter: none; border-color: var(--ambre); color: var(--ambre-bright, var(--ambre)); }
+   #view-app .app-cta.danger { background: rgba(255,107,107,0.12); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
+   #view-app .settings-link { display: block; font-size: 13px; color: var(--vert); text-decoration: underline; text-underline-offset: 2px; }
+@@ -2057,6 +2069,7 @@
+       <div id="mealsList"></div>
+       <button class="app-cta" id="generateBtn">Générer mes repas du jour</button>
+       <button class="app-cta secondary" id="groceryBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6 5 3H2"/><circle cx="9.5" cy="20" r="1"/><circle cx="17.5" cy="20" r="1"/></svg>Voir la liste de courses</button>
++      <div class="grocery-card" id="groceryList" hidden></div>
+     </section>
+ 
+     <!-- ---------- SCANNER ---------- -->
+@@ -5824,8 +5837,83 @@
+         }
+       });
+ 
++      // ---- Liste de courses (agrège les ingrédients des repas du jour affiché) ----
++      const UNIT_NORM = { g: ['g', 1], kg: ['g', 1000], mg: ['g', 0.001], ml: ['ml', 1], cl: ['ml', 10], l: ['ml', 1000] };
++
++      function splitIngredients(str) {
++        const s = String(str || ''); const out = []; let cur = ''; let depth = 0;
++        for (let i = 0; i < s.length; i++) {
++          const ch = s[i];
++          if (ch === '(') depth++;
++          if (ch === ')') depth = Math.max(0, depth - 1);
++          const decimal = ch === ',' && /\d/.test(s[i - 1] || '') && /\d/.test(s[i + 1] || '');
++          if ((ch === ',' || ch === ';') && depth === 0 && !decimal) { if (cur.trim()) out.push(cur.trim()); cur = ''; }
++          else cur += ch;
++        }
++        if (cur.trim()) out.push(cur.trim());
++        return out;
++      }
++
++      function parseIngredient(raw) {
++        const m = raw.match(/^(\d+(?:[.,]\d+)?)\s*(kg|mg|g|ml|cl|l)?\.?\s+(?:de\s+|d['’]\s*)?(.+)$/i);
++        if (!m) return { qty: null, unit: '', name: raw };
++        let qty = parseFloat(m[1].replace(',', '.'));
++        let unit = '';
++        if (m[2]) { const [u, f] = UNIT_NORM[m[2].toLowerCase()]; unit = u; qty *= f; }
++        return { qty, unit, name: m[3].trim() };
++      }
++
++      function fmtQty(qty, unit) {
++        if (qty == null) return '';
++        const fr = n => String(n).replace('.', ',');
++        if (unit === 'g' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} kg`;
++        if (unit === 'ml' && qty >= 1000) return `${fr(+(qty / 1000).toFixed(2))} L`;
++        return `${fr(Math.round(qty * 10) / 10)}${unit ? ' ' + unit : ''}`;
++      }
++
++      function buildGroceryList(meals) {
++        const map = new Map();
++        meals.forEach(meal => splitIngredients(meal.ingredients).forEach(raw => {
++          const it = parseIngredient(raw);
++          const name = it.name.charAt(0).toUpperCase() + it.name.slice(1);
++          const key = name.toLowerCase() + '|' + it.unit;
++          const prev = map.get(key);
++          if (prev) { if (prev.qty != null && it.qty != null) prev.qty += it.qty; }
++          else map.set(key, { name, qty: it.qty, unit: it.unit });
++        }));
++        return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
++      }
++
+       document.getElementById('groceryBtn').addEventListener('click', () => {
+-        showToast('La liste de courses automatique sera générée en même temps que les repas (Module 2).', 'info');
++        const host = document.getElementById('groceryList');
++        if (!host.hidden) { host.hidden = true; return; }
++
++        const entry = mealsCache.get(selectedDateStr);
++        if (!entry || entry.type !== 'data' || !entry.meals?.length) {
++          showToast('Génère d\'abord tes repas du jour pour obtenir la liste de courses.', 'info');
++          return;
++        }
++
++        const items = buildGroceryList(entry.meals);
++        const lines = items.map(i => `${fmtQty(i.qty, i.unit)} ${i.name}`.trim());
++        host.innerHTML = `
++          <div class="grocery-head">
++            <span class="grocery-title">Liste de courses · ${items.length} articles</span>
++            <button type="button" class="grocery-copy">Copier</button>
++          </div>
++          <ul class="grocery-ul">
++            ${items.map(i => `
++              <li><label><input type="checkbox">
++                <span class="grocery-name">${escapeHtml(i.name)}</span>
++                <span class="grocery-qty">${escapeHtml(fmtQty(i.qty, i.unit))}</span>
++              </label></li>`).join('')}
++          </ul>`;
++        host.querySelector('.grocery-copy').addEventListener('click', async () => {
++          try { await navigator.clipboard.writeText(lines.join('\n')); showToast('Liste copiée !', 'success'); }
++          catch { showToast('Copie impossible sur cet appareil.', 'error'); }
++        });
++        host.hidden = false;
++        host.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+       });
+     }
+ 
+@@ -5972,6 +6060,7 @@
+   function renderMealsFromCache() {
+     const mealsList = document.getElementById('mealsList');
+     if (!mealsList) return;
++    const gl = document.getElementById('groceryList'); if (gl) gl.hidden = true;
+     const entry = mealsCache.get(selectedDateStr);
+     const isToday = selectedDateStr === localDateStr();
+ 
