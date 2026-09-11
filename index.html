@@ -294,6 +294,9 @@
   #view-vitrine .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
   #view-vitrine .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--vv-muted); }
   #view-vitrine .footer-brand svg { width: 16px; height: 16px; }
+  #view-vitrine .footer-legal { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+  #view-vitrine .footer-legal a { font-size: 12px; color: var(--vv-muted); text-decoration: none; }
+  #view-vitrine .footer-legal a:hover { color: var(--vv-text); text-decoration: underline; }
 
   @media (max-width: 800px) { #view-vitrine .hero { grid-template-columns: 1fr; padding-top: 52px; } }
 
@@ -648,6 +651,8 @@
   #view-app .nutrition-entry-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--fond); border-radius: 10px; font-size: 13px; }
   #view-app .nutrition-entry-row .entry-meta { color: var(--gris); font-size: 11.5px; margin-top: 2px; }
   #view-app .food-quick-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  #view-app .plan-legal-note { font-size: 11.5px; line-height: 1.5; color: var(--gris); margin: 0 0 12px; }
+  #view-app .plan-legal-note a { color: var(--vert); }
   #view-app .food-quick-chip { padding: 7px 12px; border-radius: 999px; background: var(--fond); border: 1px solid rgba(255,255,255,0.08); color: var(--blanc); font-size: 12.5px; cursor: pointer; }
   #view-app .food-quick-chip:hover { border-color: var(--vert); }
   #view-app .food-quick-chip span { color: var(--gris); margin-left: 6px; font-size: 11.5px; }
@@ -1428,7 +1433,9 @@
         <button class="pricing-cta" id="btnGoLoginPro" style="cursor:pointer;">Passer Pro</button>
       </div>
     </div>
-    <p class="pricing-note">Paiement sécurisé via Stripe. Résiliable à tout moment depuis ton compte.</p>
+    <p class="pricing-note">Paiement sécurisé via Stripe. Résiliable à tout moment depuis ton compte.<br />
+      Abonnement mensuel de 6,99 € reconduit automatiquement. Voir les
+      <a href="/cgu.html" target="_blank" rel="noopener" style="color:var(--vv-volt);">conditions générales</a>.</p>
   </section>
 
   <section class="section" id="installer">
@@ -1512,7 +1519,12 @@
       </svg>
       MyWattUp — © 2026
     </div>
-    <button class="link-secondary js-go-login">Se connecter</button>
+    <div class="footer-legal">
+      <a href="/mentions-legales.html" target="_blank" rel="noopener">Mentions légales</a>
+      <a href="/cgu.html" target="_blank" rel="noopener">Conditions générales</a>
+      <a href="/politique-confidentialite.html" target="_blank" rel="noopener">Politique de confidentialité</a>
+      <button class="link-secondary js-go-login">Se connecter</button>
+    </div>
   </div>
 </footer>
 </div>
@@ -1570,7 +1582,9 @@
     <p class="msg" id="authMsg" role="status" aria-live="polite"></p>
 
     <p style="text-align:center; font-size:11px; color:var(--gris); margin-top:20px;">
-      En continuant, tu acceptes notre
+      En continuant, tu acceptes nos
+      <a href="/cgu.html" target="_blank" style="color:var(--vert);">conditions générales</a>
+      et notre
       <a href="/politique-confidentialite.html" target="_blank" style="color:var(--vert);">politique de confidentialité</a>.
     </p>
 
@@ -2513,6 +2527,7 @@
 
         <a href="/politique-confidentialite.html" target="_blank" class="settings-link" style="margin-top:16px;">Politique de confidentialité</a>
         <a href="/cgu.html" target="_blank" class="settings-link">Conditions générales</a>
+        <a href="/mentions-legales.html" target="_blank" class="settings-link">Mentions légales</a>
         <button type="button" class="app-cta secondary" id="settingsExportData" style="margin-top:14px;">Exporter mes données</button>
       </div>
 
@@ -2585,6 +2600,11 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
         </ul>
+        <p class="plan-legal-note">Abonnement de 6,99 € par mois, reconduit automatiquement jusqu'à
+          résiliation. En confirmant, tu acceptes les
+          <a href="/cgu.html" target="_blank" rel="noopener">conditions générales</a> et demandes
+          l'accès immédiat à l'offre Pro, ce qui met fin à ton droit de rétractation une fois le
+          service fourni.</p>
         <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 6,99€/mois</button>
       </div>
 
