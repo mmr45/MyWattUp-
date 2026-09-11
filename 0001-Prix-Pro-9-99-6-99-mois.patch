@@ -1,0 +1,70 @@
+From b94ce4e792f3a78798bf8bfa4922b23fdd598d94 Mon Sep 17 00:00:00 2001
+From: x <x@x>
+Date: Fri, 11 Sep 2026 20:15:26 +0000
+Subject: [PATCH] =?UTF-8?q?Prix=20Pro=20:=209,99=E2=82=AC=20->=206,99?=
+ =?UTF-8?q?=E2=82=AC/mois?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ README.md  | 2 +-
+ index.html | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/README.md b/README.md
+index a5a59bd..211af7f 100644
+--- a/README.md
++++ b/README.md
+@@ -130,7 +130,7 @@ Le suivi calorique et le générateur de repas partagent **la même fonction de
+ 
+ ## 💳 Offres
+ 
+-|  | Gratuit | **Pro — 9,99 €/mois** |
++|  | Gratuit | **Pro — 6,99 €/mois** |
+ |---|:---:|:---:|
+ | Conseil IA | 1 / jour | illimité |
+ | Génération de repas | 1 / jour | illimité |
+diff --git a/index.html b/index.html
+index b3de15c..6074fcf 100644
+--- a/index.html
++++ b/index.html
+@@ -1415,7 +1415,7 @@
+       </div>
+       <div class="pricing-card featured reveal">
+         <h3 class="pricing-plan-name">Pro</h3>
+-        <div class="pricing-price"><span class="amount">9,99€</span><span class="period">/ mois</span></div>
++        <div class="pricing-price"><span class="amount">6,99€</span><span class="period">/ mois</span></div>
+         <p class="pricing-plan-sub">Pour un usage quotidien sans limite</p>
+         <ul class="pricing-list">
+           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tout ce qui est inclus dans l'offre Gratuite</li>
+@@ -1466,7 +1466,7 @@
+     <div class="faq-wrap">
+       <div class="faq-row reveal">
+         <button type="button" class="faq-row-q">MyWattUp est-il vraiment gratuit ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+-        <div class="faq-row-a"><p>Oui. L'offre Gratuite donne accès à tous les modules (coach IA, repas, scanner) sans limite de temps, avec des quotas quotidiens. L'offre Pro (9,99€/mois) retire ces quotas.</p></div>
++        <div class="faq-row-a"><p>Oui. L'offre Gratuite donne accès à tous les modules (coach IA, repas, scanner) sans limite de temps, avec des quotas quotidiens. L'offre Pro (6,99€/mois) retire ces quotas.</p></div>
+       </div>
+       <div class="faq-row reveal">
+         <button type="button" class="faq-row-q">Quelles sont les limites de l'offre Gratuite ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+@@ -2576,7 +2576,7 @@
+           <span class="plan-card-name">Pro</span>
+           <span class="plan-pill pro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Recommandé</span>
+         </div>
+-        <div class="plan-card-price">9,99€<span> / mois</span></div>
++        <div class="plan-card-price">6,99€<span> / mois</span></div>
+         <ul class="plan-feature-list">
+           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
+           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de repas illimitées, à la demande</li>
+@@ -2584,7 +2584,7 @@
+           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
+           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
+         </ul>
+-        <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 9,99€/mois</button>
++        <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 6,99€/mois</button>
+       </div>
+ 
+       <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
+-- 
+2.43.0
+
