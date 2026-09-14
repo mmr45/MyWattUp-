@@ -1866,6 +1866,165 @@
   .sel-list::-webkit-scrollbar { width: 8px; }
   .sel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 8px; }
 
+  /* ======================================================================
+     PARTIE 2.9 — REFONTE VISUELLE DE L'APP (après connexion)
+     Placée en dernier : surfaces en verre, profondeur, nav flottante.
+     Aucune classe n'est renommée, uniquement de l'apparence.
+     ====================================================================== */
+
+  #view-app {
+    /* Les cartes deviennent translucides d'un coup : toutes les règles
+       existantes utilisent var(--fond-card). */
+    --fond-card: rgba(255,255,255,0.042);
+    font-family: var(--body), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-image:
+      radial-gradient(900px 420px at 12% -5%, rgba(255,90,54,0.16), transparent 60%),
+      radial-gradient(700px 420px at 95% 8%, rgba(212,255,63,0.10), transparent 60%),
+      radial-gradient(800px 500px at 50% 105%, rgba(212,255,63,0.07), transparent 60%);
+    background-attachment: fixed;
+  }
+  /* Grain discret : casse l'aplat noir sans se voir */
+  #view-app::before {
+    content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  #view-app .app-wrap { position: relative; z-index: 1; padding-bottom: 116px; }
+
+  /* ---------- Surfaces en verre ---------- */
+  #view-app .score-card,
+  #view-app .mini-card,
+  #view-app .mini-why,
+  #view-app .plan-card,
+  #view-app .quota-banner,
+  #view-app .history-item,
+  #view-app .meal-card,
+  #view-app .gs-box,
+  #view-app .faq-item,
+  #view-app .empty-state,
+  #view-app .weight-form,
+  #view-app .history-detail,
+  #view-app .rc-step,
+  #view-app .time-field {
+    -webkit-backdrop-filter: blur(20px) saturate(1.25);
+    backdrop-filter: blur(20px) saturate(1.25);
+    border-color: rgba(255,255,255,0.09);
+    box-shadow:
+      0 18px 40px -24px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(255,255,255,0.07);
+  }
+  #view-app .score-card { border-radius: 26px; padding: 34px 24px 28px; }
+  #view-app .mini-card { border-radius: 18px; padding: 18px 12px; }
+  #view-app .mini-card:hover { border-color: rgba(212,255,63,0.28); background: rgba(212,255,63,0.055); }
+  #view-app .mini-why, #view-app .quota-banner { border-radius: 18px; }
+  #view-app .plan-card { border-radius: 22px; }
+
+  /* Le halo du score, plus large et plus doux */
+  #view-app .score-card::before {
+    top: -90px; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(212,255,63,0.16), rgba(255,90,54,0.10) 45%, transparent 70%);
+  }
+  #view-app .ring-wrap { filter: drop-shadow(0 8px 22px rgba(212,255,63,0.18)); }
+  #view-app .ring-score { font-size: 46px; }
+
+  /* ---------- En-tête de panneau ---------- */
+  #view-app .topbar {
+    position: sticky; top: 0; z-index: 6; margin: -24px -20px 22px; padding: 18px 20px 14px;
+    background: linear-gradient(180deg, rgba(13,16,19,0.92), rgba(13,16,19,0.55) 70%, transparent);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  }
+  #view-app .app-h1 { font-size: 21px; }
+  #view-app .back {
+    width: 38px; height: 38px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  #view-app .back:hover { border-color: rgba(212,255,63,0.4); background: rgba(212,255,63,0.08); }
+
+  /* ---------- Titres de section : filet coral plutôt qu'un bloc de capitales ---------- */
+  #view-app .section-title {
+    font-family: var(--body); font-size: 12.5px; font-weight: 600; letter-spacing: 0.02em;
+    text-transform: none; color: var(--blanc); opacity: 0.92;
+    margin: 26px 0 10px; padding-left: 11px; position: relative;
+  }
+  #view-app .section-title::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 15px; border-radius: 3px; background: var(--ambre);
+  }
+  #view-app .section-title svg { color: var(--ambre); opacity: 0.9; }
+
+  /* ---------- Barre de navigation flottante ---------- */
+  #view-app .bottom-nav {
+    left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom));
+    max-width: 456px; margin: 0 auto; padding: 8px 6px;
+    border-radius: 22px; border: 1px solid rgba(255,255,255,0.09); border-top-color: rgba(255,255,255,0.09);
+    background: rgba(18,22,26,0.72);
+    -webkit-backdrop-filter: blur(26px) saturate(1.5); backdrop-filter: blur(26px) saturate(1.5);
+    box-shadow: 0 22px 50px -18px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  #view-app .nav-item {
+    padding: 8px 4px 7px; border-radius: 16px; gap: 4px;
+    transition: color 0.18s ease, background 0.18s ease;
+  }
+  #view-app .nav-item.active {
+    color: #D9FF5C;
+    background: linear-gradient(180deg, rgba(212,255,63,0.16), rgba(212,255,63,0.05));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+  }
+  #view-app .nav-item svg { transition: transform 0.18s ease; }
+  #view-app .nav-item.active svg { transform: translateY(-1px); }
+
+  /* ---------- Champs de saisie unifiés ---------- */
+  #view-app input[type="text"], #view-app input[type="number"], #view-app input[type="date"],
+  #view-app input[type="time"], #view-app input[type="email"], #view-app input[type="search"],
+  #view-app textarea {
+    background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px; color: var(--blanc); font-family: inherit;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  #view-app input:focus, #view-app textarea:focus {
+    outline: none; border-color: rgba(212,255,63,0.5); background: rgba(212,255,63,0.05);
+    box-shadow: 0 0 0 3px rgba(212,255,63,0.12);
+  }
+  #view-app input:-webkit-autofill {
+    -webkit-text-fill-color: var(--blanc); -webkit-box-shadow: inset 0 0 0 1000px #1b2024; caret-color: var(--blanc);
+  }
+
+  /* ---------- Pastilles, puces, éléments de liste ---------- */
+  #view-app .activity-chip, #view-app .meal-chip, #view-app .badge-chip, #view-app .qbtn, #view-app .prefill-btn {
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-radius: 100px;
+  }
+  #view-app .history-item, #view-app .gs-item {
+    border-radius: 16px; transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+  #view-app .history-item:hover, #view-app .gs-item:hover { border-color: rgba(212,255,63,0.25); }
+  #view-app .icon-square { border-radius: 12px; }
+  #view-app .user-menu, #view-app .app-sheet, #view-app .toast {
+    background: rgba(18,22,26,0.94) !important;
+    -webkit-backdrop-filter: blur(26px) saturate(1.4); backdrop-filter: blur(26px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 30px 60px -22px rgba(0,0,0,0.95);
+  }
+  #view-app .app-sheet { border-radius: 26px 26px 0 0; }
+
+  /* ---------- Apparition en cascade du contenu du panneau ---------- */
+  #view-app .app-panel.is-visible > * { animation: app-rise 0.45s cubic-bezier(0.16,1,0.3,1) backwards; }
+  #view-app .app-panel.is-visible > *:nth-child(1) { animation-delay: 0.02s; }
+  #view-app .app-panel.is-visible > *:nth-child(2) { animation-delay: 0.06s; }
+  #view-app .app-panel.is-visible > *:nth-child(3) { animation-delay: 0.10s; }
+  #view-app .app-panel.is-visible > *:nth-child(4) { animation-delay: 0.14s; }
+  #view-app .app-panel.is-visible > *:nth-child(5) { animation-delay: 0.18s; }
+  @keyframes app-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { #view-app .app-panel.is-visible > * { animation: none; } }
+
+  /* ---------- Détails ---------- */
+  #view-app ::selection { background: rgba(212,255,63,0.25); color: #ECEAE4; }
+  #view-app *::-webkit-scrollbar { width: 8px; height: 8px; }
+  #view-app *::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.13); border-radius: 8px; }
+  #view-app :focus-visible { outline: 2px solid rgba(212,255,63,0.7); outline-offset: 2px; }
+
 </style>
 </head>
 <body>
