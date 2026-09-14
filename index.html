@@ -314,47 +314,127 @@
     --fond-card: #171B1F;
     --blanc: #ECEAE4;
     --gris: #8D9299;
+    --champ: rgba(255,255,255,0.045);
+    --champ-line: rgba(255,255,255,0.09);
     display: none;
     min-height: 100vh;
+    min-height: 100dvh;
     background: var(--fond);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(255,90,54,0.14), transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(212,255,63,0.10), transparent 40%);
+      radial-gradient(circle at 15% 20%, rgba(255,90,54,0.13), transparent 42%),
+      radial-gradient(circle at 85% 80%, rgba(212,255,63,0.10), transparent 42%);
     color: var(--blanc);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--body);
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 28px 20px 40px;
   }
   #view-login * { box-sizing: border-box; }
-  #view-login .card { width: 100%; max-width: 380px; margin: 0 auto; background: var(--fond-card); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 36px 32px; box-shadow: 0 24px 50px -24px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.03); }
-  #view-login .logo { width: 56px; height: 56px; border-radius: 50%; background: var(--fond); border: 2px solid var(--ambre); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--ambre); }
+  #view-login .card {
+    width: 100%; max-width: 420px; margin: 0 auto;
+    background: var(--fond-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 24px;
+    padding: 40px 34px;
+    box-shadow: 0 30px 60px -28px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+  @media (max-width: 420px) { #view-login .card { padding: 32px 22px; border-radius: 20px; } }
+
+  #view-login .logo {
+    width: 54px; height: 54px; border-radius: 16px;
+    background: rgba(255,90,54,0.10); border: 1px solid rgba(255,90,54,0.32);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px; color: var(--ambre);
+  }
   #view-login .logo svg { width: 26px; height: 26px; }
-  #view-login h1 { text-align: center; font-family: var(--display); font-weight: 700; font-size: 23px; margin: 0 0 4px; letter-spacing: -0.02em; }
-  #view-login .tagline { text-align: center; color: var(--gris); font-size: 13px; margin: 0 0 28px; font-style: italic; }
-  #view-login .tabs { display: flex; background: var(--fond); border-radius: 10px; padding: 4px; margin-bottom: 24px; }
-  #view-login .tab { flex: 1; text-align: center; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--gris); transition: all 0.15s ease; user-select: none; }
-  #view-login .tab.active { background: var(--vert); color: #0E1410; }
-  #view-login label { display: block; font-size: 12px; color: var(--gris); margin-bottom: 6px; margin-top: 16px; }
-  #view-login input { width: 100%; padding: 12px 14px; background: var(--fond); border: 1px solid rgba(255,255,255,0.10); border-radius: 10px; color: var(--blanc); font-size: 14px; outline: none; transition: border-color 0.15s ease; }
+  #view-login h1 { text-align: center; font-family: var(--display); font-weight: 700; font-size: 26px; margin: 0 0 6px; letter-spacing: -0.02em; }
+  #view-login .tagline { text-align: center; color: var(--gris); font-size: 14px; margin: 0 0 26px; }
+
+  /* Onglets Connexion / Inscription */
+  #view-login .tabs {
+    display: flex; gap: 6px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--champ-line);
+    border-radius: 14px; padding: 5px; margin-bottom: 26px;
+  }
+  #view-login .tab {
+    flex: 1; text-align: center; padding: 11px 8px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; color: var(--gris); cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease; user-select: none;
+  }
+  #view-login .tab:hover { color: var(--blanc); }
+  #view-login .tab.active { background: var(--vert); color: #0E1410; box-shadow: 0 2px 12px rgba(212,255,63,0.18); }
+
+  /* Champs */
+  #view-login .form-row { margin-bottom: 18px; }
+  #view-login label { display: block; font-size: 13px; color: var(--gris); margin: 0 0 8px; }
+  #view-login input {
+    width: 100%; height: 52px; padding: 0 15px;
+    background: var(--champ); border: 1px solid var(--champ-line); border-radius: 12px;
+    color: var(--blanc); font-family: var(--body); font-size: 16px; outline: none;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  #view-login input::placeholder { color: #6d7278; }
+  #view-login input:focus { border-color: var(--vert); background: rgba(212,255,63,0.05); box-shadow: 0 0 0 3px rgba(212,255,63,0.14); }
+  #view-login input:-webkit-autofill,
+  #view-login input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--blanc);
+    -webkit-box-shadow: inset 0 0 0 1000px #1b2024;
+    caret-color: var(--blanc);
+  }
   #view-login .password-field { position: relative; }
-  #view-login .password-field input { padding-right: 44px; }
-  #view-login .password-toggle { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); background: none; border: none; padding: 6px; color: var(--gris); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  #view-login .password-toggle:hover { color: var(--blanc); }
-  #view-login .password-toggle svg { width: 18px; height: 18px; }
-  #view-login input:focus { border-color: var(--vert); }
-  #view-login button[type="submit"] { width: 100%; margin-top: 26px; padding: 13px; background: var(--vert); color: #0E1410; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s ease; }
-  #view-login button[type="submit"]:hover { filter: brightness(1.08); }
-  #view-login button[type="submit"]:disabled { opacity: 0.6; cursor: not-allowed; }
-  #view-login .msg { margin-top: 16px; font-size: 13px; text-align: center; min-height: 18px; }
-  #view-login .msg.error { color: #FF6B6B; }
-  #view-login .msg.success { color: var(--vert); }
-  #view-login .auth-sep { display: flex; align-items: center; gap: 10px; margin-top: 22px; color: var(--gris); font-size: 12px; }
-  #view-login .auth-sep::before, #view-login .auth-sep::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
-  #view-login .google-btn { width: 100%; margin-top: 14px; padding: 12px; background: var(--fond); color: var(--blanc); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: border-color 0.15s ease; }
-  #view-login .google-btn:hover { border-color: var(--blanc); }
-  #view-login .google-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  #view-login .back-link { display: block; text-align: center; font-size: 12px; color: var(--gris); text-decoration: underline; margin-top: 18px; cursor: pointer; background: none; border: none; }
+  #view-login .password-field input { padding-right: 52px; }
+  #view-login .password-toggle {
+    position: absolute; top: 50%; right: 8px; transform: translateY(-50%);
+    width: 38px; height: 38px; background: none; border: none; border-radius: 9px;
+    color: var(--gris); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  #view-login .password-toggle:hover { background: rgba(255,255,255,0.06); color: var(--blanc); }
+  #view-login .password-toggle svg { width: 19px; height: 19px; }
+
+  /* Bouton principal */
+  #view-login button[type="submit"] {
+    width: 100%; height: 54px; margin-top: 8px;
+    background: var(--vert); color: #0E1410; border: none; border-radius: 12px;
+    font-family: var(--body); font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  #view-login button[type="submit"]:hover { filter: brightness(1.07); }
+  #view-login button[type="submit"]:active { transform: translateY(1px); }
+  #view-login button[type="submit"]:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  /* Message d'erreur / succès */
+  #view-login .msg { margin: 16px 0 0; font-size: 13.5px; line-height: 1.45; text-align: left; min-height: 0; }
+  #view-login .msg.error { padding: 12px 14px; border-radius: 12px; background: rgba(255,90,54,0.12); border: 1px solid rgba(255,90,54,0.30); color: var(--jade-bright, #FF8A6B); }
+  #view-login .msg.success { padding: 12px 14px; border-radius: 12px; background: rgba(212,255,63,0.10); border: 1px solid rgba(212,255,63,0.28); color: var(--vert); }
+
+  /* Séparateur + Google */
+  #view-login .auth-sep { display: flex; align-items: center; gap: 12px; margin: 24px 0 14px; color: var(--gris); font-size: 12.5px; }
+  #view-login .auth-sep::before, #view-login .auth-sep::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.09); }
+  #view-login .google-btn {
+    width: 100%; height: 54px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: #ffffff; color: #1f1f1f; border: none; border-radius: 12px;
+    font-family: var(--body); font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  }
+  #view-login .google-btn:hover { background: #f1f2f4; box-shadow: 0 10px 24px -14px rgba(0,0,0,0.9); }
+  #view-login .google-btn:active { transform: translateY(1px); }
+  #view-login .google-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  #view-login .google-btn svg { width: 19px; height: 19px; flex: none; }
+
+  /* Mentions + retour */
+  #view-login .legal { text-align: center; font-size: 12px; line-height: 1.5; color: var(--gris); margin: 22px 0 0; }
+  #view-login .legal a { color: var(--vert); text-decoration: none; }
+  #view-login .legal a:hover { text-decoration: underline; }
+  #view-login .back-link {
+    display: block; margin: 18px auto 0; padding: 8px;
+    background: none; border: none; font-family: var(--body); font-size: 13px;
+    color: var(--gris); cursor: pointer; transition: color 0.15s ease;
+  }
+  #view-login .back-link:hover { color: var(--blanc); }
+  #view-login :focus-visible { outline: 2px solid var(--vert); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { #view-login * { transition: none !important; } }
 
   /* ======================================================================
      PARTIE 1.6 — ONBOARDING (namespace #view-onboarding)
@@ -1561,31 +1641,44 @@
     </div>
 
     <form id="authForm">
-      <label for="authEmail">Email</label>
-      <input type="email" id="authEmail" required autocomplete="email" />
+      <div class="form-row">
+        <label for="authEmail">Adresse e-mail</label>
+        <input type="email" id="authEmail" required autocomplete="email" inputmode="email"
+               autocapitalize="off" spellcheck="false" placeholder="toi@exemple.fr" />
+      </div>
 
-      <label for="authPassword">Mot de passe</label>
-      <div class="password-field">
-        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6" />
-        <button type="button" class="password-toggle" id="authPasswordToggle" aria-label="Afficher le mot de passe">
-          <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
-          <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M3 3l18 18"/><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c7 0 10.5 7 10.5 7a15.6 15.6 0 0 1-3.1 4.1M6.5 6.6C3.6 8.5 1.5 12 1.5 12s3.5 7 10.5 7a10.4 10.4 0 0 0 4.2-.9"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
-        </button>
+      <div class="form-row">
+        <label for="authPassword">Mot de passe</label>
+        <div class="password-field">
+          <input type="password" id="authPassword" required autocomplete="current-password" minlength="6" placeholder="6 caractères minimum" />
+          <button type="button" class="password-toggle" id="authPasswordToggle" aria-label="Afficher le mot de passe">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M3 3l18 18"/><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c7 0 10.5 7 10.5 7a15.6 15.6 0 0 1-3.1 4.1M6.5 6.6C3.6 8.5 1.5 12 1.5 12s3.5 7 10.5 7a10.4 10.4 0 0 0 4.2-.9"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/></svg>
+          </button>
+        </div>
       </div>
 
       <button type="submit" id="authSubmitBtn">Se connecter</button>
     </form>
 
-    <div class="auth-sep">ou</div>
-    <button type="button" class="google-btn" id="googleAuthBtn">Continuer avec Google</button>
-
     <p class="msg" id="authMsg" role="status" aria-live="polite"></p>
 
-    <p style="text-align:center; font-size:11px; color:var(--gris); margin-top:20px;">
+    <div class="auth-sep">ou</div>
+    <button type="button" class="google-btn" id="googleAuthBtn">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.6 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.7c-.6 3-2.3 5.6-4.9 7.3l7.6 5.9c4.4-4.1 7.1-10.2 7.1-17.5z"/>
+        <path fill="#FBBC05" d="M10.4 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.8-6.1C.9 16.3 0 20 0 24s.9 7.7 2.6 10.8l7.8-6.1z"/>
+        <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.4 0-11.7-3.7-13.6-9.8l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/>
+      </svg>
+      Continuer avec Google
+    </button>
+
+    <p class="legal">
       En continuant, tu acceptes nos
-      <a href="/cgu.html" target="_blank" style="color:var(--vert);">conditions générales</a>
+      <a href="/cgu.html" target="_blank" rel="noopener">conditions générales</a>
       et notre
-      <a href="/politique-confidentialite.html" target="_blank" style="color:var(--vert);">politique de confidentialité</a>.
+      <a href="/politique-confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.
     </p>
 
     <button type="button" class="back-link" id="btnBackToVitrine">← Retour à l'accueil</button>
@@ -3207,7 +3300,11 @@
         tab.classList.add('active');
         mode = tab.dataset.mode;
         submitBtn.textContent = mode === 'login' ? 'Se connecter' : 'Créer mon compte';
+        const pwd = document.getElementById('authPassword');
+        pwd.setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
+        pwd.placeholder = mode === 'login' ? '6 caractères minimum' : 'Choisis un mot de passe (6 min.)';
         msg.textContent = '';
+        msg.className = 'msg';
       });
     });
 
@@ -3233,9 +3330,9 @@
           }
         } else {
           await signUp(email, password);
-          msg.textContent = "Compte créé ! Vérifie ta boîte mail si une confirmation est requise, puis connecte-toi.";
-          msg.classList.add('success');
           tabs[0].click();
+          msg.textContent = "Compte créé ! Vérifie ta boîte mail si une confirmation est requise, puis connecte-toi.";
+          msg.className = 'msg success';
         }
       } catch (err) {
         msg.textContent = err.message || "Une erreur est survenue.";
