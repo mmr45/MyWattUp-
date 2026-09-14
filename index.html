@@ -304,6 +304,295 @@
   #view-vitrine .reveal.in-view { animation: vv-rise 0.6s ease forwards; }
   @keyframes vv-rise { to { opacity: 1; transform: translateY(0); } }
 
+
+  /* ======================================================================
+     PARTIE 1.4 — HERO TÉLÉPHONE, GLASSMORPHISME, AVIS, TARIFS ANNUELS
+     ====================================================================== */
+
+  /* ---------- Boutons verre (effet volt) ---------- */
+  #view-vitrine .btn-primary {
+    background: linear-gradient(180deg, rgba(212,255,63,0.95), rgba(186,232,48,0.88));
+    border: 1px solid rgba(230,255,122,0.85);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 10px 34px -12px rgba(212,255,63,0.55), inset 0 1px 0 rgba(255,255,255,0.45);
+    padding: 16px 30px;
+  }
+  #view-vitrine .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 42px -14px rgba(212,255,63,0.7), inset 0 1px 0 rgba(255,255,255,0.5); }
+  #view-vitrine .btn-primary:active { transform: translateY(0); }
+  #view-vitrine .btn-ghost {
+    padding: 15px 24px; border-radius: 100px; color: var(--vv-text);
+    background: rgba(212,255,63,0.06); border: 1px solid rgba(212,255,63,0.22);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: background 0.18s ease, border-color 0.18s ease;
+  }
+  #view-vitrine .btn-ghost:hover { background: rgba(212,255,63,0.12); border-color: rgba(212,255,63,0.45); color: var(--vv-text); }
+  #view-vitrine .nav-cta {
+    background: rgba(212,255,63,0.07); border: 1px solid rgba(212,255,63,0.24);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  }
+  #view-vitrine .pricing-cta {
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    background: rgba(212,255,63,0.07); border: 1px solid rgba(212,255,63,0.22); color: var(--vv-text);
+  }
+  #view-vitrine .pricing-card.featured .pricing-cta {
+    background: linear-gradient(180deg, rgba(212,255,63,0.95), rgba(186,232,48,0.9));
+    border-color: rgba(230,255,122,0.85); color: #12160A;
+    box-shadow: 0 10px 30px -12px rgba(212,255,63,0.55), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  /* ---------- Hero : maquette téléphone ---------- */
+  #view-vitrine .hero { align-items: center; }
+  #view-vitrine .dial-frame {
+    background: none; border: none; box-shadow: none; padding: 0;
+    position: relative; display: flex; align-items: center; justify-content: center;
+    min-height: 520px;
+  }
+  #view-vitrine .phone-glow {
+    position: absolute; width: 340px; height: 340px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,255,63,0.22), transparent 62%);
+    filter: blur(40px); pointer-events: none;
+  }
+  #view-vitrine .phone {
+    position: relative; z-index: 2; width: 264px; padding: 10px; border-radius: 42px;
+    background: linear-gradient(165deg, #333b43, #10151a 60%);
+    box-shadow: 0 50px 80px -34px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.16);
+  }
+  #view-vitrine .phone-notch {
+    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 84px; height: 22px; border-radius: 100px; background: #0a0d10; z-index: 4;
+  }
+  #view-vitrine .phone-screen {
+    border-radius: 34px; background: linear-gradient(180deg, #121821, #0b0e11 55%);
+    padding: 52px 16px 18px; overflow: hidden; position: relative;
+  }
+  #view-vitrine .phone-topline {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--vv-muted);
+  }
+  #view-vitrine .phone .dial-body { flex-direction: column; gap: 10px; padding: 6px 0 4px; }
+  #view-vitrine .phone .dial-legend { font-size: 12px; width: 100%; gap: 8px; padding: 0; margin: 6px 0 0; }
+  #view-vitrine .phone .action-box { margin-top: 14px; font-size: 12.5px; padding: 12px 13px; background: rgba(255,255,255,0.05); }
+  #view-vitrine .phone-tabs {
+    display: flex; justify-content: space-around; margin: 14px -16px -18px; padding: 12px 0 14px;
+    border-top: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02);
+  }
+  #view-vitrine .phone-tabs span { width: 22px; height: 3px; border-radius: 3px; background: rgba(255,255,255,0.14); }
+  #view-vitrine .phone-tabs span:first-child { background: var(--vv-volt); }
+
+  /* ---------- Cartes flottantes autour du téléphone ---------- */
+  #view-vitrine .float-card {
+    position: absolute; z-index: 3; padding: 12px 14px; border-radius: 16px;
+    background: rgba(23,27,31,0.72); border: 1px solid rgba(212,255,63,0.28);
+    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    box-shadow: 0 18px 36px -18px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: vv-float-card 7s ease-in-out infinite;
+  }
+  #view-vitrine .float-card .fc-num { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1; color: var(--vv-volt); }
+  #view-vitrine .float-card .fc-label { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--vv-muted); margin-top: 5px; display: block; }
+  #view-vitrine .fc-1 { top: 8%; left: 0; animation-delay: 0s; }
+  #view-vitrine .fc-2 { bottom: 14%; left: 4%; animation-delay: 1.4s; }
+  #view-vitrine .fc-3 { top: 26%; right: 0; animation-delay: 2.6s; }
+  #view-vitrine .fc-3 .fc-num { color: var(--vv-coral); }
+  @keyframes vv-float-card { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-11px); } }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .float-card { animation: none; } }
+  @media (max-width: 900px) {
+    #view-vitrine .dial-frame { min-height: 470px; }
+    #view-vitrine .fc-1, #view-vitrine .fc-3 { display: none; }
+    #view-vitrine .fc-2 { bottom: 6%; left: 0; }
+  }
+
+  /* ---------- Bandeau d'avis défilants ---------- */
+  #view-vitrine .avis-band { padding: 18px 0 8px; overflow: hidden; position: relative; }
+  #view-vitrine .avis-band::before, #view-vitrine .avis-band::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 90px; z-index: 2; pointer-events: none;
+  }
+  #view-vitrine .avis-band::before { left: 0; background: linear-gradient(90deg, var(--vv-bg), transparent); }
+  #view-vitrine .avis-band::after { right: 0; background: linear-gradient(270deg, var(--vv-bg), transparent); }
+  #view-vitrine .avis-track { display: flex; gap: 14px; width: max-content; animation: vv-marquee 38s linear infinite; }
+  #view-vitrine .avis-band:hover .avis-track { animation-play-state: paused; }
+  @keyframes vv-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .avis-track { animation: none; } }
+  #view-vitrine .avis-card {
+    width: 290px; flex: none; padding: 18px 20px; border-radius: 18px;
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  }
+  #view-vitrine .avis-card p { margin: 0 0 12px; font-size: 14px; line-height: 1.5; color: var(--vv-text); }
+  #view-vitrine .avis-meta { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--vv-muted); }
+  #view-vitrine .avis-ini {
+    width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center;
+    background: rgba(212,255,63,0.12); color: var(--vv-volt); font-weight: 700; font-size: 11.5px;
+  }
+
+  /* ---------- Bascule Mensuel / Annuel ---------- */
+  #view-vitrine .billing-toggle {
+    display: flex; gap: 6px; margin: 0 auto 26px; padding: 5px; width: fit-content;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--vv-line); border-radius: 100px;
+  }
+  #view-vitrine .bt-opt {
+    border: none; background: none; cursor: pointer; font-family: var(--body); font-size: 13.5px; font-weight: 600;
+    color: var(--vv-muted); padding: 9px 18px; border-radius: 100px; display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  #view-vitrine .bt-opt.active { background: var(--vv-volt); color: #12160A; }
+  #view-vitrine .bt-save { font-family: var(--mono); font-size: 10px; padding: 3px 7px; border-radius: 100px; background: rgba(255,90,54,0.18); color: var(--vv-coral); }
+  #view-vitrine .bt-opt.active .bt-save { background: rgba(18,22,10,0.16); color: #12160A; }
+  #view-vitrine .pricing-equiv { font-size: 12.5px; color: var(--vv-volt); margin: 2px 0 0; min-height: 18px; }
+
+  /* ---------- Sélecteur de période dans l'app ---------- */
+  #view-app .interval-switch { display: flex; gap: 8px; margin: 14px 0 12px; }
+  #view-app .interval-opt {
+    flex: 1; padding: 12px 10px; border-radius: 12px; cursor: pointer; text-align: left;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+    color: var(--blanc); font-family: inherit; font-size: 13px; transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  #view-app .interval-opt strong { display: block; font-size: 15px; margin-bottom: 2px; }
+  #view-app .interval-opt small { color: var(--gris); font-size: 11.5px; }
+  #view-app .interval-opt.active { border-color: var(--vert); background: rgba(212,255,63,0.08); }
+  #view-app .interval-opt.active small { color: var(--vert); }
+
+
+  /* ---------- Section « Comment ça marche » : écrans qui défilent ---------- */
+  #view-vitrine .how { display: grid; grid-template-columns: 1fr 300px; gap: 60px; align-items: start; }
+  #view-vitrine .how-steps { display: flex; flex-direction: column; gap: 10px; }
+  #view-vitrine .how-step {
+    display: flex; gap: 18px; padding: 22px 22px 22px 20px; border-radius: 18px; cursor: pointer;
+    border: 1px solid transparent; background: transparent;
+    opacity: 0.42; transition: opacity 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  }
+  #view-vitrine .how-step.is-on {
+    opacity: 1; background: rgba(255,255,255,0.035); border-color: rgba(212,255,63,0.22);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  }
+  #view-vitrine .how-num {
+    font-family: var(--mono); font-size: 12px; flex: none; width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--vv-muted);
+    border: 1px solid var(--vv-line-bright); transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  #view-vitrine .how-step.is-on .how-num { color: #12160A; background: var(--vv-volt); border-color: var(--vv-volt); }
+  #view-vitrine .how-step h3 { font-family: var(--display); font-weight: 700; font-size: 19px; margin: 4px 0 6px; letter-spacing: -0.01em; }
+  #view-vitrine .how-step p { font-size: 14.5px; color: var(--vv-muted); line-height: 1.5; margin: 0; max-width: 42ch; }
+  #view-vitrine .how-step.is-on p { color: var(--vv-text); }
+
+  #view-vitrine .how-sticky { position: sticky; top: 90px; }
+  #view-vitrine .how-phone { position: relative; }
+  #view-vitrine .how-phone .phone { width: 300px; }
+  #view-vitrine .how-phone .phone-screen { padding: 50px 16px 18px; min-height: 410px; }
+  #view-vitrine .how-screens { position: relative; min-height: 340px; }
+  #view-vitrine .how-screen {
+    position: absolute; inset: 0; opacity: 0; transform: translateY(14px) scale(0.98);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.16,1,0.3,1); pointer-events: none;
+  }
+  #view-vitrine .how-screen.is-on { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { #view-vitrine .how-screen { transition: none; } }
+
+  #view-vitrine .scr-head { font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.09em; color: var(--vv-muted); margin: 0 0 14px; display: flex; justify-content: space-between; }
+  #view-vitrine .scr-head b { color: var(--vv-volt); font-weight: 500; }
+  #view-vitrine .scr-big { font-family: var(--display); font-weight: 800; font-size: 34px; line-height: 1; margin: 0 0 4px; }
+  #view-vitrine .scr-cap { font-size: 12px; color: var(--vv-muted); margin: 0 0 18px; }
+
+  /* barres de sommeil */
+  #view-vitrine .scr-bars { display: flex; align-items: flex-end; gap: 8px; height: 104px; margin-bottom: 14px; }
+  #view-vitrine .scr-bars i { flex: 1; border-radius: 5px 5px 3px 3px; background: rgba(212,255,63,0.55); display: block; }
+  #view-vitrine .scr-bars i.low { background: rgba(255,90,54,0.75); }
+  #view-vitrine .scr-days { display: flex; gap: 8px; font-family: var(--mono); font-size: 9px; color: var(--vv-muted); }
+  #view-vitrine .scr-days span { flex: 1; text-align: center; }
+
+  /* lignes de charge */
+  #view-vitrine .scr-row { margin-bottom: 14px; }
+  #view-vitrine .scr-row-top { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
+  #view-vitrine .scr-row-top span:last-child { font-family: var(--mono); font-size: 11px; color: var(--vv-muted); }
+  #view-vitrine .scr-track { height: 7px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  #view-vitrine .scr-fill { height: 100%; border-radius: 4px; background: var(--vv-volt); }
+  #view-vitrine .scr-fill.coral { background: var(--vv-coral); }
+
+  /* lignes repas */
+  #view-vitrine .scr-meal { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.045); margin-bottom: 8px; font-size: 12.5px; }
+  #view-vitrine .scr-meal em { margin-left: auto; font-style: normal; font-family: var(--mono); font-size: 11px; color: var(--vv-volt); }
+  #view-vitrine .scr-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--vv-volt); flex: none; }
+  #view-vitrine .scr-dot.coral { background: var(--vv-coral); }
+
+  /* écran final : verdict */
+  #view-vitrine .scr-verdict { text-align: center; padding-top: 6px; }
+  #view-vitrine .scr-ring { position: relative; width: 132px; margin: 0 auto 14px; }
+  #view-vitrine .scr-ring-num { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 30px; }
+  #view-vitrine .scr-action { background: rgba(212,255,63,0.09); border: 1px solid rgba(212,255,63,0.25); border-radius: 13px; padding: 13px 14px; font-size: 12.5px; line-height: 1.45; text-align: left; }
+  #view-vitrine .scr-action b { color: var(--vv-volt); display: block; margin-bottom: 4px; font-size: 11px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.07em; }
+
+  @media (max-width: 900px) {
+    #view-vitrine .how { grid-template-columns: 1fr; gap: 8px; }
+    #view-vitrine .how-sticky { position: sticky; top: 8px; z-index: 5; order: -1; margin: 0 auto 18px; }
+    #view-vitrine .how-phone .phone { width: 244px; }
+    #view-vitrine .how-phone .phone-screen { padding: 46px 14px 16px; min-height: 340px; }
+    #view-vitrine .how-screens { min-height: 282px; }
+    #view-vitrine .how-step { padding: 16px; }
+    #view-vitrine .how-step p { font-size: 13.5px; }
+  }
+
+  /* ======================================================================
+     PARTIE 1.45 — PAYWALL (après le premier score)
+     ====================================================================== */
+  #paywall {
+    position: fixed; inset: 0; z-index: 4000; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+    background: rgba(6,8,10,0.78); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    font-family: 'Inter', sans-serif; color: #ECEAE4;
+    overflow-y: auto;
+  }
+  #paywall.show { display: flex; }
+  #paywall .pw-card {
+    width: 100%; max-width: 430px; margin: auto; border-radius: 26px; padding: 30px 26px 24px;
+    background: linear-gradient(170deg, rgba(31,38,26,0.96), rgba(19,22,26,0.98));
+    border: 1px solid rgba(212,255,63,0.30);
+    box-shadow: 0 40px 90px -30px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.08);
+    animation: pw-in 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  @keyframes pw-in { from { opacity: 0; transform: translateY(22px) scale(0.97); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { #paywall .pw-card { animation: none; } }
+  #paywall .pw-score { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  #paywall .pw-score-num {
+    width: 62px; height: 62px; flex: none; border-radius: 50%; display: grid; place-items: center;
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; color: #D4FF3F;
+    background: rgba(212,255,63,0.10); border: 2px solid rgba(212,255,63,0.45);
+  }
+  #paywall .pw-score-txt { font-size: 13.5px; color: #8D9299; line-height: 1.45; }
+  #paywall .pw-score-txt strong { color: #ECEAE4; display: block; font-size: 15px; margin-bottom: 3px; }
+  #paywall h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 23px; line-height: 1.2; letter-spacing: -0.02em; margin: 0 0 10px; }
+  #paywall .pw-sub { font-size: 14px; line-height: 1.5; color: #8D9299; margin: 0 0 20px; }
+  #paywall .pw-list { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+  #paywall .pw-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; line-height: 1.45; }
+  #paywall .pw-list svg { width: 15px; height: 15px; flex: none; margin-top: 2px; color: #D4FF3F; }
+  #paywall .pw-offer {
+    display: flex; gap: 10px; width: 100%; padding: 14px; margin-bottom: 10px; cursor: pointer; text-align: left;
+    border-radius: 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.10);
+    color: #ECEAE4; font-family: inherit; align-items: center; justify-content: space-between;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  #paywall .pw-offer.active { border-color: #D4FF3F; background: rgba(212,255,63,0.09); }
+  #paywall .pw-offer-name { font-weight: 600; font-size: 14.5px; }
+  #paywall .pw-offer-sub { font-size: 12px; color: #8D9299; margin-top: 3px; }
+  #paywall .pw-offer.active .pw-offer-sub { color: #D4FF3F; }
+  #paywall .pw-offer-price { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 18px; white-space: nowrap; }
+  #paywall .pw-tag { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em; background: rgba(255,90,54,0.18); color: #FF8A6B; padding: 3px 7px; border-radius: 100px; margin-left: 8px; }
+  #paywall .pw-cta {
+    width: 100%; height: 54px; margin-top: 8px; border: none; border-radius: 14px; cursor: pointer;
+    background: linear-gradient(180deg, rgba(212,255,63,0.96), rgba(186,232,48,0.92)); color: #12160A;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    box-shadow: 0 12px 30px -12px rgba(212,255,63,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  #paywall .pw-cta:hover { filter: brightness(1.06); }
+  #paywall .pw-cta:active { transform: translateY(1px); }
+  #paywall .pw-cta:disabled { opacity: 0.6; cursor: not-allowed; }
+  #paywall .pw-free {
+    display: block; width: 100%; margin-top: 14px; padding: 8px; background: none; border: none;
+    color: #8D9299; font-family: inherit; font-size: 13px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+  }
+  #paywall .pw-free:hover { color: #ECEAE4; }
+  #paywall .pw-legal { font-size: 11px; line-height: 1.45; color: #6d7278; text-align: center; margin: 12px 0 0; }
+  #paywall .pw-legal a { color: #8D9299; }
+  #paywall :focus-visible { outline: 2px solid #D4FF3F; outline-offset: 2px; }
+
   /* ======================================================================
      PARTIE 1.5 — LOGIN / INSCRIPTION (namespace #view-login)
      ====================================================================== */
@@ -1397,68 +1686,185 @@
 
   <section class="hero">
     <div>
-      <p class="eyebrow">Un score. Une action.</p>
-      <h1 class="vitrine-title">MyWattUp te dit <span class="accent">quoi faire aujourd'hui</span> pour progresser.</h1>
-      <p class="hero-sub">Sommeil, activité et alimentation croisés en un coach quotidien simple — pensé pour vivre dans ta poche, pas dans un onglet de navigateur.</p>
+      <p class="eyebrow">Ton énergie, expliquée</p>
+      <h1 class="vitrine-title">8 h de sommeil.<br />Et tu te lèves <span class="accent">quand même vidé.</span></h1>
+      <p class="hero-sub">Le problème n'est presque jamais le sommeil seul. MyWattUp croise tes nuits, tes séances et ce que tu manges, puis te sort un score d'énergie et les deux leviers à corriger aujourd'hui.</p>
       <div class="cta-row">
-        <button class="btn-primary" id="btnInstall">Voir mon conseil du jour — gratuit</button>
-        <a href="#comment" class="btn-ghost">Comment ça marche →</a>
+        <button class="btn-primary" id="btnInstall">Voir mon score — gratuit</button>
+        <a href="#comment" class="btn-ghost">Comment ça marche</a>
       </div>
       <button class="link-secondary" id="btnGoLogin2" style="border:none;background:none;padding:0;margin-top:18px;">Déjà un compte ? Se connecter</button>
     </div>
+
+    <!-- Maquette téléphone : l'utilisateur voit l'écran réel de l'app en 2 secondes -->
     <div class="dial-frame">
-      <div class="dial-readout">
-        <span>Score du jour</span>
-        <span class="dial-live">En direct</span>
+      <div class="phone-glow"></div>
+
+      <div class="float-card fc-1">
+        <div class="fc-num">+12</div>
+        <span class="fc-label">score cette semaine</span>
       </div>
-      <div class="dial-body">
-        <div class="sparks"><i></i><i></i><i></i><i></i></div>
-        <svg class="dial-svg" width="128" height="128" viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#E6FF7A"/>
-              <stop offset="55%" stop-color="#D4FF3F"/>
-              <stop offset="100%" stop-color="#8C9E2E"/>
-            </linearGradient>
-          </defs>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
-          <circle class="vv-dial-ring" cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" transform="rotate(-90 50 50)"/>
-          <text class="vv-dial-num" x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#ECEAE4" font-family="Bricolage Grotesque, sans-serif">0</text>
-        </svg>
-        <ul class="dial-legend">
-          <li><span class="dot" style="background:#D4FF3F"></span>Sommeil — 7h40</li>
-          <li><span class="dot" style="background:#FF5A36"></span>Activité — atteinte</li>
-          <li><span class="dot" style="background:#E6FF7A"></span>Forme — bonne</li>
-        </ul>
+      <div class="float-card fc-2">
+        <div class="fc-num">7 j</div>
+        <span class="fc-label">série sans rupture</span>
       </div>
-      <div class="action-box">
-        <div class="dot"></div>
-        <p>Ton conseil : séance modérée aujourd'hui + repas riche en protéines ce soir.</p>
+      <div class="float-card fc-3">
+        <div class="fc-num">52</div>
+        <span class="fc-label">produits scannés</span>
+      </div>
+
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-topline">
+            <span>Aujourd'hui</span>
+            <span class="dial-live">En direct</span>
+          </div>
+
+          <div class="dial-body">
+            <div class="sparks"><i></i><i></i><i></i><i></i></div>
+            <svg class="dial-svg" width="128" height="128" viewBox="0 0 100 100">
+              <defs>
+                <linearGradient id="dialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#E6FF7A"/>
+                  <stop offset="55%" stop-color="#D4FF3F"/>
+                  <stop offset="100%" stop-color="#8C9E2E"/>
+                </linearGradient>
+              </defs>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
+              <circle class="vv-dial-ring" cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264" transform="rotate(-90 50 50)"/>
+              <text class="vv-dial-num" x="50" y="55" text-anchor="middle" font-size="22" font-weight="800" fill="#ECEAE4" font-family="Bricolage Grotesque, sans-serif">0</text>
+            </svg>
+            <ul class="dial-legend">
+              <li><span class="dot" style="background:#D4FF3F"></span>Sommeil — 7h40</li>
+              <li><span class="dot" style="background:#FF5A36"></span>Activité — atteinte</li>
+              <li><span class="dot" style="background:#E6FF7A"></span>Forme — bonne</li>
+            </ul>
+          </div>
+
+          <div class="action-box">
+            <div class="dot"></div>
+            <p>Séance modérée aujourd'hui, et 30 g de protéines de plus ce soir.</p>
+          </div>
+
+          <div class="phone-tabs"><span></span><span></span><span></span><span></span></div>
+        </div>
       </div>
     </div>
   </section>
 
   <section class="section" id="comment">
     <div class="section-head reveal">
-      <p class="kicker">Pourquoi un score</p>
-      <h2>Trois signaux, une explication, une action</h2>
-      <p>Un chiffre seul ne veut rien dire. Chaque score MyWattUp vient avec ce qui l'a produit et ce qu'il faut en faire — pas besoin de jongler entre trois applis.</p>
+      <p class="kicker">Comment ça marche</p>
+      <h2>Trois signaux. Un score. Une action.</h2>
     </div>
-    <div class="factors">
-      <div class="factor reveal">
-        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><path d="M3 12h4l2-8 4 16 2-8h6" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h3 class="factor-title">Sommeil</h3>
-        <p class="factor-desc">Durée et régularité de tes nuits, pour savoir si ton corps est prêt à encaisser une séance intense.</p>
+
+    <!-- Défilement : l'écran de droite change au fur et à mesure de la lecture -->
+    <div class="how">
+      <div class="how-steps" id="howSteps">
+        <div class="how-step is-on" data-step="0">
+          <div class="how-num">01</div>
+          <div>
+            <h3>Tes nuits</h3>
+            <p>Durée et régularité. Deux nuits courtes suffisent à plomber la semaine.</p>
+          </div>
+        </div>
+        <div class="how-step" data-step="1">
+          <div class="how-num">02</div>
+          <div>
+            <h3>Tes séances</h3>
+            <p>La charge des derniers jours, comparée à ta récupération réelle.</p>
+          </div>
+        </div>
+        <div class="how-step" data-step="2">
+          <div class="how-num">03</div>
+          <div>
+            <h3>Tes repas</h3>
+            <p>Ce que tu as mangé face à l'effort fourni, et à celui qui arrive.</p>
+          </div>
+        </div>
+        <div class="how-step" data-step="3">
+          <div class="how-num">04</div>
+          <div>
+            <h3>Ce que tu fais aujourd'hui</h3>
+            <p>Le score, et les deux corrections à appliquer maintenant.</p>
+          </div>
+        </div>
       </div>
-      <div class="factor reveal">
-        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#D4FF3F" stroke-width="2"/><path d="M12 7v5l3 3" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round"/></svg>
-        <h3 class="factor-title">Activité</h3>
-        <p class="factor-desc">Charge d'entraînement récente comparée à ta capacité de récupération du moment.</p>
-      </div>
-      <div class="factor reveal">
-        <svg class="factor-icon" viewBox="0 0 24 24" fill="none"><path d="M4 4v16M4 4h6a3 3 0 013 3v10M13 4v16M20 4v16" stroke="#D4FF3F" stroke-width="2" stroke-linecap="round"/></svg>
-        <h3 class="factor-title">Nutrition</h3>
-        <p class="factor-desc">Ce que tu as mangé récemment, mis en regard de l'effort fourni et de celui à venir.</p>
+
+      <div class="how-sticky">
+        <div class="how-phone">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="how-screens">
+
+                <!-- 01 — Sommeil -->
+                <div class="how-screen is-on" data-screen="0">
+                  <p class="scr-head"><span>Sommeil</span><b>7 jours</b></p>
+                  <div class="scr-big">7h40</div>
+                  <p class="scr-cap">Moyenne — 2 nuits sous 6 h</p>
+                  <div class="scr-bars">
+                    <i style="height:78%"></i><i style="height:92%"></i><i class="low" style="height:44%"></i>
+                    <i style="height:84%"></i><i style="height:70%"></i><i class="low" style="height:38%"></i><i style="height:88%"></i>
+                  </div>
+                  <div class="scr-days"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+                </div>
+
+                <!-- 02 — Activité -->
+                <div class="how-screen" data-screen="1">
+                  <p class="scr-head"><span>Activité</span><b>Charge</b></p>
+                  <div class="scr-big">Élevée</div>
+                  <p class="scr-cap">Récupération estimée : 62 %</p>
+                  <div class="scr-row">
+                    <div class="scr-row-top"><span>Course</span><span>3 sorties</span></div>
+                    <div class="scr-track"><div class="scr-fill" style="width:82%"></div></div>
+                  </div>
+                  <div class="scr-row">
+                    <div class="scr-row-top"><span>Renfo</span><span>2 séances</span></div>
+                    <div class="scr-track"><div class="scr-fill" style="width:58%"></div></div>
+                  </div>
+                  <div class="scr-row">
+                    <div class="scr-row-top"><span>Récupération</span><span>62 %</span></div>
+                    <div class="scr-track"><div class="scr-fill coral" style="width:62%"></div></div>
+                  </div>
+                </div>
+
+                <!-- 03 — Nutrition -->
+                <div class="how-screen" data-screen="2">
+                  <p class="scr-head"><span>Nutrition</span><b>Aujourd'hui</b></p>
+                  <div class="scr-big">78 g</div>
+                  <p class="scr-cap">Protéines — cible 120 g</p>
+                  <div class="scr-track" style="margin-bottom:18px;"><div class="scr-fill" style="width:65%"></div></div>
+                  <div class="scr-meal"><span class="scr-dot"></span>Petit-déjeuner<em>24 g</em></div>
+                  <div class="scr-meal"><span class="scr-dot"></span>Déjeuner<em>41 g</em></div>
+                  <div class="scr-meal"><span class="scr-dot coral"></span>Dîner<em>à venir</em></div>
+                </div>
+
+                <!-- 04 — Score + action -->
+                <div class="how-screen" data-screen="3">
+                  <p class="scr-head"><span>Score du jour</span><b>En direct</b></p>
+                  <div class="scr-verdict">
+                    <div class="scr-ring">
+                      <svg viewBox="0 0 100 100" width="132" height="132">
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
+                        <circle cx="50" cy="50" r="42" fill="none" stroke="url(#dialGrad)" stroke-width="9" stroke-linecap="round"
+                                stroke-dasharray="264" stroke-dashoffset="69" transform="rotate(-90 50 50)"/>
+                      </svg>
+                      <div class="scr-ring-num">74</div>
+                    </div>
+                    <div class="scr-action">
+                      <b>Ton action</b>
+                      Séance modérée aujourd'hui, et 40 g de protéines de plus au dîner.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="phone-tabs"><span></span><span></span><span></span><span></span></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1478,11 +1884,38 @@
     </div>
   </section>
 
+  <!-- ======================================================================
+       BANDEAU DÉFILANT
+       Tant qu'il n'y a pas de vrais utilisateurs : faits produit vérifiables.
+       Pour passer aux vrais avis, remplace le contenu des .avis-card par les
+       témoignages reçus (prénom + initiale) et DUPLIQUE la liste complète une
+       seconde fois dans .avis-track — c'est la copie qui rend la boucle infinie.
+       ====================================================================== -->
+  <section class="avis-band" aria-label="Ce que fait MyWattUp">
+    <div class="avis-track">
+      <div class="avis-card"><p>Un score d'énergie recalculé chaque matin à partir de tes nuits, tes séances et tes repas.</p><div class="avis-meta"><span class="avis-ini">01</span>Le principe</div></div>
+      <div class="avis-card"><p>Scanne un code-barres : verdict immédiat, adapté à ton objectif et à tes allergies — pas une note générique.</p><div class="avis-meta"><span class="avis-ini">02</span>Scanner</div></div>
+      <div class="avis-card"><p>Les repas sont générés pour la journée en cours, pas pour une semaine que tu ne suivras pas.</p><div class="avis-meta"><span class="avis-ini">03</span>Repas du jour</div></div>
+      <div class="avis-card"><p>Tes données restent les tiennes : export et suppression du compte en deux clics.</p><div class="avis-meta"><span class="avis-ini">04</span>RGPD</div></div>
+      <div class="avis-card"><p>Gratuit sans limite de temps. Le Pro ne débloque pas des fonctions cachées, il retire les quotas.</p><div class="avis-meta"><span class="avis-ini">05</span>Freemium</div></div>
+      <!-- copie pour la boucle infinie -->
+      <div class="avis-card"><p>Un score d'énergie recalculé chaque matin à partir de tes nuits, tes séances et tes repas.</p><div class="avis-meta"><span class="avis-ini">01</span>Le principe</div></div>
+      <div class="avis-card"><p>Scanne un code-barres : verdict immédiat, adapté à ton objectif et à tes allergies — pas une note générique.</p><div class="avis-meta"><span class="avis-ini">02</span>Scanner</div></div>
+      <div class="avis-card"><p>Les repas sont générés pour la journée en cours, pas pour une semaine que tu ne suivras pas.</p><div class="avis-meta"><span class="avis-ini">03</span>Repas du jour</div></div>
+      <div class="avis-card"><p>Tes données restent les tiennes : export et suppression du compte en deux clics.</p><div class="avis-meta"><span class="avis-ini">04</span>RGPD</div></div>
+      <div class="avis-card"><p>Gratuit sans limite de temps. Le Pro ne débloque pas des fonctions cachées, il retire les quotas.</p><div class="avis-meta"><span class="avis-ini">05</span>Freemium</div></div>
+    </div>
+  </section>
+
   <section class="section" id="tarifs">
     <div class="section-head reveal">
       <p class="kicker">Prix</p>
       <h2>Gratuit pour commencer, Pro pour ne plus y penser</h2>
       <p>Toute l'expérience MyWattUp est accessible gratuitement. L'offre Pro retire les quotas quotidiens et hebdomadaires pour un usage sans limite.</p>
+    </div>
+    <div class="billing-toggle" role="group" aria-label="Période de facturation">
+      <button type="button" class="bt-opt" data-interval="month">Mensuel</button>
+      <button type="button" class="bt-opt active" data-interval="year">Annuel <span class="bt-save">-29%</span></button>
     </div>
     <div class="pricing-grid">
       <div class="pricing-card reveal">
@@ -1500,7 +1933,8 @@
       </div>
       <div class="pricing-card featured reveal">
         <h3 class="pricing-plan-name">Pro</h3>
-        <div class="pricing-price"><span class="amount">6,99€</span><span class="period">/ mois</span></div>
+        <div class="pricing-price"><span class="amount" id="proAmount">59,99€</span><span class="period" id="proPeriod">/ an</span></div>
+        <p class="pricing-equiv" id="proEquiv">Soit 4,99€ / mois — 2 mois offerts</p>
         <p class="pricing-plan-sub">Pour un usage quotidien sans limite</p>
         <ul class="pricing-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tout ce qui est inclus dans l'offre Gratuite</li>
@@ -1685,6 +2119,108 @@
   </div>
 </div>
 <!-- fin #view-login -->
+
+<!-- ======================================================================
+     PAYWALL — affiché une seule fois, juste après le premier score.
+     Volontairement placé APRÈS l'onboarding : un utilisateur qui n'a rien
+     vu du produit ne paie pas, il ferme l'onglet.
+     ====================================================================== -->
+<div id="paywall" role="dialog" aria-modal="true" aria-labelledby="pwTitle">
+  <div class="pw-card">
+    <div class="pw-score">
+      <div class="pw-score-num" id="paywallScore">--</div>
+      <div class="pw-score-txt">
+        <strong>Ton premier score est prêt.</strong>
+        Un score, c'est un constat. Ce qui change quelque chose, c'est ce que tu fais dans les 24 h qui suivent.
+      </div>
+    </div>
+
+    <h2 id="pwTitle">Débloque ce qui fait bouger ce chiffre</h2>
+    <p class="pw-sub">L'offre Gratuite te laisse 1 conseil, 1 repas et 5 scans par jour. Le Pro retire les compteurs.</p>
+
+    <ul class="pw-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Conseils IA illimités, recalculés à chaque changement</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Repas régénérés autant de fois que nécessaire</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scanner sans quota, en courses comme au frigo</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet de tes scores et de tes conseils</li>
+    </ul>
+
+    <button type="button" class="pw-offer active" data-interval="year">
+      <span>
+        <span class="pw-offer-name">Annuel<span class="pw-tag">2 mois offerts</span></span>
+        <span class="pw-offer-sub">Soit 4,99€ par mois</span>
+      </span>
+      <span class="pw-offer-price">59,99€</span>
+    </button>
+    <button type="button" class="pw-offer" data-interval="month">
+      <span>
+        <span class="pw-offer-name">Mensuel</span>
+        <span class="pw-offer-sub">Sans engagement</span>
+      </span>
+      <span class="pw-offer-price">6,99€</span>
+    </button>
+
+    <button type="button" class="pw-cta" id="paywallCta">Passer Pro — 59,99€/an</button>
+    <button type="button" class="pw-free" id="paywallSkip">Continuer en gratuit</button>
+
+    <p class="pw-legal">Paiement Stripe. Reconduction automatique jusqu'à résiliation, annulable à tout moment depuis ton compte.
+      <a href="/cgu.html" target="_blank" rel="noopener">Conditions générales</a>.</p>
+  </div>
+</div>
+
+<script>
+  // Bascule Mensuel / Annuel sur la grille de tarifs de la vitrine.
+  (function () {
+    var opts = document.querySelectorAll('#view-vitrine .bt-opt');
+    var amount = document.getElementById('proAmount');
+    var period = document.getElementById('proPeriod');
+    var equiv = document.getElementById('proEquiv');
+    if (!opts.length || !amount) return;
+    opts.forEach(function (opt) {
+      opt.addEventListener('click', function () {
+        opts.forEach(function (o) { o.classList.remove('active'); });
+        opt.classList.add('active');
+        var annuel = opt.dataset.interval === 'year';
+        amount.textContent = annuel ? '59,99€' : '6,99€';
+        period.textContent = annuel ? '/ an' : '/ mois';
+        equiv.textContent = annuel ? 'Soit 4,99€ / mois — 2 mois offerts' : 'Facturé chaque mois, sans engagement';
+      });
+    });
+  })();
+</script>
+<script>
+  // Section « Comment ça marche » : l'écran du téléphone suit la lecture.
+  (function () {
+    var steps = Array.prototype.slice.call(document.querySelectorAll('#view-vitrine .how-step'));
+    var screens = Array.prototype.slice.call(document.querySelectorAll('#view-vitrine .how-screen'));
+    if (!steps.length || !screens.length) return;
+
+    var current = -1;
+    function activate(n) {
+      if (n === current) return;
+      current = n;
+      steps.forEach(function (st, k) { st.classList.toggle('is-on', k === n); });
+      screens.forEach(function (sc, k) { sc.classList.toggle('is-on', k === n); });
+    }
+
+    // Clic direct sur une étape (utile au clavier et sur mobile).
+    steps.forEach(function (st) {
+      st.addEventListener('click', function () { activate(parseInt(st.dataset.step, 10)); });
+    });
+
+    if (!('IntersectionObserver' in window)) { activate(0); return; }
+
+    // L'étape la plus proche du milieu de l'écran devient active.
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) activate(parseInt(entry.target.dataset.step, 10));
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+    steps.forEach(function (st) { io.observe(st); });
+  })();
+</script>
+
 
 
 <!-- ======================================================================
@@ -2685,7 +3221,16 @@
           <span class="plan-card-name">Pro</span>
           <span class="plan-pill pro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>Recommandé</span>
         </div>
-        <div class="plan-card-price">6,99€<span> / mois</span></div>
+        <div class="plan-card-price" id="proPlanPrice">59,99€<span> / an</span></div>
+
+        <div class="interval-switch" role="group" aria-label="Période de facturation">
+          <button type="button" class="interval-opt" data-interval="month">
+            <strong>6,99€ / mois</strong><small>Sans engagement</small>
+          </button>
+          <button type="button" class="interval-opt active" data-interval="year">
+            <strong>59,99€ / an</strong><small>4,99€/mois — 2 mois offerts</small>
+          </button>
+        </div>
         <ul class="plan-feature-list">
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Scans de produits illimités</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Générations de repas illimitées, à la demande</li>
@@ -2693,12 +3238,12 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Historique complet des conseils IA + réponses prioritaires</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Support prioritaire</li>
         </ul>
-        <p class="plan-legal-note">Abonnement de 6,99 € par mois, reconduit automatiquement jusqu'à
+        <p class="plan-legal-note" id="proLegalNote">Abonnement de 59,99 € par an, reconduit automatiquement jusqu'à
           résiliation. En confirmant, tu acceptes les
           <a href="/cgu.html" target="_blank" rel="noopener">conditions générales</a> et demandes
           l'accès immédiat à l'offre Pro, ce qui met fin à ton droit de rétractation une fois le
           service fourni.</p>
-        <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 6,99€/mois</button>
+        <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 59,99€/an</button>
       </div>
 
       <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
@@ -3190,7 +3735,81 @@
     if (!location.hash) location.hash = '#dashboard';
     await loadUserPlan();
     routeApp();
+    if (paywallPending && !isPro()) {
+      paywallPending = false;
+      openPaywall();
+    }
   }
+
+  // -------------------------------------------------------------
+  // PAYWALL — une seule fois par compte, juste après le premier score.
+  // On ne bloque pas l'accès : l'utilisateur peut continuer en gratuit.
+  // Un mur de paiement avant la moindre valeur vue ne convertit pas,
+  // il fait fermer l'onglet.
+  // -------------------------------------------------------------
+  let paywallPending = false;
+  let paywallInterval = 'year';
+
+  function paywallKey() {
+    return 'mwu_paywall_v1_' + (user ? user.id : 'anon');
+  }
+
+  function openPaywall() {
+    const el = document.getElementById('paywall');
+    if (!el) return;
+    try { if (localStorage.getItem(paywallKey())) return; } catch (e) {}
+
+    el.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    // Le score du dashboard est calculé en asynchrone : on le récupère dès
+    // qu'il est affiché, sans bloquer l'ouverture du paywall.
+    const scoreEl = document.getElementById('scoreValue');
+    const target = document.getElementById('paywallScore');
+    let tries = 0;
+    (function pollScore() {
+      if (!scoreEl || !target) return;
+      const v = (scoreEl.textContent || '').trim();
+      if (v && v !== '--') { target.textContent = v; return; }
+      if (tries++ < 24) setTimeout(pollScore, 250);
+    })();
+  }
+
+  function closePaywall() {
+    const el = document.getElementById('paywall');
+    if (!el) return;
+    el.classList.remove('show');
+    document.body.style.overflow = '';
+    try { localStorage.setItem(paywallKey(), '1'); } catch (e) {}
+  }
+
+  (function initPaywall() {
+    const el = document.getElementById('paywall');
+    if (!el) return;
+    const offers = el.querySelectorAll('.pw-offer');
+    const cta = document.getElementById('paywallCta');
+
+    offers.forEach(offer => {
+      offer.addEventListener('click', () => {
+        offers.forEach(o => o.classList.remove('active'));
+        offer.classList.add('active');
+        paywallInterval = offer.dataset.interval;
+        cta.textContent = paywallInterval === 'year' ? 'Passer Pro — 59,99€/an' : 'Passer Pro — 6,99€/mois';
+      });
+    });
+
+    cta.addEventListener('click', (e) => {
+      // Si le paiement aboutit, on ne réaffichera pas le paywall à ce compte.
+      try { localStorage.setItem(paywallKey(), '1'); } catch (err) {}
+      goToStripe('create-checkout-session', e.currentTarget, { interval: paywallInterval });
+    });
+
+    document.getElementById('paywallSkip').addEventListener('click', closePaywall);
+    el.addEventListener('click', (e) => { if (e.target === el) closePaywall(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && el.classList.contains('show')) closePaywall();
+    });
+  })();
 
   document.querySelectorAll('.js-go-login').forEach(btn => btn.addEventListener('click', goToAppOrLogin));
   document.getElementById('btnGoLogin2').addEventListener('click', goToAppOrLogin);
@@ -3289,9 +3908,22 @@
       } catch (err) {
         console.error('Connexion Google :', err);
         msg.textContent = "Connexion Google indisponible — réessaie ou utilise ton email.";
-        msg.classList.add('error');
+        msg.className = 'msg error';
         googleBtn.disabled = false;
       }
+    });
+
+    // Retour arrière depuis Google : la page est restaurée depuis le cache du
+    // navigateur (bfcache) avec le bouton encore désactivé. On le réactive
+    // à chaque fois que la page redevient visible.
+    function reactiverGoogle() {
+      googleBtn.disabled = false;
+      if (msg.classList.contains('error')) { msg.textContent = ''; msg.className = 'msg'; }
+    }
+    window.addEventListener('pageshow', reactiverGoogle);
+    window.addEventListener('focus', reactiverGoogle);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) reactiverGoogle();
     });
 
     tabs.forEach(tab => {
@@ -3396,6 +4028,8 @@
           }, { onConflict: 'user_id' });
         if (measurementsError) throw measurementsError;
 
+        // Premier score calculé → on propose le Pro juste après (voir openPaywall).
+        paywallPending = true;
         showApp();
       } catch (err) {
         msg.textContent = err.message || "Une erreur est survenue.";
@@ -7584,7 +8218,7 @@
 
   // Appelle une Edge Function authentifiée (JWT de la session en cours) qui renvoie
   // { url } vers Stripe (Checkout ou Portail client), puis redirige le navigateur.
-  async function goToStripe(functionName, button) {
+  async function goToStripe(functionName, button, payload) {
     const originalLabel = button ? button.textContent : null;
     if (button) {
       button.disabled = true;
@@ -7603,6 +8237,8 @@
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
+        // { interval: 'month' | 'year' } — l'Edge Function choisit le price Stripe.
+        body: payload ? JSON.stringify(payload) : undefined,
       });
 
       const data = await res.json();
@@ -7640,8 +8276,33 @@
       if (msg) { msg.textContent = 'Paiement annulé — tu restes sur l\'offre Gratuite.'; msg.className = 'msg'; }
     }
 
-    document.getElementById('btnUpgradePro').addEventListener('click', (e) => {
-      goToStripe('create-checkout-session', e.currentTarget);
+    // Choix mensuel / annuel
+    const intervalOpts = document.querySelectorAll('#view-app .interval-opt');
+    const proPlanPrice = document.getElementById('proPlanPrice');
+    const proLegalNote = document.getElementById('proLegalNote');
+    const btnUpgrade = document.getElementById('btnUpgradePro');
+    let abonnementInterval = 'year';
+
+    intervalOpts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        intervalOpts.forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        abonnementInterval = opt.dataset.interval;
+        const annuel = abonnementInterval === 'year';
+        if (proPlanPrice) proPlanPrice.innerHTML = annuel ? '59,99€<span> / an</span>' : '6,99€<span> / mois</span>';
+        btnUpgrade.textContent = annuel ? 'Passer Pro — 59,99€/an' : 'Passer Pro — 6,99€/mois';
+        if (proLegalNote) {
+          proLegalNote.innerHTML = (annuel
+            ? "Abonnement de 59,99 € par an, reconduit automatiquement jusqu'à"
+            : "Abonnement de 6,99 € par mois, reconduit automatiquement jusqu'à")
+            + ' résiliation. En confirmant, tu acceptes les <a href="/cgu.html" target="_blank" rel="noopener">conditions générales</a>'
+            + " et demandes l'accès immédiat à l'offre Pro, ce qui met fin à ton droit de rétractation une fois le service fourni.";
+        }
+      });
+    });
+
+    btnUpgrade.addEventListener('click', (e) => {
+      goToStripe('create-checkout-session', e.currentTarget, { interval: abonnementInterval });
     });
     document.getElementById('btnManageBilling').addEventListener('click', (e) => {
       goToStripe('create-portal-session', e.currentTarget);
