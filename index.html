@@ -2036,6 +2036,65 @@
   #view-app .user-menu-dropdown { border-radius: 16px; }
   #view-app .plan-pill.free { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.16); color: #B9BDC4; }
 
+  /* ======================================================================
+     PARTIE 1.95 — FOND PHOTO DU HERO
+     Même traitement que les sites sportifs : photo plein cadre derrière le
+     hero, très assombrie, fondue vers le fond du site en bas et à gauche
+     pour que le titre reste lisible.
+     Pour changer la photo : dépose ton image dans /public/hero.jpg
+     (ou modifie --hero-image ci-dessous).
+     ====================================================================== */
+  #view-vitrine {
+    /* Nom actuel du fichier déposé sur GitHub. Quand tu l'auras renommé
+       (et idéalement converti en WebP/JPG, plus léger) : url('/hero.jpg') */
+    --hero-image: url('/df7d73c5-2739-4e11-b650-b912f3f7c8a9.png');
+    --hero-height: 900px;
+  }
+  #view-vitrine::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: var(--hero-height);
+    z-index: 0; pointer-events: none;
+    background-image:
+      /* 1. voile de lisibilité : noir à gauche, transparent vers la photo */
+      linear-gradient(100deg, var(--vv-bg) 4%, rgba(13,16,19,0.94) 30%, rgba(13,16,19,0.60) 58%, rgba(13,16,19,0.78) 100%),
+      /* 2. fondu haut (sous la nav) et bas (vers la section suivante) */
+      linear-gradient(180deg, rgba(13,16,19,0.92) 0%, rgba(13,16,19,0.15) 26%, rgba(13,16,19,0.45) 62%, rgba(13,16,19,0.95) 88%, var(--vv-bg) 100%),
+      /* 3. reflet volt, pour raccrocher la photo à l'identité */
+      radial-gradient(720px 420px at 72% 34%, rgba(212,255,63,0.10), transparent 70%),
+      /* 4. la photo */
+      var(--hero-image),
+      /* 5. repli si la photo est absente : dégradé nocturne */
+      linear-gradient(160deg, #1b2430 0%, #131a22 45%, #0D1013 100%);
+    /* La photo est au format portrait : sur grand écran on ne l'étire pas en
+       plein cadre (elle serait zoomée à l'extrême), on la cale en panneau
+       vertical à droite, derrière le téléphone. */
+    background-size: cover, cover, cover, auto 112%, cover;
+    background-position: center, center, center, right -4% center, center;
+    background-repeat: no-repeat;
+  }
+  /* Raccord entre le panneau photo et le fond, sinon on voit l'arête verticale */
+  #view-vitrine .hero-seam {
+    content: ''; position: absolute; top: 0; height: var(--hero-height); left: 0; right: 0;
+    z-index: 1; pointer-events: none;
+    background: linear-gradient(90deg, var(--vv-bg) 22%, rgba(13,16,19,0.55) 46%, transparent 62%);
+  }
+  /* Le contenu du hero passe devant le fond */
+  #view-vitrine nav, #view-vitrine .wrap { position: relative; z-index: 2; }
+  #view-vitrine .grain { z-index: 3; }
+
+  @media (max-width: 900px) {
+    #view-vitrine { --hero-height: 680px; }
+    #view-vitrine::after {
+      background-image:
+        linear-gradient(180deg, rgba(13,16,19,0.86) 0%, rgba(13,16,19,0.55) 30%, rgba(13,16,19,0.88) 72%, var(--vv-bg) 100%),
+        radial-gradient(600px 360px at 70% 30%, rgba(212,255,63,0.10), transparent 70%),
+        var(--hero-image),
+        linear-gradient(160deg, #1b2430 0%, #131a22 45%, #0D1013 100%);
+      background-size: cover, cover, cover, cover;
+      background-position: center, center, center 22%, center;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -2044,6 +2103,7 @@
      VUE 1 — VITRINE
      ====================================================================== -->
 <div id="view-vitrine">
+  <div class="hero-seam" aria-hidden="true"></div>
 <div class="field"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
 <div class="grain"></div>
 
