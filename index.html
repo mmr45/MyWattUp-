@@ -1749,6 +1749,123 @@
   #view-app .history-detail-verdict.neg { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .history-detail-verdict.neutral { background: rgba(255,255,255,0.06); color: var(--gris); }
   #view-app .history-detail-summary { font-size: 12px; color: var(--gris); line-height: 1.5; padding-top: 10px; }
+  /* ======================================================================
+     PARTIE 1.9 — BOUTONS : VERRE TEINTÉ VERT (placé en dernier pour gagner
+     sur les règles précédentes). Fond sombre translucide, halo vert,
+     texte volt : lisible sans éblouir comme un aplat plein.
+     ====================================================================== */
+  #view-vitrine .btn-primary,
+  #view-vitrine .pricing-card.featured .pricing-cta,
+  #view-login button[type="submit"],
+  #view-onboarding button[type="submit"],
+  #view-app .app-cta,
+  #view-app .btn-app,
+  #view-app button.cta-primary,
+  #paywall .pw-cta {
+    background: linear-gradient(180deg, rgba(212,255,63,0.20), rgba(212,255,63,0.07)) !important;
+    border: 1px solid rgba(212,255,63,0.42) !important;
+    color: #D9FF5C !important;
+    -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3);
+    box-shadow:
+      0 8px 28px -12px rgba(212,255,63,0.40),
+      inset 0 1px 0 rgba(255,255,255,0.14) !important;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease !important;
+    text-shadow: 0 0 18px rgba(212,255,63,0.30);
+  }
+  #view-vitrine .btn-primary:hover,
+  #view-vitrine .pricing-card.featured .pricing-cta:hover,
+  #view-login button[type="submit"]:hover,
+  #view-onboarding button[type="submit"]:hover,
+  #view-app .app-cta:hover,
+  #paywall .pw-cta:hover {
+    background: linear-gradient(180deg, rgba(212,255,63,0.30), rgba(212,255,63,0.12)) !important;
+    border-color: rgba(212,255,63,0.68) !important;
+    box-shadow:
+      0 12px 38px -12px rgba(212,255,63,0.55),
+      inset 0 1px 0 rgba(255,255,255,0.20) !important;
+    filter: none !important;
+  }
+  #view-vitrine .btn-primary:active,
+  #view-login button[type="submit"]:active,
+  #view-onboarding button[type="submit"]:active,
+  #view-app .app-cta:active,
+  #paywall .pw-cta:active { transform: translateY(1px) !important; }
+
+  /* Onglets et pastilles : même logique, plus de vert plein agressif */
+  #view-login .tab.active,
+  #view-vitrine .bt-opt.active {
+    background: linear-gradient(180deg, rgba(212,255,63,0.22), rgba(212,255,63,0.09)) !important;
+    color: #D9FF5C !important;
+    border: 1px solid rgba(212,255,63,0.45);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 18px -10px rgba(212,255,63,0.4) !important;
+  }
+  #view-vitrine .how-step.is-on .how-num {
+    background: rgba(212,255,63,0.18); color: #D9FF5C; border-color: rgba(212,255,63,0.5);
+  }
+  #view-onboarding fieldset.done .ob-step-num { background: rgba(212,255,63,0.20); color: #D9FF5C; border-color: rgba(212,255,63,0.5); }
+  #view-onboarding .ob-progress-fill { background: linear-gradient(90deg, rgba(255,90,54,0.75), rgba(212,255,63,0.85)); }
+
+  /* ======================================================================
+     PARTIE 1.91 — MENUS DÉROULANTS PERSONNALISÉS
+     Les <select> natifs affichent la liste du système (fond blanc, surlignage
+     bleu Windows). On garde le <select> pour la logique du formulaire et on
+     dessine la liste nous-mêmes.
+     ====================================================================== */
+  .sel { position: relative; width: 100%; }
+  .sel > select {
+    position: absolute; inset: 0; opacity: 0; pointer-events: none;
+    width: 100%; height: 100%; padding: 0; margin: 0; border: 0;
+  }
+  .sel-btn {
+    width: 100%; height: 48px; padding: 0 44px 0 14px; text-align: left;
+    display: flex; align-items: center; gap: 8px;
+    border-radius: 12px; cursor: pointer;
+    background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.10);
+    color: #ECEAE4; font-family: inherit; font-size: 14px;
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .sel-btn:hover { border-color: rgba(255,255,255,0.20); }
+  .sel-btn.is-empty { color: #8D9299; }
+  .sel.open .sel-btn, .sel-btn:focus-visible {
+    outline: none; border-color: rgba(212,255,63,0.55);
+    background: rgba(212,255,63,0.05);
+    box-shadow: 0 0 0 3px rgba(212,255,63,0.13);
+  }
+  .sel-chev {
+    position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+    width: 11px; height: 11px; pointer-events: none; color: #8D9299;
+    transition: transform 0.22s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sel.open .sel-chev { transform: translateY(-50%) rotate(180deg); color: #D9FF5C; }
+  .sel-list {
+    position: absolute; z-index: 60; top: calc(100% + 7px); left: 0; right: 0;
+    padding: 6px; border-radius: 16px; display: none;
+    background: rgba(16,20,24,0.93); border: 1px solid rgba(255,255,255,0.10);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4); backdrop-filter: blur(24px) saturate(1.4);
+    box-shadow: 0 30px 60px -22px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.06);
+    max-height: 260px; overflow-y: auto; overscroll-behavior: contain;
+  }
+  .sel.open .sel-list { display: block; animation: sel-in 0.2s cubic-bezier(0.16,1,0.3,1); }
+  .sel.drop-up .sel-list { top: auto; bottom: calc(100% + 7px); }
+  @keyframes sel-in { from { opacity: 0; transform: translateY(-6px) scale(0.98); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .sel.open .sel-list { animation: none; } .sel-chev { transition: none; } }
+  .sel-opt {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 11px 12px; border-radius: 11px; font-size: 14px; color: #ECEAE4;
+    cursor: pointer; line-height: 1.35;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .sel-opt[data-empty="1"] { color: #8D9299; }
+  .sel-opt.hl { background: rgba(212,255,63,0.10); }
+  .sel-opt.is-selected { color: #D9FF5C; background: rgba(212,255,63,0.07); }
+  .sel-opt.is-selected::after {
+    content: ''; width: 6px; height: 11px; flex: none; margin-right: 2px;
+    border: solid #D9FF5C; border-width: 0 2px 2px 0; transform: rotate(43deg) translateY(-1px);
+  }
+  .sel-list::-webkit-scrollbar { width: 8px; }
+  .sel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 8px; }
+
 </style>
 </head>
 <body>
@@ -2515,6 +2632,133 @@
   </div>
 </div>
 <!-- fin #view-onboarding -->
+
+<script>
+  // Menus déroulants personnalisés : le <select> reste la source de vérité
+  // (valeur, validation, FormData) ; on n'habille que l'affichage.
+  (function () {
+    var CHEV = '<svg class="sel-chev" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4.2 6 8.2l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var ouvert = null;
+
+    function habiller(select) {
+      if (select.dataset.selDone === '1' || select.multiple) return;
+      select.dataset.selDone = '1';
+
+      var wrap = document.createElement('div');
+      wrap.className = 'sel';
+      select.parentNode.insertBefore(wrap, select);
+      wrap.appendChild(select);
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sel-btn';
+      btn.setAttribute('aria-haspopup', 'listbox');
+      btn.setAttribute('aria-expanded', 'false');
+      wrap.appendChild(btn);
+      wrap.insertAdjacentHTML('beforeend', CHEV);
+
+      var list = document.createElement('div');
+      list.className = 'sel-list';
+      list.setAttribute('role', 'listbox');
+      wrap.appendChild(list);
+
+      Array.prototype.forEach.call(select.options, function (opt, i) {
+        var el = document.createElement('div');
+        el.className = 'sel-opt';
+        el.setAttribute('role', 'option');
+        el.textContent = opt.textContent.trim();
+        el.dataset.index = i;
+        if (!opt.value) el.dataset.empty = '1';
+        el.addEventListener('click', function () { choisir(i); });
+        list.appendChild(el);
+      });
+
+      function majBouton() {
+        var opt = select.options[select.selectedIndex];
+        btn.textContent = opt ? opt.textContent.trim() : '';
+        btn.classList.toggle('is-empty', !select.value);
+        Array.prototype.forEach.call(list.children, function (el, i) {
+          el.classList.toggle('is-selected', i === select.selectedIndex && !!select.value);
+          el.setAttribute('aria-selected', String(i === select.selectedIndex));
+        });
+      }
+
+      function choisir(i) {
+        select.selectedIndex = i;
+        select.dispatchEvent(new Event('input', { bubbles: true }));
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        majBouton();
+        fermer();
+        btn.focus();
+      }
+
+      function ouvrir() {
+        if (ouvert && ouvert !== wrap) ouvert.__fermer();
+        wrap.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        ouvert = wrap;
+        // Si le bas de la fenêtre est trop proche, la liste s'ouvre vers le haut.
+        var place = window.innerHeight - btn.getBoundingClientRect().bottom;
+        wrap.classList.toggle('drop-up', place < 250 && btn.getBoundingClientRect().top > 250);
+        var sel = list.querySelector('.is-selected') || list.children[0];
+        surligner(sel);
+        if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: 'nearest' });
+      }
+      function fermer() {
+        wrap.classList.remove('open', 'drop-up');
+        btn.setAttribute('aria-expanded', 'false');
+        if (ouvert === wrap) ouvert = null;
+      }
+      wrap.__fermer = fermer;
+
+      function surligner(el) {
+        Array.prototype.forEach.call(list.children, function (c) { c.classList.remove('hl'); });
+        if (el) el.classList.add('hl');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (wrap.classList.contains('open')) fermer(); else ouvrir();
+      });
+
+      // Clavier : flèches, Entrée, Échap, Début/Fin.
+      wrap.addEventListener('keydown', function (e) {
+        var items = Array.prototype.slice.call(list.children);
+        var actif = list.querySelector('.hl');
+        var i = items.indexOf(actif);
+
+        if (e.key === 'Escape') { fermer(); return; }
+        if (!wrap.classList.contains('open') && (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown')) {
+          e.preventDefault(); ouvrir(); return;
+        }
+        if (!wrap.classList.contains('open')) return;
+
+        if (e.key === 'ArrowDown') { e.preventDefault(); surligner(items[Math.min(i + 1, items.length - 1)]); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); surligner(items[Math.max(i - 1, 0)]); }
+        else if (e.key === 'Home') { e.preventDefault(); surligner(items[0]); }
+        else if (e.key === 'End') { e.preventDefault(); surligner(items[items.length - 1]); }
+        else if (e.key === 'Enter') { e.preventDefault(); if (actif) choisir(parseInt(actif.dataset.index, 10)); }
+
+        var neuf = list.querySelector('.hl');
+        if (neuf && neuf.scrollIntoView) neuf.scrollIntoView({ block: 'nearest' });
+      });
+
+      // Le formulaire peut changer la valeur par du code : on se resynchronise.
+      select.addEventListener('change', majBouton);
+      majBouton();
+    }
+
+    document.addEventListener('click', function () { if (ouvert) ouvert.__fermer(); });
+
+    function habillerTout() {
+      document.querySelectorAll('#view-onboarding select, #view-app .app-panel select').forEach(habiller);
+    }
+    habillerTout();
+    // Les panneaux de l'app sont rendus au fil de la navigation.
+    window.addEventListener('hashchange', function () { setTimeout(habillerTout, 120); });
+  })();
+</script>
+
 
 <script>
   // Onboarding : barre de progression vivante + validation visuelle par bloc.
