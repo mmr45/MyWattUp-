@@ -3,46 +3,119 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noarchive" />
 <title>MyWattUp — Mentions légales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root { --vert:#1DB954; --ambre:#FFB800; --fond:#0D1117; --fond-card:#161B22; --blanc:#F5F5F0; --gris:#8B949E; }
+  :root {
+    --volt: #D4FF3F;
+    --coral: #FF5A36;
+    --fond: #0D1013;
+    --carte: rgba(255,255,255,0.042);
+    --blanc: #ECEAE4;
+    --gris: #8D9299;
+    --ligne: rgba(255,255,255,0.09);
+    --display: 'Bricolage Grotesque', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
   * { box-sizing: border-box; }
-  body { margin:0; min-height:100vh; background:var(--fond); color:var(--blanc);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:24px 20px 60px; }
-  .wrap { max-width:640px; margin:0 auto; }
-  .topbar { display:flex; align-items:center; gap:12px; margin-bottom:24px; }
-  .back { color:var(--gris); text-decoration:none; font-size:20px; }
-  h1 { font-size:22px; margin:0 0 4px; }
-  .updated { color:var(--gris); font-size:12px; margin-bottom:28px; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--fond); color: var(--blanc);
+    font-family: var(--body), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding: 28px 20px 70px; -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(800px 400px at 10% -5%, rgba(255,90,54,0.13), transparent 60%),
+      radial-gradient(700px 400px at 95% 10%, rgba(212,255,63,0.09), transparent 60%);
+    background-attachment: fixed;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; }
 
-  h2 { font-size:15px; color:var(--vert); margin:28px 0 10px; }
-  p, li { font-size:13.5px; line-height:1.6; color:#D6D6D0; }
-  ul { padding-left:20px; }
-  a { color:var(--ambre); }
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+  .back {
+    width: 38px; height: 38px; flex: none; border-radius: 12px; text-decoration: none;
+    display: inline-flex; align-items: center; justify-content: center; color: var(--gris);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--ligne);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .back:hover { border-color: rgba(212,255,63,0.45); color: var(--volt); background: rgba(212,255,63,0.07); }
+  .back svg { width: 17px; height: 17px; }
+  h1 { font-family: var(--display); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+  .updated { font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gris); margin: 0 0 32px; }
+
+  h2 {
+    font-size: 13.5px; font-weight: 600; color: var(--blanc); margin: 34px 0 12px;
+    padding-left: 11px; position: relative;
+  }
+  h2::before {
+    content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 3px; height: 15px; border-radius: 3px; background: var(--coral);
+  }
+  p, li { font-size: 14px; line-height: 1.65; color: #C9CBCF; margin: 0 0 12px; }
+  ul { padding-left: 20px; }
+  a { color: var(--volt); text-decoration: none; border-bottom: 1px solid rgba(212,255,63,0.3); }
+  a:hover { border-bottom-color: var(--volt); }
+  strong { color: var(--blanc); font-weight: 600; }
+
+  /* ---------- Bloc coordonnées repliable ---------- */
+  .coord {
+    background: var(--carte); border: 1px solid var(--ligne); border-radius: 18px;
+    -webkit-backdrop-filter: blur(20px) saturate(1.2); backdrop-filter: blur(20px) saturate(1.2);
+    box-shadow: 0 18px 40px -24px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.06);
+    margin: 14px 0 0; overflow: hidden;
+  }
+  .coord summary {
+    list-style: none; cursor: pointer; padding: 15px 17px;
+    display: flex; align-items: center; gap: 11px;
+    font-size: 14px; font-weight: 600; color: var(--blanc);
+  }
+  .coord summary::-webkit-details-marker { display: none; }
+  .coord summary .chev { margin-left: auto; width: 12px; height: 12px; color: var(--gris); transition: transform 0.22s cubic-bezier(0.16,1,0.3,1); }
+  .coord[open] summary .chev { transform: rotate(180deg); color: var(--volt); }
+  .coord summary .ic { width: 17px; height: 17px; color: var(--volt); flex: none; }
+  .coord-body { padding: 0 17px 17px; animation: coord-in 0.25s ease; }
+  @keyframes coord-in { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .coord-body { animation: none; } .coord summary .chev { transition: none; } }
+  .coord-body p { margin: 0; font-size: 14px; line-height: 1.7; }
+  .coord-note { font-size: 12px; color: var(--gris); margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--ligne); }
 
   .contact-box {
-    background:var(--fond-card); border:1px solid rgba(255,255,255,0.06);
-    border-radius:12px; padding:16px; margin-top:24px; font-size:13px; color:var(--gris);
+    background: var(--carte); border: 1px solid var(--ligne); border-radius: 18px;
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    padding: 17px; margin-top: 34px; font-size: 13.5px; line-height: 1.6; color: var(--gris);
   }
+  .contact-box strong { color: var(--blanc); }
+  :focus-visible { outline: 2px solid var(--volt); outline-offset: 3px; }
 </style>
 </head>
 <body>
 
 <div class="wrap">
   <div class="topbar">
-    <a href="javascript:history.back()" class="back">←</a>
+    <a href="javascript:history.back()" class="back" aria-label="Retour">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
     <h1>Mentions légales</h1>
   </div>
-  <p class="updated">Dernière mise à jour : 11 septembre 2026</p>
+  <p class="updated">Dernière mise à jour : 14 septembre 2026</p>
 
   <h2>Éditeur du site</h2>
-  <p>
-    Osman Fauconnier<br />
-    8 rue du 8 Mai 1945, 45000 Orléans, France<br />
-    Email : <strong>osman874pro@gmail.com</strong><br />
-    Téléphone : +33 6 77 76 77 94
-  </p>
-  <p>Directeur de la publication : Osman Fauconnier.</p>
+  <p>Osman Fauconnier, éditeur et directeur de la publication de MyWattUp.</p>
+
+  <details class="coord" id="coordEditeur">
+    <summary>
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m4 7 8 5 8-5"/></svg>
+      Contacter l'éditeur
+      <svg class="chev" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 4.2 6 8.2l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </summary>
+    <div class="coord-body">
+      <p id="coordTexte">Affichage en cours…</p>
+      <p class="coord-note">Adresse affichée à la demande pour limiter sa collecte automatisée. Elle est communiquée immédiatement à toute personne, autorité ou service qui en fait la demande à cette adresse e-mail.</p>
+    </div>
+  </details>
 
   <h2>Hébergeur</h2>
   <p>
@@ -67,8 +140,8 @@
   <h2>Données personnelles</h2>
   <p>Le traitement des données est détaillé dans la
   <a href="politique-confidentialite.html">politique de confidentialité</a>. Vous disposez de droits
-  d'accès, de rectification, d'effacement et de portabilité, exerçables à l'adresse email
-  ci-dessus. Vous pouvez également introduire une réclamation auprès de la CNIL
+  d'accès, de rectification, d'effacement et de portabilité, exerçables auprès de l'éditeur via les
+  coordonnées ci-dessus. Vous pouvez également introduire une réclamation auprès de la CNIL
   (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).</p>
 
   <h2>Conditions d'utilisation</h2>
@@ -76,10 +149,48 @@
   <a href="cgu.html">conditions générales d'utilisation et de vente</a>.</p>
 
   <div class="contact-box">
-    Une question sur le site ou son contenu ? Écris-nous à
-    <strong>osman874pro@gmail.com</strong>.
+    Une question sur le site ou son contenu ? Écris à <strong id="contactMail">—</strong>.
   </div>
 </div>
+
+<script>
+  // Les coordonnées de l'éditeur sont présentes et lisibles par tout visiteur,
+  // mais absentes du HTML brut : elles sont reconstruites à l'affichage.
+  // Objectif : couper l'aspiration automatisée (spam, revente de fichiers de
+  // prospection), pas restreindre l'accès — aucun clic, aucun formulaire,
+  // aucune condition n'est exigé pour les consulter.
+  (function () {
+    function lire(x) {
+      try { return decodeURIComponent(escape(atob(x))); } catch (e) { return ''; }
+    }
+
+    var nom  = lire('T3NtYW4gRmF1Y29ubmllcg==');
+    var mail = lire('b3NtYW44NzRwcm9AZ21haWwuY29t');
+
+    var bloc = document.getElementById('coordTexte');
+    if (bloc) {
+      bloc.innerHTML =
+        '<strong>' + nom + '</strong><br>' +
+        'Orléans (45), France<br>' +
+        'E-mail : ' + mail;
+    }
+
+    var contact = document.getElementById('contactMail');
+    if (contact) contact.textContent = mail;
+
+    // Sans JavaScript, le détail s'ouvre et affiche un repli utilisable.
+    var det = document.getElementById('coordEditeur');
+    if (det && !nom) det.open = true;
+  })();
+</script>
+
+<noscript>
+  <p style="max-width:660px;margin:0 auto;font-size:13.5px;color:#C9CBCF;">
+    Éditeur : Osman Fauconnier, Orléans (45), France.
+    Contact : osman874pro [arobase] gmail [point] com — adresse postale complète communiquée
+    immédiatement sur simple demande à cette adresse.
+  </p>
+</noscript>
 
 </body>
 </html>
