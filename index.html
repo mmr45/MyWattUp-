@@ -593,6 +593,114 @@
   #paywall .pw-legal a { color: #8D9299; }
   #paywall :focus-visible { outline: 2px solid #D4FF3F; outline-offset: 2px; }
 
+
+  /* ======================================================================
+     PARTIE 1.47 — VERRE (boutons de tout le site), ONBOARDING, TIMER
+     ====================================================================== */
+
+  /* ---------- Boutons en verre : login ---------- */
+  #view-login button[type="submit"] {
+    background: linear-gradient(180deg, rgba(212,255,63,0.95), rgba(186,232,48,0.9));
+    border: 1px solid rgba(230,255,122,0.8);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 12px 32px -14px rgba(212,255,63,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+  #view-login .tabs { background: rgba(255,255,255,0.035); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  #view-login .tab.active { box-shadow: 0 6px 18px -8px rgba(212,255,63,0.55), inset 0 1px 0 rgba(255,255,255,0.35); }
+  #view-login .google-btn { box-shadow: 0 10px 26px -14px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.6); }
+  #view-login .back-link {
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 100px; padding: 9px 18px; width: auto;
+    background: rgba(255,255,255,0.03); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+
+  /* ---------- Boutons en verre : app ---------- */
+  #view-app .app-cta, #view-app .btn-app, #view-app button.cta-primary {
+    background: linear-gradient(180deg, rgba(212,255,63,0.95), rgba(186,232,48,0.9)) !important;
+    border: 1px solid rgba(230,255,122,0.8) !important;
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 12px 30px -14px rgba(212,255,63,0.55), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  #view-app .app-cta:hover { filter: brightness(1.06); }
+  #view-app .app-cta:active { transform: translateY(1px); }
+  #view-app .interval-opt { -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+
+  /* ---------- Onboarding : plus visuel ---------- */
+  #view-onboarding .card { max-width: 500px; border-radius: 24px; padding: 34px 30px; }
+  #view-onboarding .ob-progress-track { height: 5px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; margin-bottom: 8px; }
+  #view-onboarding .ob-progress-fill { height: 100%; width: 0%; border-radius: 4px; background: linear-gradient(90deg, var(--ambre), var(--vert)); transition: width 0.45s cubic-bezier(0.16,1,0.3,1); }
+  #view-onboarding .ob-progress-label { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--gris); margin: 0 0 22px; display: flex; justify-content: space-between; }
+  #view-onboarding .ob-progress-label b { color: var(--vert); font-weight: 500; }
+
+  #view-onboarding fieldset { animation: ob-in 0.5s cubic-bezier(0.16,1,0.3,1) backwards; }
+  #view-onboarding fieldset:nth-of-type(1) { animation-delay: 0.05s; }
+  #view-onboarding fieldset:nth-of-type(2) { animation-delay: 0.12s; }
+  #view-onboarding fieldset:nth-of-type(3) { animation-delay: 0.19s; }
+  #view-onboarding fieldset:nth-of-type(4) { animation-delay: 0.26s; }
+  #view-onboarding fieldset:nth-of-type(5) { animation-delay: 0.33s; }
+  @keyframes ob-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { #view-onboarding fieldset { animation: none; } }
+
+  #view-onboarding .ob-legend { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  #view-onboarding .ob-step-num {
+    width: 26px; height: 26px; flex: none; border-radius: 9px; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--vert);
+    background: rgba(212,255,63,0.10); border: 1px solid rgba(212,255,63,0.30);
+  }
+  #view-onboarding .ob-legend span { font-size: 14.5px; color: var(--blanc); font-weight: 600; }
+  #view-onboarding fieldset.done .ob-step-num { background: var(--vert); color: #0E1410; border-color: var(--vert); }
+
+  #view-onboarding .ob-help { margin: 10px 0 0; }
+  #view-onboarding .ob-help summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; color: var(--gris); padding: 6px 12px; border-radius: 100px;
+    background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.07);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  #view-onboarding .ob-help summary::-webkit-details-marker { display: none; }
+  #view-onboarding .ob-help summary::before { content: '?'; width: 15px; height: 15px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; background: rgba(212,255,63,0.15); color: var(--vert); }
+  #view-onboarding .ob-help summary:hover { color: var(--blanc); border-color: rgba(212,255,63,0.35); }
+  #view-onboarding .ob-help[open] summary { color: var(--blanc); border-color: rgba(212,255,63,0.35); }
+  #view-onboarding .ob-help p {
+    font-size: 12.5px; line-height: 1.55; color: var(--gris); margin: 10px 0 0; padding: 12px 14px;
+    border-radius: 12px; background: rgba(255,255,255,0.03); border-left: 2px solid var(--vert);
+    animation: ob-help-in 0.3s ease;
+  }
+  @keyframes ob-help-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  #view-onboarding .option:has(input:checked) { background: rgba(212,255,63,0.09); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+  #view-onboarding button[type="submit"] {
+    height: 52px; border-radius: 14px; font-size: 15px;
+    background: linear-gradient(180deg, rgba(212,255,63,0.95), rgba(186,232,48,0.9));
+    border: 1px solid rgba(230,255,122,0.8);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    box-shadow: 0 14px 34px -14px rgba(212,255,63,0.6), inset 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  /* ---------- Minuterie du défilement « comment ça marche » ---------- */
+  #view-vitrine .how-step { position: relative; overflow: hidden; }
+  #view-vitrine .how-timer {
+    position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+    background: linear-gradient(90deg, var(--vv-coral), var(--vv-volt)); opacity: 0;
+  }
+  #view-vitrine .how-step.is-on .how-timer { opacity: 1; }
+  #view-vitrine .how-step.is-on .how-timer.run { width: 100%; transition: width 5s linear; }
+
+  /* ---------- Correctifs paywall (texte qui se superposait) ---------- */
+  #paywall .pw-score { align-items: flex-start; }
+  #paywall .pw-score-num { overflow: hidden; font-size: 21px; line-height: 1; padding: 0 4px; text-align: center; }
+  #paywall .pw-score-txt { min-width: 0; overflow-wrap: anywhere; }
+  #paywall h2 { overflow-wrap: anywhere; }
+  #paywall .pw-diag {
+    display: flex; gap: 11px; align-items: flex-start; margin: 0 0 20px; padding: 14px 15px;
+    border-radius: 14px; background: rgba(255,90,54,0.09); border: 1px solid rgba(255,90,54,0.25);
+    font-size: 13.5px; line-height: 1.5; color: #ECEAE4;
+  }
+  #paywall .pw-diag svg { width: 16px; height: 16px; flex: none; margin-top: 2px; color: #FF8A6B; }
+  #paywall .pw-diag b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: #FF8A6B; margin-bottom: 5px; }
+  #paywall .pw-offer-name { display: block; }
+  #paywall .pw-offer > span:first-child { min-width: 0; }
+
   /* ======================================================================
      PARTIE 1.5 — LOGIN / INSCRIPTION (namespace #view-login)
      ====================================================================== */
@@ -2135,6 +2243,11 @@
       </div>
     </div>
 
+    <p class="pw-diag" id="paywallDiag" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      <span><b>Ce qui te freine probablement</b><span id="paywallDiagText"></span></span>
+    </p>
+
     <h2 id="pwTitle">Débloque ce qui fait bouger ce chiffre</h2>
     <p class="pw-sub">L'offre Gratuite te laisse 1 conseil, 1 repas et 5 scans par jour. Le Pro retire les compteurs.</p>
 
@@ -2196,24 +2309,85 @@
     if (!steps.length || !screens.length) return;
 
     var current = -1;
+    var manuel = false;
+    var timer = null;
+    var DUREE = 5000;
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Petite barre de progression sous l'étape active : elle indique le temps
+    // restant avant le passage automatique à l'étape suivante.
+    steps.forEach(function (st) {
+      var bar = document.createElement('div');
+      bar.className = 'how-timer';
+      st.appendChild(bar);
+    });
+
+    function relancerBarre(n) {
+      steps.forEach(function (st) {
+        var bar = st.querySelector('.how-timer');
+        if (!bar) return;
+        bar.classList.remove('run');
+        bar.style.width = '0';
+      });
+      if (manuel || reduceMotion) return;
+      var actif = steps[n] && steps[n].querySelector('.how-timer');
+      if (!actif) return;
+      void actif.offsetWidth; // force le redémarrage de la transition
+      actif.classList.add('run');
+    }
+
     function activate(n) {
       if (n === current) return;
       current = n;
       steps.forEach(function (st, k) { st.classList.toggle('is-on', k === n); });
       screens.forEach(function (sc, k) { sc.classList.toggle('is-on', k === n); });
+      relancerBarre(n);
     }
 
-    // Clic direct sur une étape (utile au clavier et sur mobile).
+    function demarrerTimer() {
+      arreterTimer();
+      if (manuel || reduceMotion) return;
+      relancerBarre(current < 0 ? 0 : current);
+      timer = setInterval(function () {
+        activate((current + 1) % steps.length);
+      }, DUREE);
+    }
+    function arreterTimer() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    // Le défilement automatique ne tourne que quand la section est à l'écran.
+    if ('IntersectionObserver' in window) {
+      var sectionIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) demarrerTimer(); else arreterTimer();
+        });
+      }, { threshold: 0.35 });
+      var section = document.getElementById('comment');
+      if (section) sectionIO.observe(section);
+    }
+
+    // Clic ou survol : l'utilisateur reprend la main, le timer s'arrête.
     steps.forEach(function (st) {
-      st.addEventListener('click', function () { activate(parseInt(st.dataset.step, 10)); });
+      st.addEventListener('click', function () {
+        manuel = true;
+        arreterTimer();
+        relancerBarre(-1);
+        activate(parseInt(st.dataset.step, 10));
+      });
     });
+    var wrap = document.querySelector('#view-vitrine .how');
+    if (wrap) {
+      wrap.addEventListener('mouseenter', arreterTimer);
+      wrap.addEventListener('mouseleave', function () { if (!manuel) demarrerTimer(); });
+    }
 
     if (!('IntersectionObserver' in window)) { activate(0); return; }
 
     // L'étape la plus proche du milieu de l'écran devient active.
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) activate(parseInt(entry.target.dataset.step, 10));
+        if (entry.isIntersecting) { manuel = false; activate(parseInt(entry.target.dataset.step, 10)); }
       });
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
 
@@ -2228,18 +2402,15 @@
      ====================================================================== -->
 <div id="view-onboarding">
   <div class="card">
-    <div class="step-indicator">
-      <div class="step-dot done"></div>
-      <div class="step-dot done"></div>
-      <div class="step-dot done"></div>
-    </div>
+    <div class="ob-progress-track"><div class="ob-progress-fill" id="obProgressFill"></div></div>
+    <p class="ob-progress-label"><span>Ton profil</span><b id="obProgressLabel">0 / 6</b></p>
 
-    <h1>Bienvenue sur MyWattUp</h1>
-    <p class="sub">Trois infos rapides pour personnaliser tes recommandations.</p>
+    <h1>Deux minutes, et ton score devient le tien</h1>
+    <p class="sub">Sans ces repères, les conseils seraient génériques. Avec, ils sont calculés sur toi.</p>
 
     <form id="onboardingForm">
       <fieldset>
-        <legend>Ton sport</legend>
+        <div class="ob-legend"><div class="ob-step-num">01</div><span>Ton sport</span></div>
         <div class="options">
           <label class="option">
             <input type="radio" name="sportType" value="force" required />
@@ -2254,10 +2425,14 @@
             Fitness général
           </label>
         </div>
+        <details class="ob-help">
+          <summary>Pourquoi on te le demande</summary>
+          <p>Un powerlifter et un marathonien qui dorment pareil n'ont pas le même besoin de récupération ni les mêmes apports. Ton sport détermine comment le score pondère l'entraînement et les protéines.</p>
+        </details>
       </fieldset>
 
       <fieldset>
-        <legend>Ton objectif</legend>
+        <div class="ob-legend"><div class="ob-step-num">02</div><span>Ton objectif</span></div>
         <select name="objective" required>
           <option value="" disabled selected>Choisis ton objectif</option>
           <option value="perte_de_poids">Perte de poids</option>
@@ -2266,10 +2441,14 @@
           <option value="maintien">Maintien</option>
           <option value="recuperation">Récupération</option>
         </select>
+        <details class="ob-help">
+          <summary>Pourquoi on te le demande</summary>
+          <p>C'est ce qui oriente les repas générés et le ton des conseils. En perte de poids on protège la masse musculaire ; en prise de masse on pousse les apports ; en performance on protège la récupération. Modifiable à tout moment.</p>
+        </details>
       </fieldset>
 
       <fieldset>
-        <legend>Tes mesures</legend>
+        <div class="ob-legend"><div class="ob-step-num">03</div><span>Tes mesures</span></div>
         <div class="field-row">
           <div>
             <label for="onbHeight">Taille (cm)</label>
@@ -2304,12 +2483,19 @@
           <option value="actif">Actif (6-7 séances/semaine)</option>
           <option value="tres_actif">Très actif (sport intense quotidien ou métier physique)</option>
         </select>
-        <p class="field-hint">Ces informations servent uniquement à calculer une estimation de tes besoins caloriques journaliers. Tu peux les modifier à tout moment dans Paramètres → Ma pratique.</p>
+        <details class="ob-help">
+          <summary>À quoi servent ces chiffres</summary>
+          <p>Ils alimentent une seule formule, Mifflin-St Jeor, qui estime ta dépense énergétique au repos. C'est la base de ta cible calorique et protéique du jour. Rien n'est partagé, rien n'est comparé à qui que ce soit, et tout est modifiable dans Paramètres → Ma pratique.</p>
+        </details>
       </fieldset>
 
       <fieldset>
-        <legend>Allergies / contraintes alimentaires (optionnel)</legend>
+        <div class="ob-legend"><div class="ob-step-num">04</div><span>Allergies et contraintes <span style="color:var(--gris);font-weight:400;font-size:12.5px;">— optionnel</span></span></div>
         <textarea name="allergies" placeholder="ex. arachides, lactose, sans gluten..."></textarea>
+        <details class="ob-help">
+          <summary>Ce qu'on en fait</summary>
+          <p>Tout ce que tu écris ici est exclu des repas générés et déclenche une alerte rouge au scan d'un produit concerné. Écris-le en langage normal, une contrainte par virgule.</p>
+        </details>
       </fieldset>
 
       <fieldset>
@@ -2329,6 +2515,42 @@
   </div>
 </div>
 <!-- fin #view-onboarding -->
+
+<script>
+  // Onboarding : barre de progression vivante + validation visuelle par bloc.
+  (function () {
+    var form = document.getElementById('onboardingForm');
+    var fill = document.getElementById('obProgressFill');
+    var label = document.getElementById('obProgressLabel');
+    if (!form || !fill) return;
+
+    var champs = [
+      function () { return !!form.querySelector('input[name="sportType"]:checked'); },
+      function () { return !!form.querySelector('select[name="objective"]').value; },
+      function () { return !!form.querySelector('#onbHeight').value && !!form.querySelector('#onbWeight').value; },
+      function () { return !!form.querySelector('#onbBirthYear').value && !!form.querySelector('#onbSex').value; },
+      function () { return !!form.querySelector('#onbActivityLevel').value; },
+      function () { return form.querySelector('#onboardingConsentCheck').checked; }
+    ];
+
+    function maj() {
+      var faits = champs.filter(function (f) { try { return f(); } catch (e) { return false; } }).length;
+      fill.style.width = Math.round((faits / champs.length) * 100) + '%';
+      if (label) label.textContent = faits + ' / ' + champs.length;
+
+      // Le numéro du bloc passe en vert dès qu'il est complet.
+      var sets = form.querySelectorAll('fieldset');
+      if (sets[0]) sets[0].classList.toggle('done', champs[0]());
+      if (sets[1]) sets[1].classList.toggle('done', champs[1]());
+      if (sets[2]) sets[2].classList.toggle('done', champs[2]() && champs[3]() && champs[4]());
+    }
+
+    form.addEventListener('input', maj);
+    form.addEventListener('change', maj);
+    maj();
+  })();
+</script>
+
 
 
 <!-- ======================================================================
@@ -3749,6 +3971,36 @@
   // -------------------------------------------------------------
   let paywallPending = false;
   let paywallInterval = 'year';
+  let paywallDiag = '';
+
+  // Formule le frein principal à partir des réponses d'onboarding.
+  // Volontairement centré sur l'habitude et le levier concret : on parle du
+  // problème, jamais du corps de la personne.
+  function diagnosticProfil(objectif, niveau, sport) {
+    const peuActif = (niveau === 'sedentaire' || niveau === 'leger');
+    if (objectif === 'perte_de_poids') {
+      return peuActif
+        ? "La régularité, pas l'intensité. Quatre jours tenus sur sept battent une semaine parfaite suivie de trois semaines d'arrêt."
+        : "Tu bouges déjà assez. Ce qui coince est presque toujours dans l'assiette et dans la récupération, pas dans une séance de plus.";
+    }
+    if (objectif === 'prise_de_masse') {
+      return sport === 'force'
+        ? "L'apport, pas l'entraînement. En prise de masse, le frein n°1 reste un déficit de calories et de protéines sur la journée."
+        : "Ton volume d'entraînement mange tes apports. Sans surplus calculé chaque jour, la masse ne suit pas.";
+    }
+    if (objectif === 'performance') {
+      return "Ta charge dépasse souvent ta récupération. Les gains se font les jours de repos, pas dans les séances ajoutées.";
+    }
+    if (objectif === 'recuperation') {
+      return "Ton corps encaisse plus qu'il ne récupère. Sommeil et apports d'abord, intensité ensuite.";
+    }
+    if (objectif === 'maintien') {
+      return peuActif
+        ? "Rien d'alarmant, mais rien de stable non plus : sans repère quotidien, le maintien glisse sans qu'on le voie."
+        : "Tu tiens ton cap. Le risque, c'est de perdre le fil après une semaine chargée.";
+    }
+    return "Trois signaux suivis séparément, jamais croisés. C'est là que l'information utile se perd.";
+  }
 
   function paywallKey() {
     return 'mwu_paywall_v1_' + (user ? user.id : 'anon');
@@ -3770,9 +4022,20 @@
     (function pollScore() {
       if (!scoreEl || !target) return;
       const v = (scoreEl.textContent || '').trim();
-      if (v && v !== '--') { target.textContent = v; return; }
+      // Seul un score chiffré entre dans la pastille : un texte long
+      // ("Pas encore de données") débordait par-dessus le reste du modal.
+      if (/^\d{1,3}$/.test(v)) { target.textContent = v; return; }
       if (tries++ < 24) setTimeout(pollScore, 250);
+      else target.textContent = '—';
     })();
+
+    // Diagnostic issu du formulaire d'onboarding.
+    const diagEl = document.getElementById('paywallDiag');
+    const diagTxt = document.getElementById('paywallDiagText');
+    if (diagEl && diagTxt && paywallDiag) {
+      diagTxt.textContent = paywallDiag;
+      diagEl.style.display = 'flex';
+    }
   }
 
   function closePaywall() {
@@ -3962,9 +4225,20 @@
           }
         } else {
           await signUp(email, password);
-          tabs[0].click();
-          msg.textContent = "Compte créé ! Vérifie ta boîte mail si une confirmation est requise, puis connecte-toi.";
-          msg.className = 'msg success';
+          // La confirmation par e-mail est désactivée côté Supabase : on
+          // enchaîne directement sur la connexion pour ne pas faire attendre.
+          try {
+            const nouvelUtilisateur = await signIn(email, password);
+            user = nouvelUtilisateur;
+            const dejaUnProfil = await hasProfile(nouvelUtilisateur.id);
+            if (dejaUnProfil) showApp(); else showOnboarding();
+            return;
+          } catch (autoErr) {
+            // Cas où la confirmation par e-mail est encore active sur le projet.
+            tabs[0].click();
+            msg.textContent = "Compte créé ! Confirme ton adresse par e-mail, puis connecte-toi.";
+            msg.className = 'msg success';
+          }
         }
       } catch (err) {
         msg.textContent = err.message || "Une erreur est survenue.";
@@ -4029,6 +4303,7 @@
         if (measurementsError) throw measurementsError;
 
         // Premier score calculé → on propose le Pro juste après (voir openPaywall).
+        paywallDiag = diagnosticProfil(formData.get('objective'), activityLevel, formData.get('sportType'));
         paywallPending = true;
         showApp();
       } catch (err) {
