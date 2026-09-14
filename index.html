@@ -2038,59 +2038,64 @@
 
   /* ======================================================================
      PARTIE 1.95 — FOND PHOTO DU HERO
-     Même traitement que les sites sportifs : photo plein cadre derrière le
-     hero, très assombrie, fondue vers le fond du site en bas et à gauche
-     pour que le titre reste lisible.
-     Pour changer la photo : dépose ton image dans /public/hero.jpg
-     (ou modifie --hero-image ci-dessous).
+     La photo vit dans sa propre couche (.hero-photo) et se fond dans le fond
+     par un masque radial : aucune arête, ni sur les côtés ni en bas.
+     Pour changer la photo : remplace /hero.png et mets à jour --hero-image.
      ====================================================================== */
   #view-vitrine {
     --hero-image: url('/hero.png');
     --hero-height: 900px;
   }
+
+  /* Couche photo : large, ancrée à droite, elle s'éteint avant le texte */
+  #view-vitrine .hero-photo {
+    position: absolute; top: 0; right: 0; z-index: 0; pointer-events: none;
+    height: var(--hero-height); width: min(72%, 1180px);
+    background-image: var(--hero-image);
+    background-size: cover; background-position: 62% center; background-repeat: no-repeat;
+    opacity: 0.62; filter: saturate(0.9) contrast(1.05) brightness(0.92);
+    /* Un seul masque radial = fondu simultané à gauche, en haut et en bas */
+    -webkit-mask-image: radial-gradient(ellipse 125% 108% at 88% 42%, #000 22%, rgba(0,0,0,0.55) 52%, transparent 80%);
+    mask-image: radial-gradient(ellipse 125% 108% at 88% 42%, #000 22%, rgba(0,0,0,0.55) 52%, transparent 80%);
+  }
+
+  /* Voile de lisibilité + fondu vers la section suivante */
   #view-vitrine::after {
     content: '';
     position: absolute; top: 0; left: 0; right: 0; height: var(--hero-height);
-    z-index: 0; pointer-events: none;
-    background-image:
-      /* 1. voile de lisibilité : noir à gauche, transparent vers la photo */
-      linear-gradient(100deg, var(--vv-bg) 4%, rgba(13,16,19,0.94) 30%, rgba(13,16,19,0.60) 58%, rgba(13,16,19,0.78) 100%),
-      /* 2. fondu haut (sous la nav) et bas (vers la section suivante) */
-      linear-gradient(180deg, rgba(13,16,19,0.92) 0%, rgba(13,16,19,0.15) 26%, rgba(13,16,19,0.45) 62%, rgba(13,16,19,0.95) 88%, var(--vv-bg) 100%),
-      /* 3. reflet volt, pour raccrocher la photo à l'identité */
-      radial-gradient(720px 420px at 72% 34%, rgba(212,255,63,0.10), transparent 70%),
-      /* 4. la photo */
-      var(--hero-image),
-      /* 5. repli si la photo est absente : dégradé nocturne */
-      linear-gradient(160deg, #1b2430 0%, #131a22 45%, #0D1013 100%);
-    /* La photo est au format portrait : sur grand écran on ne l'étire pas en
-       plein cadre (elle serait zoomée à l'extrême), on la cale en panneau
-       vertical à droite, derrière le téléphone. */
-    background-size: cover, cover, cover, auto 112%, cover;
-    background-position: center, center, center, right -4% center, center;
-    background-repeat: no-repeat;
-  }
-  /* Raccord entre le panneau photo et le fond, sinon on voit l'arête verticale */
-  #view-vitrine .hero-seam {
-    content: ''; position: absolute; top: 0; height: var(--hero-height); left: 0; right: 0;
     z-index: 1; pointer-events: none;
-    background: linear-gradient(90deg, var(--vv-bg) 22%, rgba(13,16,19,0.55) 46%, transparent 62%);
+    background-image:
+      linear-gradient(95deg, var(--vv-bg) 6%, rgba(13,16,19,0.90) 26%, rgba(13,16,19,0.35) 52%, rgba(13,16,19,0.20) 100%),
+      linear-gradient(180deg, rgba(13,16,19,0.80) 0%, transparent 22%, transparent 58%, rgba(13,16,19,0.88) 88%, var(--vv-bg) 100%),
+      radial-gradient(760px 440px at 70% 36%, rgba(212,255,63,0.09), transparent 72%);
   }
-  /* Le contenu du hero passe devant le fond */
+
+  /* Le contenu passe devant */
   #view-vitrine nav, #view-vitrine .wrap { position: relative; z-index: 2; }
   #view-vitrine .grain { z-index: 3; }
 
+  /* Cartes flottantes : repoussées hors de l'écran du téléphone */
+  #view-vitrine .float-card { padding: 11px 13px; border-radius: 14px; }
+  #view-vitrine .float-card .fc-num { font-size: 19px; }
+  #view-vitrine .fc-1 { top: 2%; left: -13%; }
+  #view-vitrine .fc-2 { bottom: 8%; left: -11%; }
+  #view-vitrine .fc-3 { top: 20%; right: -12%; }
+
   @media (max-width: 900px) {
-    #view-vitrine { --hero-height: 680px; }
+    #view-vitrine { --hero-height: 660px; }
+    #view-vitrine .hero-photo {
+      width: 100%; opacity: 0.5; background-position: center 24%;
+      /* Sur mobile la photo occupe toute la largeur : fondu vertical uniquement,
+         pour qu'elle ne s'arrête jamais net en bas. */
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 38%, rgba(0,0,0,0.45) 68%, transparent 94%);
+      mask-image: linear-gradient(180deg, #000 0%, #000 38%, rgba(0,0,0,0.45) 68%, transparent 94%);
+    }
     #view-vitrine::after {
       background-image:
-        linear-gradient(180deg, rgba(13,16,19,0.86) 0%, rgba(13,16,19,0.55) 30%, rgba(13,16,19,0.88) 72%, var(--vv-bg) 100%),
-        radial-gradient(600px 360px at 70% 30%, rgba(212,255,63,0.10), transparent 70%),
-        var(--hero-image),
-        linear-gradient(160deg, #1b2430 0%, #131a22 45%, #0D1013 100%);
-      background-size: cover, cover, cover, cover;
-      background-position: center, center, center 22%, center;
+        linear-gradient(180deg, rgba(13,16,19,0.78) 0%, rgba(13,16,19,0.30) 24%, rgba(13,16,19,0.72) 64%, var(--vv-bg) 96%),
+        radial-gradient(600px 360px at 66% 28%, rgba(212,255,63,0.09), transparent 72%);
     }
+    #view-vitrine .fc-2 { bottom: 4%; left: -4%; }
   }
 
 </style>
@@ -2101,7 +2106,7 @@
      VUE 1 — VITRINE
      ====================================================================== -->
 <div id="view-vitrine">
-  <div class="hero-seam" aria-hidden="true"></div>
+  <div class="hero-photo" aria-hidden="true"></div>
 <div class="field"><span class="b1"></span><span class="b2"></span><span class="b3"></span></div>
 <div class="grain"></div>
 
