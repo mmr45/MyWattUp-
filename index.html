@@ -2344,6 +2344,34 @@
     #view-vitrine .section + .section, #view-vitrine .avis-band + .section { border-top-color: rgba(255,255,255,0.05); }
   }
 
+  /* ======================================================================
+     PARTIE 1.996 — ÉTAPES « COMMENT ÇA MARCHE » MOBILE : plus de carrousel
+     Étape active en grand, centrée ; les 3 autres en pastilles cliquables.
+     ====================================================================== */
+  @media (max-width: 768px) {
+    #view-vitrine .how-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+      overflow: visible; margin: 0; padding: 0; scroll-snap-type: none;
+    }
+    #view-vitrine .how-step {
+      flex: none; min-width: 0; scroll-snap-align: none;
+      flex-direction: column; align-items: center; text-align: center; gap: 6px;
+      padding: 10px 6px; border-radius: 14px; opacity: 0.6;
+    }
+    #view-vitrine .how-step > div:last-child { min-width: 0; width: 100%; }
+    #view-vitrine .how-step h3 { font-size: 12.5px; margin: 0; line-height: 1.25; }
+    #view-vitrine .how-step p { display: none; }
+    #view-vitrine .how-num { width: 26px; height: 26px; font-size: 10px; }
+
+    #view-vitrine .how-step.is-on {
+      grid-column: 1 / -1; order: -1; opacity: 1;
+      padding: 16px 18px 18px; border-radius: 18px; gap: 8px;
+    }
+    #view-vitrine .how-step.is-on h3 { font-size: 17px; }
+    #view-vitrine .how-step.is-on p { display: block; font-size: 14px; max-width: 34ch; margin: 0 auto; overflow-wrap: break-word; }
+    #view-vitrine .how-step.is-on .how-num { width: 32px; height: 32px; font-size: 11px; }
+  }
+
 </style>
 </head>
 <body>
