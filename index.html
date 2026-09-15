@@ -2183,6 +2183,115 @@
     #view-vitrine .dial-frame { min-height: 420px; }
   }
 
+  /* ======================================================================
+     PARTIE 1.99 — ACCUEIL MOBILE / PWA (≤ 768px uniquement)
+     Le rendu PC n'est pas touché : tout est dans le @media.
+     ====================================================================== */
+  @media (max-width: 768px) {
+
+    /* --- Espacements généraux --- */
+    #view-vitrine .wrap { padding: 0 18px; }
+    #view-vitrine .nav-inner { padding: 14px 18px; padding-top: calc(14px + env(safe-area-inset-top)); }
+    #view-vitrine .section { padding: 52px 0; }
+    #view-vitrine .section-head { margin: 0 0 26px; }
+    #view-vitrine .section-head h2 { font-size: 25px; line-height: 1.15; }
+    #view-vitrine .section-head p { font-size: 14.5px; }
+
+    /* --- Hero : texte centré, CTA pleine largeur, téléphone compact --- */
+    #view-vitrine { --hero-height: 780px; }
+    #view-vitrine .hero { padding: 34px 0 8px; gap: 18px; text-align: center; }
+    #view-vitrine .eyebrow { margin-bottom: 14px; font-size: 11px; }
+    #view-vitrine h1.vitrine-title { font-size: 33px; line-height: 1.08; margin-bottom: 16px; }
+    #view-vitrine .hero-sub { font-size: 15px; margin: 0 auto 24px; max-width: 34ch; }
+    #view-vitrine .cta-row { flex-direction: column; gap: 10px; }
+    #view-vitrine .cta-row .btn-primary,
+    #view-vitrine .cta-row .btn-ghost { width: 100%; justify-content: center; padding: 15px 20px; font-size: 15px; }
+    #view-vitrine #btnGoLogin2 { margin-top: 14px !important; font-size: 13.5px; }
+
+    #view-vitrine .dial-frame { min-height: 0; padding: 10px 0 0; }
+    #view-vitrine .phone-glow { width: 260px; height: 260px; }
+    #view-vitrine .hero .phone { width: 228px; border-radius: 38px; }
+    #view-vitrine .hero .phone-screen { border-radius: 30px; padding: 46px 14px 8px; }
+    #view-vitrine .hero .dial-svg { width: 108px; height: 108px; }
+    #view-vitrine .hero .phone .dial-legend { font-size: 11.5px; }
+    #view-vitrine .hero .phone .action-box { text-align: left; }
+    #view-vitrine .float-card { display: none !important; }
+
+    /* --- Comment ça marche : téléphone au-dessus, étapes en carrousel --- */
+    #view-vitrine .how { display: flex; flex-direction: column; gap: 18px; }
+    #view-vitrine .how-sticky { position: static; order: -1; margin: 0 auto; }
+    #view-vitrine .how-phone .phone { width: 222px; }
+    #view-vitrine .how-phone .phone-screen { padding: 44px 13px 14px; min-height: 318px; }
+    #view-vitrine .how-screens { min-height: 262px; }
+    #view-vitrine .scr-big { font-size: 28px; }
+    #view-vitrine .scr-bars { height: 84px; }
+
+    #view-vitrine .how-steps {
+      flex-direction: row; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 0 -18px; padding: 2px 18px 6px; scrollbar-width: none;
+    }
+    #view-vitrine .how-steps::-webkit-scrollbar { display: none; }
+    #view-vitrine .how-step {
+      flex: 0 0 82%; scroll-snap-align: center; flex-direction: row; gap: 12px;
+      padding: 16px; opacity: 0.55; border-color: var(--vv-line);
+      background: rgba(255,255,255,0.02);
+    }
+    #view-vitrine .how-step h3 { font-size: 17px; margin: 3px 0 4px; }
+    #view-vitrine .how-step p { font-size: 13.5px; }
+    #view-vitrine .how-num { width: 30px; height: 30px; font-size: 11px; }
+
+    /* --- Confiance --- */
+    #view-vitrine .trust { padding: 22px 20px; gap: 14px; border-radius: 18px; }
+    #view-vitrine .trust p { font-size: 13.5px; }
+
+    /* --- Bandeau défilant --- */
+    #view-vitrine .avis-card { width: 240px; padding: 15px 16px; }
+    #view-vitrine .avis-card p { font-size: 13px; }
+    #view-vitrine .avis-band::before, #view-vitrine .avis-band::after { width: 36px; }
+
+    /* --- Tarifs : Pro en premier --- */
+    #view-vitrine .pricing-grid { gap: 22px; }
+    #view-vitrine .pricing-card { padding: 26px 20px 22px; border-radius: 18px; }
+    #view-vitrine .pricing-card.featured { order: -1; }
+    #view-vitrine .pricing-price .amount { font-size: 34px; }
+    #view-vitrine .pricing-list { margin: 14px 0 20px; gap: 10px; }
+    #view-vitrine .pricing-cta { padding: 14px; }
+    #view-vitrine .billing-toggle { width: 100%; }
+    #view-vitrine .bt-opt { flex: 1; justify-content: center; padding: 10px 8px; }
+
+    /* --- Installation / FAQ / fin --- */
+    #view-vitrine .install-card { padding: 20px; }
+    #view-vitrine .faq-row-q { font-size: 15px; padding: 17px 2px; }
+    #view-vitrine .faq-row-a p { font-size: 14px; }
+    #view-vitrine .final-cta { padding: 60px 0 56px; }
+    #view-vitrine .final-cta h2 { font-size: 26px; }
+    #view-vitrine .final-cta .btn-primary { width: 100%; justify-content: center; }
+
+    /* --- Footer empilé --- */
+    #view-vitrine footer { padding: 26px 0 calc(96px + env(safe-area-inset-bottom)); }
+    #view-vitrine .footer-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+    #view-vitrine .footer-legal { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+    /* --- Barre CTA collée en bas --- */
+    #view-vitrine .m-cta-bar {
+      display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(13,16,19,0.82); border-top: 1px solid var(--vv-line);
+      -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+      transform: translateY(110%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+    }
+    #view-vitrine .m-cta-bar.show { transform: none; }
+    #view-vitrine .m-cta-bar .btn-primary { width: 100%; justify-content: center; padding: 14px; }
+  }
+
+  /* Barre CTA invisible sur PC */
+  #view-vitrine .m-cta-bar { display: none; }
+
+  /* App installée (PWA) : la section « installer » ne sert plus */
+  @media (display-mode: standalone) {
+    #view-vitrine #installer { display: none; }
+  }
+
 </style>
 </head>
 <body>
@@ -2585,8 +2694,41 @@
     </div>
   </div>
 </footer>
+<!-- Barre CTA mobile (cachée sur PC) -->
+<div class="m-cta-bar" id="mCtaBar">
+  <button class="btn-primary js-go-login">Voir mon score — gratuit</button>
+</div>
 </div>
 <!-- fin #view-vitrine -->
+<script>
+  // Accueil mobile : barre CTA du bas + carrousel « comment ça marche »
+  (function () {
+    var mq = window.matchMedia('(max-width: 768px)');
+
+    // 1) Barre CTA : visible seulement quand les autres boutons sont hors écran
+    var bar = document.getElementById('mCtaBar');
+    var cibles = [document.getElementById('btnInstall'), document.querySelector('#view-vitrine .final-cta')].filter(Boolean);
+    if (bar && cibles.length && 'IntersectionObserver' in window) {
+      var visibles = new Set();
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { e.isIntersecting ? visibles.add(e.target) : visibles.delete(e.target); });
+        var pasEnHaut = window.scrollY > 200;
+        bar.classList.toggle('show', mq.matches && pasEnHaut && visibles.size === 0);
+      });
+      cibles.forEach(function (c) { io.observe(c); });
+    }
+
+    // 2) Le carrousel suit l'étape active
+    var row = document.getElementById('howSteps');
+    if (row && 'MutationObserver' in window) {
+      new MutationObserver(function () {
+        if (!mq.matches) return;
+        var on = row.querySelector('.how-step.is-on');
+        if (on) row.scrollTo({ left: on.offsetLeft - (row.clientWidth - on.clientWidth) / 2, behavior: 'smooth' });
+      }).observe(row, { subtree: true, attributes: true, attributeFilter: ['class'] });
+    }
+  })();
+</script>
 <script>
   // Les liens de nav de la vitrine (#comment, #confiance, #tarifs, #faq-public)
   // scrollent en douceur SANS toucher à location.hash, pour ne jamais entrer
