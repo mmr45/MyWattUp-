@@ -2541,6 +2541,53 @@
     }
   }
 
+  /* ======================================================================
+     PARTIE 2.2 — VRAI CADRE IPHONE, SECTION « COMMENT ÇA MARCHE » (PC)
+     ====================================================================== */
+  @media (min-width: 901px) {
+    #view-vitrine .how-phone .phone {
+      width: 300px; aspect-ratio: 640 / 1319; padding: 0;
+      background: none; border-radius: 0; box-shadow: none; transform: none;
+      filter: drop-shadow(0 40px 40px rgba(0,0,0,0.75)) drop-shadow(0 0 50px rgba(212,255,63,0.08));
+    }
+    #view-vitrine .how-phone .phone::before,
+    #view-vitrine .how-phone .phone::after,
+    #view-vitrine .how-phone .phone-notch { display: none !important; }
+
+    #view-vitrine .how-phone .phone-screen {
+      position: absolute; left: 4.2%; right: 4.2%; top: 1.75%; bottom: 1.7%;
+      border: 0; border-radius: 42px; overflow: hidden; min-height: 0;
+      padding: 72px 20px 0; display: flex; flex-direction: column; transform: none;
+      background:
+        radial-gradient(120% 50% at 50% 0%, rgba(212,255,63,0.06), transparent 60%),
+        linear-gradient(180deg, #111720 0%, #0a0d11 60%);
+    }
+    #view-vitrine .how-phone .phone-screen::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+      background: linear-gradient(118deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 25%, transparent 42%);
+    }
+    #view-vitrine .how-phone .how-screens { flex: 1; min-height: 0; }
+    #view-vitrine .how-phone .scr-big { font-size: 38px; }
+    #view-vitrine .how-phone .scr-bars { height: 140px; }
+    #view-vitrine .how-phone .phone-tabs { margin-top: auto; padding-bottom: 28px; position: relative; }
+    #view-vitrine .how-phone .phone-tabs::after {
+      content: ''; position: absolute; left: 50%; bottom: 9px; width: 104px; height: 4px; margin-left: -52px;
+      border-radius: 4px; background: rgba(255,255,255,0.55);
+    }
+
+    #view-vitrine .how-phone .phone-status {
+      display: flex; position: absolute; top: 29px; left: 44px; right: 38px; z-index: 5;
+      justify-content: space-between; align-items: center; pointer-events: none;
+      font-family: var(--body); font-weight: 600; font-size: 13px; color: #F2F2F2;
+    }
+    #view-vitrine .how-phone .phone-status svg { height: 11px; width: auto; margin-left: 4px; fill: #F2F2F2; }
+
+    #view-vitrine .how-phone .phone-real {
+      display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+      z-index: 10; pointer-events: none; user-select: none;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -2708,6 +2755,15 @@
         <div class="how-phone">
           <div class="phone">
             <div class="phone-notch"></div>
+            <img class="phone-real" src="/icons/iphone-frame.png" alt="" aria-hidden="true">
+            <div class="phone-status">
+              <span>9:41</span>
+              <span>
+                <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                <svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.3 4.7a9.5 9.5 0 0 1 13.4 0l-1.4 1.4a7.5 7.5 0 0 0-10.6 0z"/></svg>
+                <svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="#F2F2F2" stroke-opacity="0.45"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity="0.5"/></svg>
+              </span>
+            </div>
             <div class="phone-screen">
               <div class="how-screens">
 
