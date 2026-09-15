@@ -3337,19 +3337,21 @@
 </script>
 <script>
   // Section « Comment ça marche » : l'écran du téléphone suit la lecture.
+  // PC : défilement auto + reprise en main au survol/clic.
+  // Mobile / PWA : défilement auto permanent, un tap change d'étape et relance le minuteur.
   (function () {
     var steps = Array.prototype.slice.call(document.querySelectorAll('#view-vitrine .how-step'));
     var screens = Array.prototype.slice.call(document.querySelectorAll('#view-vitrine .how-screen'));
     if (!steps.length || !screens.length) return;
 
-    var current = -1;
+    var DUREE = 5000;
+    var mobile = window.matchMedia('(max-width: 900px), (hover: none)').matches;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var current = Math.max(0, steps.findIndex(function (s) { return s.classList.contains('is-on'); }));
     var manuel = false;
     var timer = null;
-    var DUREE = 5000;
-    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var visible = false;
 
-    // Petite barre de progression sous l'étape active : elle indique le temps
-    // restant avant le passage automatique à l'étape suivante.
     steps.forEach(function (st) {
       var bar = document.createElement('div');
       bar.className = 'how-timer';
@@ -3359,73 +3361,73 @@
     function relancerBarre(n) {
       steps.forEach(function (st) {
         var bar = st.querySelector('.how-timer');
-        if (!bar) return;
-        bar.classList.remove('run');
-        bar.style.width = '0';
+        if (bar) { bar.classList.remove('run'); bar.style.width = '0'; }
       });
-      if (manuel || reduceMotion) return;
+      if (manuel || reduceMotion || !timer) return;
       var actif = steps[n] && steps[n].querySelector('.how-timer');
       if (!actif) return;
-      void actif.offsetWidth; // force le redémarrage de la transition
+      void actif.offsetWidth;
       actif.classList.add('run');
     }
 
     function activate(n) {
-      if (n === current) return;
       current = n;
       steps.forEach(function (st, k) { st.classList.toggle('is-on', k === n); });
       screens.forEach(function (sc, k) { sc.classList.toggle('is-on', k === n); });
       relancerBarre(n);
     }
 
-    function demarrerTimer() {
-      arreterTimer();
-      if (manuel || reduceMotion) return;
-      relancerBarre(current < 0 ? 0 : current);
-      timer = setInterval(function () {
-        activate((current + 1) % steps.length);
-      }, DUREE);
-    }
     function arreterTimer() {
       if (timer) { clearInterval(timer); timer = null; }
+      relancerBarre(-1);
+    }
+    function demarrerTimer() {
+      arreterTimer();
+      if (manuel || !visible) return;
+      timer = setInterval(function () { activate((current + 1) % steps.length); }, DUREE);
+      relancerBarre(current);
     }
 
-    // Le défilement automatique ne tourne que quand la section est à l'écran.
-    if ('IntersectionObserver' in window) {
-      var sectionIO = new IntersectionObserver(function (entries) {
+    // Tourne seulement quand la section est à l'écran
+    var section = document.getElementById('comment');
+    if ('IntersectionObserver' in window && section) {
+      new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) demarrerTimer(); else arreterTimer();
+          visible = e.isIntersecting;
+          if (visible) demarrerTimer(); else arreterTimer();
         });
-      }, { threshold: 0.35 });
-      var section = document.getElementById('comment');
-      if (section) sectionIO.observe(section);
+      }, { threshold: 0.1 }).observe(section);
+    } else {
+      visible = true; demarrerTimer();
     }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) arreterTimer(); else demarrerTimer();
+    });
 
-    // Clic ou survol : l'utilisateur reprend la main, le timer s'arrête.
     steps.forEach(function (st) {
       st.addEventListener('click', function () {
-        manuel = true;
-        arreterTimer();
-        relancerBarre(-1);
         activate(parseInt(st.dataset.step, 10));
+        if (mobile) { demarrerTimer(); return; }   // mobile : on continue à défiler
+        manuel = true; arreterTimer();             // PC : l'utilisateur reprend la main
       });
     });
-    var wrap = document.querySelector('#view-vitrine .how');
-    if (wrap) {
-      wrap.addEventListener('mouseenter', arreterTimer);
-      wrap.addEventListener('mouseleave', function () { if (!manuel) demarrerTimer(); });
+
+    if (!mobile) {
+      var wrap = document.querySelector('#view-vitrine .how');
+      if (wrap) {
+        wrap.addEventListener('mouseenter', arreterTimer);
+        wrap.addEventListener('mouseleave', function () { if (!manuel) demarrerTimer(); });
+      }
+      // PC : l'étape au milieu de l'écran devient active pendant le scroll
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { manuel = false; activate(parseInt(entry.target.dataset.step, 10)); }
+          });
+        }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+        steps.forEach(function (st) { io.observe(st); });
+      }
     }
-
-    if (!('IntersectionObserver' in window)) { activate(0); return; }
-
-    // L'étape la plus proche du milieu de l'écran devient active.
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) { manuel = false; activate(parseInt(entry.target.dataset.step, 10)); }
-      });
-    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-
-    steps.forEach(function (st) { io.observe(st); });
   })();
 </script>
 
