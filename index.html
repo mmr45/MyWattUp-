@@ -2292,6 +2292,58 @@
     #view-vitrine #installer { display: none; }
   }
 
+  /* ======================================================================
+     PARTIE 1.995 — ACCUEIL MOBILE v2 : menu opaque, nav collante, stats
+     ====================================================================== */
+  @media (max-width: 768px) {
+    /* Permet à la nav de rester collée (overflow hidden bloquait sticky) */
+    html, body { overflow-x: clip; }
+
+    /* --- Nav collante, floutée, au-dessus de tout --- */
+    #view-vitrine nav {
+      position: sticky; top: 0; z-index: 60;
+      background: rgba(13,16,19,0.78);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2); backdrop-filter: blur(18px) saturate(1.2);
+    }
+    #view-vitrine .brand { font-size: 18px; }
+
+    /* --- Menu burger : panneau opaque --- */
+    #view-vitrine .nav-dropdown {
+      z-index: 61; padding: 0 18px; gap: 2px;
+      background: #0D1013;
+      -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--vv-line);
+      border-radius: 0 0 22px 22px;
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.9);
+    }
+    #view-vitrine .nav-dropdown.show { max-height: 420px; padding: 10px 18px 20px; }
+    #view-vitrine .nav-dropdown .nav-link-btn {
+      text-align: left; padding: 15px 4px; font-size: 17px; font-family: var(--display); font-weight: 600;
+      color: var(--vv-text); border-bottom: 1px solid var(--vv-line);
+    }
+    #view-vitrine .nav-dropdown .nav-link-btn:active { color: var(--vv-volt); }
+    #view-vitrine .nav-dropdown .nav-cta { margin-top: 16px; padding: 14px; font-size: 15px; }
+
+    /* --- Hero plus aéré --- */
+    #view-vitrine .hero { padding-top: 28px; }
+    #view-vitrine h1.vitrine-title { font-size: 31px; }
+    #view-vitrine .hero-sub { font-size: 14.5px; line-height: 1.55; }
+
+    /* --- Stats sous le téléphone (au lieu des cartes flottantes) --- */
+    #view-vitrine .dial-frame { flex-wrap: wrap; gap: 10px; }
+    #view-vitrine .hero .phone { margin: 0 calc(50% - 114px) 8px; }
+    #view-vitrine .dial-frame:not(.webgl) .float-card {
+      display: block !important; position: static; order: 3; flex: 1 1 0; min-width: 0; align-self: stretch;
+      animation: none; transform: none; text-align: center; padding: 12px 6px;
+    }
+    #view-vitrine .float-card .fc-num { font-size: 20px; }
+    #view-vitrine .float-card .fc-label { font-size: 8.5px; letter-spacing: 0.05em; }
+
+    /* --- Titres de section plus lisibles --- */
+    #view-vitrine .kicker { color: var(--vv-volt); font-size: 11px; }
+    #view-vitrine .section + .section, #view-vitrine .avis-band + .section { border-top-color: rgba(255,255,255,0.05); }
+  }
+
 </style>
 </head>
 <body>
