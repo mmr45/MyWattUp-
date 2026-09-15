@@ -2588,6 +2588,84 @@
     }
   }
 
+  /* ======================================================================
+     PARTIE 2.3 — VRAI CADRE IPHONE SUR MOBILE / PWA (≤ 900px)
+     ====================================================================== */
+  @media (max-width: 900px) {
+    #view-vitrine .hero .phone,
+    #view-vitrine .how-phone .phone {
+      position: relative; aspect-ratio: 640 / 1319; padding: 0;
+      background: none; border-radius: 0; box-shadow: none;
+      filter: drop-shadow(0 26px 26px rgba(0,0,0,0.75));
+    }
+    #view-vitrine .hero .phone { width: 236px; margin: 0 calc(50% - 118px) 10px; }
+    #view-vitrine .how-phone .phone { width: 226px; }
+
+    #view-vitrine .hero .phone::before, #view-vitrine .hero .phone::after,
+    #view-vitrine .how-phone .phone::before, #view-vitrine .how-phone .phone::after,
+    #view-vitrine .hero .phone-notch, #view-vitrine .how-phone .phone-notch,
+    #view-vitrine .hero .ph-btn { display: none !important; }
+
+    #view-vitrine .hero .phone-screen,
+    #view-vitrine .how-phone .phone-screen {
+      position: absolute; left: 4.2%; right: 4.2%; top: 1.75%; bottom: 1.7%;
+      border: 0; border-radius: 33px; overflow: hidden; min-height: 0;
+      display: flex; flex-direction: column; transform: none;
+      background:
+        radial-gradient(120% 50% at 50% 0%, rgba(212,255,63,0.06), transparent 60%),
+        linear-gradient(180deg, #111720 0%, #0a0d11 60%);
+    }
+    #view-vitrine .hero .phone-screen { padding: 46px 13px 0; text-align: left; }
+    #view-vitrine .how-phone .phone-screen { padding: 50px 14px 0; }
+
+    /* reflet vitre */
+    #view-vitrine .hero .phone-screen::after,
+    #view-vitrine .how-phone .phone-screen::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+      background: linear-gradient(118deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 25%, transparent 42%);
+    }
+
+    /* cadre PNG par-dessus */
+    #view-vitrine .hero .phone-real,
+    #view-vitrine .how-phone .phone-real {
+      display: block; position: absolute; inset: 0; width: 100%; height: 100%;
+      z-index: 10; pointer-events: none; user-select: none;
+    }
+
+    /* barre d'état */
+    #view-vitrine .hero .phone-status,
+    #view-vitrine .how-phone .phone-status {
+      display: flex; position: absolute; top: 21px; left: 33px; right: 28px; z-index: 5;
+      justify-content: space-between; align-items: center; pointer-events: none;
+      font-family: var(--body); font-weight: 600; font-size: 10.5px; color: #F2F2F2;
+    }
+    #view-vitrine .hero .phone-status svg,
+    #view-vitrine .how-phone .phone-status svg { height: 8px; width: auto; margin-left: 3px; fill: #F2F2F2; }
+
+    /* contenu du hero */
+    #view-vitrine .hero .phone-topline { margin: 4px 0 6px; font-size: 9px; }
+    #view-vitrine .hero .dial-body { padding: 8px 0 0; gap: 8px; }
+    #view-vitrine .hero .dial-svg { width: 118px; height: 118px; }
+    #view-vitrine .hero .phone .dial-legend { font-size: 11.5px; gap: 7px; margin-top: 4px; }
+    #view-vitrine .hero .phone .action-box { margin-top: 14px; padding: 11px 12px; }
+    #view-vitrine .hero .phone .action-box p { font-size: 11.5px; }
+
+    /* contenu « comment ça marche » */
+    #view-vitrine .how-phone .how-screens { flex: 1; min-height: 0; }
+    #view-vitrine .how-phone .scr-big { font-size: 28px; }
+
+    /* barre d'onglets + home indicator */
+    #view-vitrine .hero .phone-tabs,
+    #view-vitrine .how-phone .phone-tabs {
+      margin: auto -13px 0; padding: 10px 0 20px; position: relative;
+    }
+    #view-vitrine .hero .phone-tabs::after,
+    #view-vitrine .how-phone .phone-tabs::after {
+      content: ''; position: absolute; left: 50%; bottom: 6px; width: 80px; height: 3px; margin-left: -40px;
+      border-radius: 3px; background: rgba(255,255,255,0.55);
+    }
+  }
+
 </style>
 </head>
 <body>
