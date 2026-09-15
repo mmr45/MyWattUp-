@@ -2159,6 +2159,30 @@
   #view-vitrine .dial-frame.webgl .float-card { display: none; }
   #view-vitrine .hero3d canvas { display: block; width: 100%; height: 100%; }
 
+  /* ======================================================================
+     PARTIE 1.98 — CORRECTIFS MOBILE DU HERO
+     ====================================================================== */
+  @media (max-width: 900px) {
+    /* La carte "7 j" débordait de l'écran et masquait le conseil du jour.
+       Sur mobile il n'y a pas la place : on la retire comme les deux autres. */
+    #view-vitrine .fc-2 { display: none; }
+
+    /* Le conseil du jour était coupé en bas de l'écran du téléphone. */
+    #view-vitrine .phone-screen { padding-bottom: 8px; }
+    #view-vitrine .phone .action-box { margin-top: 12px; }
+    #view-vitrine .phone .action-box p { font-size: 12px; line-height: 1.45; }
+
+    /* La photo se terminait par une arête visible : le fondu se termine
+       maintenant bien avant le bas de la zone. */
+    #view-vitrine { --hero-height: 720px; }
+    #view-vitrine .hero-photo {
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 34%, rgba(0,0,0,0.35) 62%, transparent 82%);
+      mask-image: linear-gradient(180deg, #000 0%, #000 34%, rgba(0,0,0,0.35) 62%, transparent 82%);
+    }
+    #view-vitrine .hero { gap: 30px; padding-bottom: 10px; }
+    #view-vitrine .dial-frame { min-height: 420px; }
+  }
+
 </style>
 </head>
 <body>
