@@ -2666,6 +2666,69 @@
     }
   }
 
+  /* ======================================================================
+     PARTIE 2.4 — AVIS CLIENTS (bandeau défilant + note + fenêtre de notation)
+     ====================================================================== */
+  /* Suppression du « gros carré » : fondu par masque, plus par-dessus */
+  #view-vitrine .avis-band::before, #view-vitrine .avis-band::after { display: none !important; }
+  #view-vitrine .avis-band {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    padding: 10px 0 14px;
+  }
+
+  #view-vitrine .avis-summary {
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    margin: 0 auto 16px; font-size: 14px; color: var(--vv-muted);
+  }
+  #view-vitrine .avis-summary strong { font-family: var(--display); font-size: 22px; color: var(--vv-text); }
+  .mw-stars { display: inline-flex; gap: 2px; color: #D4FF3F; }
+  .mw-stars svg { width: 15px; height: 15px; }
+  .mw-stars .off { color: rgba(255,255,255,0.18); }
+
+  #view-vitrine .avis-card.is-review { display: flex; flex-direction: column; gap: 10px; }
+  #view-vitrine .avis-card.is-review p { margin: 0; flex: 1; }
+  #view-vitrine .avis-person { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--vv-text); }
+  #view-vitrine .avis-person small { display: block; color: var(--vv-muted); font-size: 11px; white-space: nowrap; }
+  #view-vitrine .avis-avatar {
+    width: 36px; height: 36px; border-radius: 50%; flex: none; object-fit: cover;
+    display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #12160A;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  #view-vitrine .avis-verified { font-family: var(--mono); font-size: 9.5px; color: var(--vv-volt); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Fenêtre de notation (dans l'app) */
+  #mwRate {
+    position: fixed; inset: 0; z-index: 4500; display: none; align-items: flex-end; justify-content: center;
+    background: rgba(6,8,10,0.7); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    font-family: 'Inter', sans-serif; color: #ECEAE4;
+  }
+  #mwRate.show { display: flex; }
+  @media (min-width: 640px) { #mwRate { align-items: center; } }
+  #mwRate .mr-card {
+    width: 100%; max-width: 400px; border-radius: 24px; padding: 24px 22px 18px; text-align: center;
+    background: linear-gradient(170deg, rgba(31,38,26,0.97), rgba(19,22,26,0.99));
+    border: 1px solid rgba(212,255,63,0.3); box-shadow: 0 30px 80px -30px rgba(0,0,0,0.9);
+  }
+  #mwRate h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 21px; margin: 0 0 6px; }
+  #mwRate .mr-sub { font-size: 13.5px; color: #8D9299; margin: 0 0 18px; }
+  #mwRate .mr-stars { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+  #mwRate .mr-stars button { background: none; border: 0; padding: 4px; cursor: pointer; color: rgba(255,255,255,0.2); }
+  #mwRate .mr-stars button.on { color: #D4FF3F; }
+  #mwRate .mr-stars svg { width: 34px; height: 34px; }
+  #mwRate textarea {
+    width: 100%; min-height: 84px; resize: vertical; border-radius: 14px; padding: 12px 14px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #ECEAE4;
+    font-family: inherit; font-size: 14px; margin-bottom: 12px;
+  }
+  #mwRate .mr-send {
+    width: 100%; height: 50px; border-radius: 14px; cursor: pointer; font-family: inherit; font-size: 15px; font-weight: 700;
+    background: linear-gradient(180deg, rgba(212,255,63,0.22), rgba(212,255,63,0.08));
+    border: 1px solid rgba(212,255,63,0.45); color: #D9FF5C;
+  }
+  #mwRate .mr-send:disabled { opacity: 0.5; cursor: not-allowed; }
+  #mwRate .mr-later { background: none; border: 0; color: #8D9299; font-size: 13px; margin-top: 12px; cursor: pointer; text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -10840,6 +10903,124 @@
   // voir <script> juste avant celui-ci — ils ne doivent pas
   // dépendre de Supabase pour s'exécuter)
   // -------------------------------------------------------------
+</script>
+
+<!-- Fenêtre de notation (vrais avis uniquement) -->
+<div id="mwRate" role="dialog" aria-modal="true" aria-labelledby="mwRateTitle">
+  <div class="mr-card">
+    <h3 id="mwRateTitle">Tu aimes MyWattUp ?</h3>
+    <p class="mr-sub">Ton avis aide les autres sportifs à se lancer.</p>
+    <div class="mr-stars" id="mwRateStars"></div>
+    <textarea id="mwRateText" maxlength="400" placeholder="Qu'est-ce qui a changé pour toi ? (facultatif)"></textarea>
+    <button class="mr-send" id="mwRateSend" disabled>Publier mon avis</button>
+    <button class="mr-later" id="mwRateLater">Plus tard</button>
+  </div>
+</div>
+
+<script type="module">
+  import { supabase } from './supabaseClient.js';
+
+  const STAR = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
+  const MIN_AVIS_AFFICHES = 3;       // en dessous, on garde le bandeau actuel
+  const JOURS_AVANT_DEMANDE = 3;     // ancienneté du compte avant de demander un avis
+  const PALETTE = ['#D4FF3F', '#FF8A6B', '#E6FF7A', '#9EE6C8', '#FFD36B'];
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  const stars = (n) => '<span class="mw-stars" aria-label="' + n + ' sur 5">' +
+    [1,2,3,4,5].map(i => i <= n ? STAR : STAR.replace('<svg', '<svg class="off"')).join('') + '</span>';
+
+  // ---------- 1) Bandeau public : avis validés ----------
+  async function chargerAvis() {
+    const band = document.querySelector('#view-vitrine .avis-band');
+    const track = band && band.querySelector('.avis-track');
+    if (!track) return;
+
+    const [{ data: avis }, { data: stats }] = await Promise.all([
+      supabase.from('reviews').select('rating, comment, display_name, avatar_url, created_at')
+        .eq('approved', true).not('comment', 'is', null).order('created_at', { ascending: false }).limit(12),
+      supabase.from('reviews_stats').select('average, total').maybeSingle()
+    ]);
+    if (!avis || avis.length < MIN_AVIS_AFFICHES) return;
+
+    const carte = (a, i) => {
+      const ini = esc(a.display_name.trim().charAt(0).toUpperCase());
+      const avatar = a.avatar_url
+        ? `<img class="avis-avatar" src="${esc(a.avatar_url)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+        : `<span class="avis-avatar" style="background:${PALETTE[i % PALETTE.length]}">${ini}</span>`;
+      const date = new Date(a.created_at).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+      return `<div class="avis-card is-review">
+        ${stars(a.rating)}
+        <p>${esc(a.comment)}</p>
+        <div class="avis-person">${avatar}<div>${esc(a.display_name)}<small><span class="avis-verified">✓ Vérifié</span> · ${date}</small></div></div>
+      </div>`;
+    };
+    const html = avis.map(carte).join('');
+    track.innerHTML = html + html; // copie pour la boucle infinie
+    band.setAttribute('aria-label', 'Avis des utilisateurs');
+
+    if (stats && stats.total >= MIN_AVIS_AFFICHES) {
+      const sum = document.createElement('div');
+      sum.className = 'avis-summary';
+      sum.innerHTML = `<strong>${String(stats.average).replace('.', ',')}</strong>${stars(Math.round(stats.average))}<span>${stats.total} avis d'utilisateurs</span>`;
+      band.parentNode.insertBefore(sum, band);
+    }
+  }
+  chargerAvis().catch(() => {});
+
+  // ---------- 2) Demande d'avis dans l'app ----------
+  const modal = document.getElementById('mwRate');
+  const starsBox = document.getElementById('mwRateStars');
+  const txt = document.getElementById('mwRateText');
+  const send = document.getElementById('mwRateSend');
+  let note = 0;
+
+  starsBox.innerHTML = [1,2,3,4,5].map(i => `<button type="button" data-n="${i}" aria-label="${i} étoile${i>1?'s':''}">${STAR}</button>`).join('');
+  starsBox.addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    note = +b.dataset.n;
+    starsBox.querySelectorAll('button').forEach(x => x.classList.toggle('on', +x.dataset.n <= note));
+    send.disabled = false;
+  });
+
+  const plusTard = () => { modal.classList.remove('show'); try { localStorage.setItem('mw_rate_later', Date.now()); } catch (e) {} };
+  document.getElementById('mwRateLater').addEventListener('click', plusTard);
+  modal.addEventListener('click', (e) => { if (e.target === modal) plusTard(); });
+
+  async function peutDemander(user) {
+    try {
+      const later = +localStorage.getItem('mw_rate_later') || 0;
+      if (Date.now() - later < 14 * 864e5) return false;
+    } catch (e) {}
+    if (Date.now() - new Date(user.created_at).getTime() < JOURS_AVANT_DEMANDE * 864e5) return false;
+    const { data } = await supabase.from('reviews').select('id').eq('user_id', user.id).maybeSingle();
+    return !data;
+  }
+
+  send.addEventListener('click', async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !note) return;
+    send.disabled = true;
+    const meta = user.user_metadata || {};
+    const prenom = (meta.full_name || meta.name || user.email || 'Utilisateur').split(/[\s@]/)[0];
+    const nom = (meta.full_name || '').split(' ')[1];
+    const { error } = await supabase.from('reviews').insert({
+      user_id: user.id,
+      rating: note,
+      comment: txt.value.trim() || null,
+      display_name: nom ? `${prenom} ${nom.charAt(0)}.` : prenom,
+      avatar_url: meta.avatar_url || meta.picture || null
+    });
+    modal.classList.remove('show');
+    if (!error && note >= 4 && window.showToast) window.showToast('Merci ! Ton avis sera publié après vérification.');
+  });
+
+  async function verifier() {
+    const { data: { session } } = await supabase.auth.getSession();
+    const app = document.getElementById('view-app');
+    if (!session || !app || getComputedStyle(app).display === 'none') return;
+    if (await peutDemander(session.user)) setTimeout(() => modal.classList.add('show'), 4000);
+  }
+  supabase.auth.onAuthStateChange((evt) => { if (evt === 'SIGNED_IN' || evt === 'INITIAL_SESSION') verifier(); });
 </script>
 
 </body>
