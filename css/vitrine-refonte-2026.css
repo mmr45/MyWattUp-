@@ -1,0 +1,219 @@
+/* ======================================================================
+   PARTIE 4 — REFONTE LANDING 2026 (#view-vitrine)
+   Chargée APRÈS le <style> d'index.html : elle gagne la cascade.
+   Conservé tel quel : iPhone réel + 3D, cartes flottantes, étincelles,
+   bandeau d'avis défilant, apparition au défilement, scène WebGL, tout le JS.
+   Aucun id, aucune classe, aucun JS modifié : uniquement l'apparence.
+   Pour revenir en arrière : retirer la ligne <link> dans index.html.
+   ====================================================================== */
+
+body #view-vitrine {
+  --vv-bg: #0a0912;
+  --vv-surface: #14121f;
+  --vv-surface-2: #1a1726;
+  --vv-line: #2a2640;
+  --vv-line-bright: #3a3555;
+  --vv-text: #f4f2fa;
+  --vv-text-2: #c9c5da;
+  --vv-muted: #a39fb8;
+  --vv-violet: #b3a8ff;
+  --vv-violet-bg: #1d1936;
+  --vv-violet-line: #3b3366;
+  --body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'DM Sans', -apple-system, sans-serif;
+  background-color: var(--vv-bg);
+  font-family: var(--body);
+  color: var(--vv-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Conteneur plus large ---------- */
+body #view-vitrine .wrap,
+body #view-vitrine .nav-inner { max-width: 1200px; }
+body #view-vitrine .wrap { padding: 0 32px; }
+@media (max-width: 640px) { body #view-vitrine .wrap { padding: 0 20px; } }
+
+/* ---------- Navigation ---------- */
+body #view-vitrine nav { border-bottom-color: #1d1a2b; }
+body #view-vitrine .nav-inner { padding: 18px 32px; }
+body #view-vitrine .brand { font-size: 22px; font-weight: 800; gap: 10px; }
+body #view-vitrine .brand svg { width: 34px; height: 34px; }
+body #view-vitrine .nav-link-btn { font-size: 15px; font-weight: 500; color: var(--vv-text-2); }
+body #view-vitrine .nav-link-btn:hover { color: #fff; }
+body #view-vitrine .nav-cta {
+  min-height: 44px; padding: 0 22px; border-radius: 999px;
+  background: var(--vv-volt) !important; color: var(--vv-bg) !important;
+  border: 0 !important; font-weight: 700; font-size: 15px;
+  box-shadow: none !important; text-shadow: none;
+}
+body #view-vitrine .nav-cta:hover { background: var(--vv-volt-bright) !important; }
+
+/* ---------- Petits labels : plus de police mono ---------- */
+body #view-vitrine .eyebrow,
+body #view-vitrine .kicker {
+  font-family: var(--body); font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--vv-volt);
+}
+
+/* ---------- Hero ---------- */
+body #view-vitrine .hero { padding: 80px 0 72px; gap: 40px; }
+body #view-vitrine .vitrine-title {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(44px, 6vw, 76px); line-height: 1.02; letter-spacing: -0.025em;
+  margin: 22px 0 24px;
+}
+body #view-vitrine .vitrine-title .accent { color: var(--vv-volt); }
+body #view-vitrine .hero-sub { font-size: 19px; line-height: 1.55; color: var(--vv-text-2); max-width: 520px; margin-bottom: 32px; }
+body #view-vitrine .hero .link-secondary { font-size: 15px; color: var(--vv-text-2); }
+
+/* ---------- Boutons ---------- */
+body #view-vitrine .btn-primary,
+body #view-vitrine .pricing-card.featured .pricing-cta {
+  min-height: 54px; padding: 0 28px; border-radius: 999px;
+  background: var(--vv-volt) !important;
+  border: 0 !important;
+  color: var(--vv-bg) !important;
+  font-family: var(--body); font-size: 16px; font-weight: 700;
+  text-shadow: none;
+  box-shadow: 0 12px 34px -14px rgba(212, 255, 63, 0.55) !important;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-vitrine .btn-primary:hover,
+body #view-vitrine .pricing-card.featured .pricing-cta:hover {
+  background: var(--vv-volt-bright) !important;
+  box-shadow: 0 16px 42px -14px rgba(212, 255, 63, 0.7) !important;
+}
+body #view-vitrine .btn-ghost,
+body #view-vitrine .pricing-cta {
+  min-height: 54px; padding: 0 26px; border-radius: 999px;
+  background: transparent; border: 1px solid var(--vv-line-bright);
+  color: var(--vv-text); font-size: 16px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+body #view-vitrine .btn-ghost:hover,
+body #view-vitrine .pricing-cta:hover { border-color: var(--vv-volt); color: var(--vv-volt); background: transparent; }
+
+/* ---------- Cartes flottantes : même verre, couleurs accordées ---------- */
+body #view-vitrine .float-card { background: rgba(20, 18, 31, 0.78); border-color: rgba(212, 255, 63, 0.3); }
+body #view-vitrine .float-card .fc-label { font-size: 10px; letter-spacing: 0.08em; color: var(--vv-muted); }
+
+/* ---------- Bandeau d'avis ---------- */
+body #view-vitrine .avis-band { padding: 12px 0 40px; }
+body #view-vitrine .avis-card {
+  width: 310px; border-radius: 20px; padding: 20px 22px;
+  background: var(--vv-surface); border-color: var(--vv-line);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-vitrine .avis-card p { font-size: 15px; color: var(--vv-text-2); }
+body #view-vitrine .avis-ini { background: #1c2a10; }
+
+/* ---------- Sections ---------- */
+body #view-vitrine .section { padding: 104px 0; border-top-color: #1d1a2b; }
+body #view-vitrine .section-head { max-width: 680px; margin-bottom: 52px; }
+body #view-vitrine .section-head h2 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(34px, 4vw, 52px); line-height: 1.05; letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+body #view-vitrine .section-head p { font-size: 18px; line-height: 1.55; color: var(--vv-text-2); }
+
+/* ---------- Comment ça marche ---------- */
+body #view-vitrine .how-step { border-radius: 22px; padding: 22px 24px; }
+body #view-vitrine .how-step.is-on { background: var(--vv-surface); border-color: var(--vv-line-bright); }
+@media (min-width: 801px) {
+  body #view-vitrine .how-step h3 { font-size: 22px; }
+  body #view-vitrine .how-step p { font-size: 15.5px; }
+}
+body #view-vitrine .how-num { font-family: var(--body); font-weight: 700; }
+
+/* ---------- Confiance ---------- */
+body #view-vitrine .trust {
+  border-radius: 28px; padding: 44px 48px;
+  background: var(--vv-violet-bg); border-color: var(--vv-violet-line);
+}
+body #view-vitrine .trust h3 { font-family: var(--display); font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; letter-spacing: -0.015em; line-height: 1.15; }
+body #view-vitrine .trust p { color: #dcd7f5; font-size: 16.5px; line-height: 1.6; }
+body #view-vitrine .trust-tag {
+  font-family: var(--body); font-size: 13.5px; font-weight: 500;
+  padding: 7px 14px; border-radius: 999px;
+  background: rgba(179, 168, 255, 0.12); border-color: transparent; color: #e2defa;
+}
+@media (max-width: 640px) { body #view-vitrine .trust { padding: 28px 22px; } }
+
+/* ---------- Tarifs ---------- */
+body #view-vitrine .billing-toggle { background: var(--vv-surface); border-color: var(--vv-line); padding: 5px; }
+body #view-vitrine .bt-opt { min-height: 44px; padding: 0 20px; font-family: var(--body); font-size: 15px; font-weight: 700; }
+body #view-vitrine .bt-opt.active {
+  background: var(--vv-volt) !important; color: var(--vv-bg) !important;
+  border: 0 !important; box-shadow: none !important;
+}
+body #view-vitrine .bt-save { font-family: var(--body); background: var(--vv-bg); color: var(--vv-volt); }
+body #view-vitrine .pricing-card { border-radius: 26px; padding: 36px 32px; background: var(--vv-surface); border-color: var(--vv-line); box-shadow: none; }
+body #view-vitrine .pricing-card.featured { background: #181430; border: 2px solid var(--vv-volt); }
+body #view-vitrine .pricing-card.featured::before { font-family: var(--body); font-size: 12.5px; padding: 5px 12px; text-transform: none; letter-spacing: 0; }
+body #view-vitrine .pricing-plan-name {
+  font-family: var(--display); font-size: 26px; font-weight: 800;
+  text-transform: none; letter-spacing: -0.01em; color: var(--vv-text);
+}
+body #view-vitrine .pricing-price .amount { font-family: var(--display); font-size: 56px; font-weight: 800; letter-spacing: -0.02em; }
+body #view-vitrine .pricing-list { font-size: 16px; color: var(--vv-text-2); }
+body #view-vitrine .pricing-cta { width: 100%; margin-top: auto; }
+
+/* ---------- Installation ---------- */
+body #view-vitrine .install-card { border-radius: 24px; padding: 30px; background: var(--vv-surface); border-color: var(--vv-line); box-shadow: none; }
+body #view-vitrine .install-card h3 { font-size: 22px; }
+body #view-vitrine .install-card ol { font-size: 16px; color: var(--vv-text-2); line-height: 1.8; }
+body #view-vitrine .install-card li::marker { font-family: var(--body); font-weight: 700; }
+body #view-vitrine .badge { font-family: var(--body); font-size: 12px; }
+
+/* ---------- FAQ : une carte par question ---------- */
+body #view-vitrine .faq-wrap { display: flex; flex-direction: column; gap: 10px; }
+body #view-vitrine .faq-row,
+body #view-vitrine .faq-row:first-child {
+  border: 1px solid var(--vv-line); border-radius: 18px;
+  background: var(--vv-surface); overflow: hidden;
+}
+body #view-vitrine .faq-row.open { border-color: var(--vv-line-bright); }
+body #view-vitrine .faq-row-q { min-height: 64px; padding: 18px 22px; font-family: var(--body); font-size: 17px; font-weight: 700; color: var(--vv-text); }
+body #view-vitrine .faq-row-q svg { color: var(--vv-volt); }
+body #view-vitrine .faq-row-a p { margin: 0 22px 20px; font-size: 16px; color: var(--vv-text-2); }
+
+/* ---------- Appel final : bloc volt ---------- */
+body #view-vitrine .final-cta {
+  max-width: 1136px; margin: 40px auto 104px; padding: clamp(44px, 6vw, 80px) 32px;
+  border: 0; border-radius: 32px;
+  background: var(--vv-volt); color: var(--vv-bg);
+}
+body #view-vitrine .final-cta h2 {
+  font-family: var(--display); font-weight: 800; color: var(--vv-bg);
+  font-size: clamp(32px, 4.4vw, 56px); line-height: 1.04; letter-spacing: -0.025em;
+  max-width: 760px;
+}
+body #view-vitrine .final-cta .btn-primary {
+  background: var(--vv-bg) !important; color: var(--vv-volt) !important;
+  box-shadow: none !important; min-height: 60px; padding: 0 34px; font-size: 17px;
+}
+body #view-vitrine .final-cta .btn-primary:hover { background: #1a1726 !important; }
+@media (max-width: 1200px) { body #view-vitrine .final-cta { margin-left: 20px; margin-right: 20px; } }
+
+/* ---------- Pied de page ---------- */
+body #view-vitrine footer { border-top-color: #1d1a2b; }
+body #view-vitrine .footer-brand { font-family: var(--body); font-size: 14px; }
+body #view-vitrine .footer-legal a,
+body #view-vitrine .footer-legal .link-secondary { font-size: 14px; color: var(--vv-muted); }
+body #view-vitrine .footer-legal a:hover { color: var(--vv-text); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 800px) {
+  body #view-vitrine .hero { padding: 48px 0 40px; }
+  body #view-vitrine .section { padding: 72px 0; }
+  body #view-vitrine .hero .cta-row { flex-direction: column; align-items: stretch; }
+  body #view-vitrine .hero .cta-row .btn-primary,
+  body #view-vitrine .hero .cta-row .btn-ghost { width: 100%; }
+}
+
+body #view-vitrine :focus-visible { outline: 2px solid var(--vv-volt); outline-offset: 3px; }
+@media (max-width: 480px) {
+  body #view-vitrine .vitrine-title { font-size: 40px; }
+  body #view-vitrine .hero-sub { font-size: 17px; }
+}
