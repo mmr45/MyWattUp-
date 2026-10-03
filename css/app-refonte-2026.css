@@ -1,0 +1,450 @@
+/* ======================================================================
+   PARTIE 3 — REFONTE APP MOBILE 2026 (onboarding + app connectée)
+   Chargée APRÈS le <style> d'index.html : elle gagne la cascade.
+   Aucune classe, aucun id, aucun JS modifié : uniquement l'apparence.
+   Pour revenir en arrière : retirer la ligne <link> dans index.html.
+   ====================================================================== */
+
+body #view-app,
+body #view-onboarding {
+  --vert: #D4FF3F;
+  --vert-ink: #0a0912;
+  --violet: #b3a8ff;
+  --violet-bg: #1d1936;
+  --violet-line: #3b3366;
+  --ambre: #FF5A36;
+  --jaune: #ffc24d;
+  --fond: #0a0912;
+  --fond-card: #14121f;
+  --fond-2: #1a1726;
+  --ligne: #2a2640;
+  --ligne-2: #3a3555;
+  --blanc: #f4f2fa;
+  --texte-2: #c9c5da;
+  --gris: #a39fb8;
+  --r-lg: 24px;
+  --r-md: 18px;
+  --r-sm: 14px;
+  background: var(--fond) !important;
+  background-image: none !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  color: var(--blanc);
+  -webkit-font-smoothing: antialiased;
+}
+body #view-app::before { display: none; }
+
+/* ---------- Typo ---------- */
+body #view-app .app-h1,
+body #view-app .brand-name,
+body #view-app .ring-score,
+body #view-app .streak-value,
+body #view-app .gs-title,
+body #view-onboarding h1 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.02em;
+}
+body #view-app .app-h1 { font-size: 26px; font-weight: 800; }
+body #view-app .dash-greeting { color: var(--gris); font-size: 15px; margin: 0 0 16px; }
+
+/* ---------- Conteneur ---------- */
+body #view-app .app-wrap { padding: 20px 20px 128px; }
+
+/* ---------- En-tête ---------- */
+body #view-app .topbar {
+  background: rgba(10, 9, 18, 0.94);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  margin: -20px -20px 18px;
+  padding: 16px 20px 12px;
+}
+body #view-app .back,
+body #view-app .icon-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--fond-card); border: 1px solid var(--ligne);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-app .back:hover,
+body #view-app .icon-btn:hover { border-color: var(--vert); background: var(--fond-2); }
+body #view-app .brand-icon {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: var(--vert); color: var(--vert-ink);
+  display: flex; align-items: center; justify-content: center;
+}
+body #view-app .brand-icon svg { width: 20px; height: 20px; fill: var(--vert-ink); }
+body #view-app .brand-name { font-size: 20px; font-weight: 800; }
+body #view-app .user-menu-trigger {
+  background: var(--fond-card); border: 1px solid var(--ligne);
+  min-height: 44px; border-radius: 999px;
+}
+
+/* ---------- Surfaces : aplats nets (plus de verre, plus fluide sur mobile) ---------- */
+body #view-app .score-card,
+body #view-app .mini-card,
+body #view-app .mini-why,
+body #view-app .plan-card,
+body #view-app .quota-banner,
+body #view-app .history-item,
+body #view-app .meal-card,
+body #view-app .gs-box,
+body #view-app .faq-item,
+body #view-app .empty-state,
+body #view-app .weight-form,
+body #view-app .history-detail,
+body #view-app .rc-step,
+body #view-app .time-field,
+body #view-app .app-section,
+body #view-app .streak-card,
+body #view-app .trend-card,
+body #view-app .history-card,
+body #view-app .result-card,
+body #view-app .scan-box {
+  background: var(--fond-card);
+  border: 1px solid var(--ligne);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+body #view-app .app-section,
+body #view-app .streak-card,
+body #view-app .trend-card,
+body #view-app .history-card,
+body #view-app .meal-card,
+body #view-app .result-card,
+body #view-app .plan-card { border-radius: var(--r-lg); padding: 20px; margin-bottom: 14px; }
+
+/* ---------- Carte score ---------- */
+body #view-app .score-card {
+  border-radius: 28px;
+  padding: 28px 22px 24px;
+  margin-bottom: 14px;
+}
+body #view-app .score-card::before { display: none; }
+body #view-app .ring-wrap { filter: none; }
+body #view-app .ring-bg { stroke: #24203a; }
+body #view-app .ring-fg { stroke: var(--vert); stroke-linecap: round; }
+body #view-app .ring-score { font-size: 60px; font-weight: 800; line-height: 1; color: var(--blanc); }
+body #view-app .ring-label { color: var(--gris); font-size: 13px; }
+body #view-app .score-badge {
+  background: #1c2a10; color: var(--vert);
+  border: 0; border-radius: 999px; font-weight: 700;
+}
+body #view-app .score-share-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--fond-2); border: 1px solid var(--ligne);
+}
+body #view-app .score-date { color: var(--gris); }
+
+/* ---------- Mini-cartes (sommeil / activité / forme / repas) ---------- */
+body #view-app .mini-grid { gap: 10px; margin-bottom: 14px; }
+body #view-app .mini-card {
+  border-radius: 20px;
+  padding: 16px 14px;
+  text-align: left;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  min-height: 44px;
+}
+body #view-app .mini-card:hover { border-color: var(--ligne-2); background: var(--fond-2); transform: none; }
+body #view-app .mini-card[aria-expanded="true"] { border-color: var(--vert); }
+body #view-app .mini-icon {
+  width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+body #view-app .mini-icon svg { width: 20px; height: 20px; }
+body #view-app .mini-card.sommeil .mini-icon { background: var(--violet-bg); color: var(--violet); }
+body #view-app .mini-card.activite .mini-icon { background: #2a2410; color: var(--jaune); }
+body #view-app .mini-card.forme .mini-icon { background: #2a1610; color: #ff8a6b; }
+body #view-app .mini-card.repas .mini-icon { background: #1c2a10; color: var(--vert); }
+body #view-app .mini-value { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800; color: var(--blanc); }
+body #view-app .mini-detail { color: var(--gris); font-size: 13px; }
+body #view-app .mini-label { color: var(--texte-2); font-size: 13px; font-weight: 500; }
+body #view-app .mini-why { border-radius: var(--r-md); }
+
+/* ---------- Conseil du jour : la carte « action » ---------- */
+body #view-app .advice-card {
+  background: var(--violet-bg);
+  border: 1px solid var(--violet-line);
+  border-radius: 22px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+body #view-app .advice-eyebrow {
+  color: var(--violet); font-weight: 700; font-size: 14px;
+  letter-spacing: 0; text-transform: none;
+}
+body #view-app .advice-text { color: #ece9fb; font-size: 16px; line-height: 1.5; }
+
+/* ---------- Titres de section ---------- */
+body #view-app .section-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+  color: var(--blanc); opacity: 1;
+  padding-left: 0; margin: 4px 0 12px;
+}
+body #view-app .section-title::before { display: none; }
+body #view-app .section-title svg { color: var(--vert); }
+body #view-app .section-desc { color: var(--gris); }
+
+/* ---------- Boutons ---------- */
+body #view-app .app-cta,
+body #view-app .journal-btn,
+body #view-app .scan-btn,
+body #view-onboarding button[type="submit"] {
+  min-height: 52px;
+  border-radius: 999px;
+  background: var(--vert);
+  color: var(--vert-ink);
+  border: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: none;
+}
+body #view-app .app-cta.secondary {
+  background: transparent;
+  color: var(--blanc);
+  border: 1px solid var(--ligne-2);
+}
+body #view-app .app-cta.secondary:hover { border-color: var(--vert); color: var(--vert); }
+body #view-app .journal-btn { display: flex; align-items: center; justify-content: center; }
+body #view-app .settings-cancel { min-height: 44px; }
+
+/* ---------- Pastilles & puces ---------- */
+body #view-app .activity-chip,
+body #view-app .meal-chip,
+body #view-app .badge-chip,
+body #view-app .qbtn,
+body #view-app .prefill-btn {
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+  background: var(--fond-card);
+  border: 1px solid var(--ligne);
+  border-radius: 999px;
+  min-height: 40px;
+}
+body #view-app .plan-pill.free {
+  background: var(--fond-2); border: 1px solid var(--ligne-2); color: var(--texte-2);
+}
+
+/* ---------- Quotas ---------- */
+body #view-app .quota-banner { border-radius: var(--r-md); padding: 14px 16px; }
+body #view-app .quota-bar-track { background: #24203a; height: 6px; border-radius: 3px; }
+body #view-app .quota-bar-fill { background: var(--vert); border-radius: 3px; }
+body #view-app .quota-banner-count { color: var(--blanc); font-weight: 700; }
+body #view-app .quota-banner-link { color: var(--vert); font-weight: 700; }
+
+/* ---------- Repas ---------- */
+body #view-app .meal-card:hover { transform: none; border-color: var(--ligne-2); }
+body #view-app .gs-box { border-radius: var(--r-lg); }
+body #view-app .gs-fill { background: var(--vert); }
+
+/* ---------- Scanner ---------- */
+body #view-app .scan-box { border-radius: var(--r-lg); padding: 18px; }
+body #view-app .camera-wrap { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--ligne); }
+body #view-app .result-card { border-radius: 26px; }
+body #view-app .result-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px; font-weight: 800; }
+body #view-app .result-justif { color: var(--texte-2); line-height: 1.5; }
+
+/* ---------- Champs ---------- */
+body #view-app input[type="text"],
+body #view-app input[type="number"],
+body #view-app input[type="date"],
+body #view-app input[type="time"],
+body #view-app input[type="email"],
+body #view-app input[type="search"],
+body #view-app textarea,
+body #view-app select {
+  background: var(--fond-card);
+  border: 1px solid var(--ligne);
+  border-radius: var(--r-sm);
+  min-height: 52px;
+  color: var(--blanc);
+  font-size: 16px; /* évite le zoom auto d'iOS */
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-app textarea { min-height: 96px; }
+body #view-app input:focus,
+body #view-app textarea:focus,
+body #view-app select:focus {
+  border-color: var(--vert);
+  background: var(--fond-2);
+  box-shadow: 0 0 0 3px rgba(212, 255, 63, 0.14);
+}
+
+/* ---------- Feuilles & menus ---------- */
+body #view-app .user-menu-dropdown,
+body #view-app .app-sheet,
+body #view-app .toast {
+  background: #14121f !important;
+  border: 1px solid var(--ligne);
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-app .app-sheet { border-radius: 28px 28px 0 0; }
+
+/* ---------- Barre de navigation : pleine largeur, Scanner au centre ---------- */
+body #view-app .bottom-nav {
+  left: 0; right: 0; bottom: 0;
+  max-width: none; margin: 0;
+  border-radius: 0;
+  border: 0; border-top: 1px solid #1d1a2b;
+  background: rgba(16, 14, 26, 0.97);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  box-shadow: none;
+  padding: 8px 8px max(10px, env(safe-area-inset-bottom));
+  align-items: flex-end;
+}
+body #view-app .nav-item {
+  min-height: 52px;
+  justify-content: center;
+  color: #8f8aa6;
+  font-size: 11px;
+  background: none;
+  border-radius: 14px;
+}
+body #view-app .nav-item.active {
+  color: var(--vert);
+  background: none;
+  box-shadow: none;
+}
+body #view-app .nav-item[data-nav="scanner"] .nav-icon {
+  width: 56px; height: 56px; margin-top: -30px;
+  border-radius: 50%;
+  background: var(--vert); color: var(--vert-ink);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 6px var(--fond);
+}
+body #view-app .nav-item[data-nav="scanner"].active .nav-icon { box-shadow: 0 0 0 6px var(--fond), 0 0 0 8px rgba(212, 255, 63, 0.35); }
+
+/* ---------- Focus & détails ---------- */
+body #view-app :focus-visible,
+body #view-onboarding :focus-visible { outline: 2px solid var(--vert); outline-offset: 2px; }
+body #view-app ::selection { background: rgba(212, 255, 63, 0.3); }
+
+/* ======================================================================
+   ONBOARDING
+   ====================================================================== */
+body #view-onboarding { padding: 20px; align-items: flex-start; }
+body #view-onboarding .card {
+  max-width: 460px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 24px 0 32px;
+}
+body #view-onboarding .ob-progress-track { height: 6px; border-radius: 3px; background: #1d1a2b; }
+body #view-onboarding .ob-progress-fill { background: var(--vert); border-radius: 3px; }
+body #view-onboarding .ob-progress-label { color: var(--gris); }
+body #view-onboarding h1 { font-size: 30px; font-weight: 800; line-height: 1.1; margin: 22px 0 8px; }
+body #view-onboarding .sub { font-size: 15px; color: var(--gris); line-height: 1.5; }
+body #view-onboarding fieldset {
+  background: var(--fond-card);
+  border: 1px solid var(--ligne);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  margin: 0 0 14px;
+}
+body #view-onboarding .ob-legend { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 700; }
+body #view-onboarding .ob-step-num {
+  background: var(--fond-2); color: var(--gris);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+}
+body #view-onboarding fieldset.done .ob-step-num { background: var(--vert); color: var(--vert-ink); }
+body #view-onboarding .option {
+  min-height: 56px;
+  padding: 14px 16px;
+  background: var(--fond);
+  border: 2px solid var(--ligne);
+  border-radius: var(--r-md);
+  font-size: 15px;
+}
+body #view-onboarding .option:has(input:checked) { border-color: var(--vert); background: #181430; }
+body #view-onboarding .option input { width: 20px; height: 20px; }
+body #view-onboarding select,
+body #view-onboarding textarea,
+body #view-onboarding input[type="number"] {
+  min-height: 52px;
+  background: var(--fond);
+  border: 1px solid var(--ligne);
+  border-radius: var(--r-sm);
+  color: var(--blanc);
+  font-size: 16px;
+}
+body #view-onboarding textarea { min-height: 88px; }
+body #view-onboarding .field-row label,
+body #view-onboarding label { color: var(--gris); font-weight: 700; font-size: 13px; }
+body #view-onboarding .ob-help summary { color: var(--violet); min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+body #view-onboarding button[type="submit"] { width: 100%; min-height: 56px; font-size: 17px; margin-top: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  body #view-app *, body #view-onboarding * { transition: none !important; }
+}
+
+/* Boutons radio / cases : plus de rond blanc natif */
+body #view-onboarding .option input[type="radio"],
+body #view-app input[type="radio"] {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; flex: none;
+  border-radius: 50%; border: 2px solid var(--ligne-2); background: transparent;
+  display: inline-grid; place-content: center; cursor: pointer;
+}
+body #view-onboarding .option input[type="radio"]:checked,
+body #view-app input[type="radio"]:checked { border: 6px solid #2d3a12; background: var(--vert); }
+body #view-onboarding input[type="checkbox"],
+body #view-app input[type="checkbox"] { accent-color: var(--vert); width: 20px; height: 20px; }
+
+/* ---------- Corrections de cascade (règles plus anciennes plus spécifiques) ---------- */
+/* La police mono devient DM Sans dans l'app : textes plus doux à lire */
+body #view-app, body #view-onboarding { --mono: 'DM Sans', -apple-system, sans-serif; }
+body #view-app .dash-greeting,
+body #view-app .ring-label,
+body #view-app .mini-label,
+body #view-app .trend-title,
+body #view-app .history-title,
+body #view-app .social-section-title,
+body #view-onboarding .ob-progress-label {
+  text-transform: none; letter-spacing: 0;
+}
+body #view-app .dash-greeting { font-size: 15px; margin-top: -6px; }
+body #view-app .ring-label { font-size: 13px; }
+body #view-app .mini-label { font-size: 13px; color: var(--texte-2); }
+body #view-app .trend-title,
+body #view-app .history-title,
+body #view-app .social-section-title {
+  font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; color: var(--blanc);
+}
+
+/* Mini-cartes : même aplat pour toutes, la couleur reste dans l'icône */
+body #view-app .mini-card.sommeil,
+body #view-app .mini-card.activite,
+body #view-app .mini-card.forme,
+body #view-app .mini-card.repas { background: var(--fond-card); border-color: var(--ligne); }
+body #view-app .mini-card.sommeil .mini-value,
+body #view-app .mini-card.activite .mini-value,
+body #view-app .mini-card.forme .mini-value,
+body #view-app .mini-card.repas .mini-value { color: var(--blanc); }
+body #view-app .mini-card.sommeil .mini-icon { background: var(--violet-bg); color: var(--violet); }
+body #view-app .mini-card.activite .mini-icon { background: #2a2410; color: var(--jaune); }
+body #view-app .mini-card.forme .mini-icon { background: #2a1610; color: #ff8a6b; }
+body #view-app .mini-card.repas .mini-icon { background: #1c2a10; color: var(--vert); }
+
+/* Boutons principaux : aplat volt plein (remplace le verre teinté) */
+body #view-app .app-cta,
+body #view-app .btn-app,
+body #view-app button.cta-primary,
+body #view-onboarding button[type="submit"] {
+  background: var(--vert) !important;
+  border: 0 !important;
+  color: var(--vert-ink) !important;
+  text-shadow: none;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+body #view-app .app-cta:hover,
+body #view-onboarding button[type="submit"]:hover { background: #e2ff7a !important; box-shadow: none !important; }
+body #view-app .app-cta.secondary {
+  background: transparent !important;
+  border: 1px solid var(--ligne-2) !important;
+  color: var(--blanc) !important;
+}
+body #view-app .app-cta.secondary:hover { border-color: var(--vert) !important; color: var(--vert) !important; background: transparent !important; }
+body #view-onboarding fieldset.done .ob-step-num { background: var(--vert); color: var(--vert-ink); border-color: var(--vert); }
+body #view-onboarding .ob-progress-fill { background: var(--vert); }
