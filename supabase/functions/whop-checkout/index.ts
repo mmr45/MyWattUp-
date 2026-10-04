@@ -4,11 +4,12 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 // Paiement Pro via Whop. Renvoie { url } vers le checkout hébergé Whop.
 // Secrets requis (Supabase > Edge Functions > Secrets) :
 //   WHOP_API_KEY          clé API de l'entreprise Whop
-//   WHOP_PLAN_ID_MONTH    plan Whop 6,99 €/mois  (plan_...)
-//   WHOP_PLAN_ID_YEAR     plan Whop 59,99 €/an   (plan_...)
+// Plans du produit « MyWattUp Pro » (biz_5Wvg7ieIkas5Bs / prod_Ve93ul6xBW7Re).
+// Un ID de plan n'est pas un secret : valeurs par défaut codées en dur,
+// surchargeables par WHOP_PLAN_ID_MONTH / WHOP_PLAN_ID_YEAR.
 const WHOP_API_KEY = Deno.env.get("WHOP_API_KEY") ?? "";
-const WHOP_PLAN_ID_MONTH = Deno.env.get("WHOP_PLAN_ID_MONTH") ?? "";
-const WHOP_PLAN_ID_YEAR = Deno.env.get("WHOP_PLAN_ID_YEAR") ?? "";
+const WHOP_PLAN_ID_MONTH = Deno.env.get("WHOP_PLAN_ID_MONTH") ?? "plan_UOHsi8HqHDA8E"; // 6,99 €/mois
+const WHOP_PLAN_ID_YEAR = Deno.env.get("WHOP_PLAN_ID_YEAR") ?? "plan_3iYYUsc2LUI3j"; // 59,99 €/an
 const SITE_URL = Deno.env.get("SITE_URL") ?? "https://my-watt-up.vercel.app";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -31,7 +32,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   if (!WHOP_API_KEY || !WHOP_PLAN_ID_MONTH || !WHOP_PLAN_ID_YEAR) {
-    console.error("Configuration Whop incomplète (WHOP_API_KEY / WHOP_PLAN_ID_MONTH / WHOP_PLAN_ID_YEAR).");
+    console.error("Configuration Whop incomplète : secret WHOP_API_KEY manquant.");
     return json({ error: "Le paiement est momentanément indisponible. Réessaie plus tard." }, 503);
   }
 
