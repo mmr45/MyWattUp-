@@ -2990,7 +2990,7 @@
         <div class="trust-tags">
           <span class="trust-tag">Export des données</span>
           <span class="trust-tag">Suppression à tout moment</span>
-          <span class="trust-tag">Paiement Stripe</span>
+          <span class="trust-tag">Paiement sécurisé Whop</span>
         </div>
       </div>
     </div>
@@ -3059,7 +3059,7 @@
         <button class="pricing-cta" id="btnGoLoginPro" style="cursor:pointer;">Passer Pro</button>
       </div>
     </div>
-    <p class="pricing-note">Paiement sécurisé via Stripe. Résiliable à tout moment depuis ton compte.<br />
+    <p class="pricing-note">Paiement sécurisé via Whop. Résiliable à tout moment depuis ton compte.<br />
       Abonnement mensuel de 6,99 € reconduit automatiquement. Voir les
       <a href="/cgu.html" target="_blank" rel="noopener" style="color:var(--vv-volt);">conditions générales</a>.</p>
   </section>
@@ -3313,7 +3313,7 @@
     <button type="button" class="pw-cta" id="paywallCta">Passer Pro — 59,99€/an</button>
     <button type="button" class="pw-free" id="paywallSkip">Continuer en gratuit</button>
 
-    <p class="pw-legal">Paiement Stripe. Reconduction automatique jusqu'à résiliation, annulable à tout moment depuis ton compte.
+    <p class="pw-legal">Paiement sécurisé via Whop. Reconduction automatique jusqu'à résiliation, annulable à tout moment depuis ton compte.
       <a href="/cgu.html" target="_blank" rel="noopener">Conditions générales</a>.</p>
   </div>
 </div>
@@ -5036,7 +5036,7 @@
         <button type="button" class="app-cta" id="btnUpgradePro">Passer Pro — 59,99€/an</button>
       </div>
 
-      <p class="settings-note">Paiement géré par Stripe (Checkout + Portail client). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
+      <p class="settings-note">Paiement géré par Whop (paiement et gestion de l'abonnement). Résiliable à tout moment ; en cas d'échec de paiement, le compte repasse automatiquement sur l'offre Gratuite.</p>
 
       <p class="msg" id="abonnementMsg" role="status" aria-live="polite"></p>
 
@@ -5122,9 +5122,9 @@
           <button type="button" class="faq-q">Comment modifier mon objectif ou mes allergies ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="faq-a"><p>Rends-toi dans Paramètres → Ma pratique. Tu peux y mettre à jour ton sport, ton objectif et tes allergies à tout moment ; tes prochains conseils et repas générés en tiendront compte.</p></div>
         </div>
-        <div class="faq-item" data-q="pro abonnement prix résilier annuler paiement stripe">
+        <div class="faq-item" data-q="pro abonnement prix résilier annuler paiement whop stripe">
           <button type="button" class="faq-q">Comment résilier mon offre Pro ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
-          <div class="faq-a"><p>Ton abonnement Pro est géré via Stripe et résiliable à tout moment depuis l'écran Abonnement. En cas d'annulation, tu conserves l'accès Pro jusqu'à la fin de la période déjà payée, puis ton compte repasse automatiquement en offre Gratuite.</p></div>
+          <div class="faq-a"><p>Ton abonnement Pro est géré via Whop et résiliable à tout moment depuis l'écran Abonnement. En cas d'annulation, tu conserves l'accès Pro jusqu'à la fin de la période déjà payée, puis ton compte repasse automatiquement en offre Gratuite.</p></div>
         </div>
         <div class="faq-item" data-q="données rgpd confidentialité supprimer compte exporter">
           <button type="button" class="faq-q">Que deviennent mes données si je supprime mon compte ?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -9646,7 +9646,7 @@
       const latest = invoices[0];
       if (latest.card_brand && latest.card_last4) {
         methodTitle.textContent = `${latest.card_brand.toUpperCase()} •••• ${latest.card_last4}`;
-        methodDesc.textContent = 'Géré via le portail client Stripe.';
+        methodDesc.textContent = latest.provider === 'stripe' ? 'Géré via le portail client Stripe.' : 'Géré via Whop.';
       }
 
       listEl.innerHTML = invoices.map(inv => {
@@ -10060,7 +10060,15 @@
   const EDGE_FUNCTIONS_URL = 'https://vwodpdoloavliccnnenh.supabase.co/functions/v1';
 
   // Appelle une Edge Function authentifiée (JWT de la session en cours) qui renvoie
-  // { url } vers Stripe (Checkout ou Portail client), puis redirige le navigateur.
+  // { url } vers la page de paiement ou de gestion (Whop), puis redirige le navigateur.
+  // Fournisseur de paiement : Whop. Les anciens noms de fonctions Stripe sont
+  // redirigés ici, pour ne rien changer aux boutons existants.
+  const PAYMENT_FUNCTIONS = {
+    'create-checkout-session': ['whop-checkout'],
+    // Abonné Whop d'abord ; si aucun abonnement Whop, ancien abonné Stripe.
+    'create-portal-session': ['whop-portal', 'create-portal-session'],
+  };
+
   async function goToStripe(functionName, button, payload) {
     const originalLabel = button ? button.textContent : null;
     if (button) {
@@ -10074,25 +10082,33 @@
         return;
       }
 
-      const res = await fetch(`${EDGE_FUNCTIONS_URL}/${functionName}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        // { interval: 'month' | 'year' } — l'Edge Function choisit le price Stripe.
-        body: payload ? JSON.stringify(payload) : undefined,
-      });
-
-      const data = await res.json();
-      if (!res.ok || !data.url) {
-        throw new Error(data.error || 'Réponse invalide du serveur de paiement.');
+      const candidates = PAYMENT_FUNCTIONS[functionName] || [functionName];
+      let data = null;
+      let lastError = null;
+      for (const fn of candidates) {
+        const res = await fetch(`${EDGE_FUNCTIONS_URL}/${fn}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          // { interval: 'month' | 'year' } — l'Edge Function choisit le plan.
+          body: payload ? JSON.stringify(payload) : undefined,
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && body.url) { data = body; break; }
+        lastError = body.error || 'Réponse invalide du serveur de paiement.';
+        // 400 = pas d'abonnement chez ce fournisseur : on essaie le suivant.
+        if (res.status !== 400) break;
+      }
+      if (!data) {
+        throw new Error(lastError || 'Réponse invalide du serveur de paiement.');
       }
 
       window.location.href = data.url;
     } catch (err) {
       console.error(err);
-      showToast(err.message || 'Erreur lors de la connexion à Stripe.', 'error');
+      showToast(err.message || 'Erreur lors de la connexion au service de paiement.', 'error');
       if (button) {
         button.disabled = false;
         button.textContent = originalLabel;
