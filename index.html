@@ -1726,6 +1726,65 @@
   #view-app .score-mid { background: rgba(212,255,63,0.18); color: var(--ambre); }
   #view-app .score-bad { background: rgba(255,107,107,0.15); color: #FF6B6B; }
   #view-app .result-justif { font-size: 13px; color: var(--gris); }
+  /* fiche résultat détaillée du scanner */
+  #view-app .rc-head { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+  #view-app .rc-img { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 14px; background: var(--fond) center/contain no-repeat; border: 1px solid rgba(255,255,255,0.06); }
+  #view-app .rc-img:empty.no-img { background-image: none; }
+  #view-app .rc-head-text { min-width: 0; }
+  #view-app .rc-head .result-name { margin-bottom: 2px; word-break: break-word; }
+  #view-app .rc-brand { font-size: 12px; color: var(--gris); }
+  #view-app .rc-verdict { display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 16px; border: 1px solid transparent; margin-bottom: 12px; }
+  #view-app .rc-verdict.tone-good { background: rgba(212,255,63,0.10); border-color: rgba(212,255,63,0.30); --tone: #D4FF3F; }
+  #view-app .rc-verdict.tone-mid { background: rgba(255,184,77,0.10); border-color: rgba(255,184,77,0.30); --tone: #FFB84D; }
+  #view-app .rc-verdict.tone-bad, #view-app .rc-verdict.tone-danger { background: rgba(255,107,107,0.10); border-color: rgba(255,107,107,0.32); --tone: #FF6B6B; }
+  #view-app .rc-score { flex: 0 0 auto; width: 68px; height: 68px; border-radius: 50%; border: 4px solid var(--tone, var(--gris)); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+  #view-app .rc-score b { font-family: var(--display); font-size: 24px; color: var(--tone, var(--blanc)); }
+  #view-app .rc-score span { font-size: 10px; color: var(--gris); margin-top: 2px; }
+  #view-app .rc-verdict-label { font-family: var(--display); font-weight: 800; font-size: 17px; color: var(--tone, var(--blanc)); margin-bottom: 3px; }
+  #view-app .rc-verdict .result-justif { font-size: 13px; line-height: 1.45; color: var(--texte-2, var(--gris)); }
+  #view-app .rc-alert { background: rgba(255,107,107,0.14); border: 1px solid rgba(255,107,107,0.45); color: #FF9C9C; border-radius: 12px; padding: 12px 14px; font-size: 13px; line-height: 1.45; margin-bottom: 12px; }
+  #view-app .rc-alert b { color: #FF6B6B; }
+  #view-app .rc-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  #view-app .rc-chip { font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.06); color: var(--blanc); }
+  #view-app .rc-chip.ns-a { background: #038141; } #view-app .rc-chip.ns-b { background: #85BB2F; color: #0E1410; }
+  #view-app .rc-chip.ns-c { background: #FECB02; color: #0E1410; } #view-app .rc-chip.ns-d { background: #EE8100; color: #0E1410; }
+  #view-app .rc-chip.ns-e { background: #E63E11; }
+  #view-app .rc-block { margin-bottom: 14px; }
+  #view-app .rc-h { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gris); margin: 0 0 8px; }
+  #view-app .rc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  #view-app .rc-list li { position: relative; padding-left: 22px; font-size: 13px; line-height: 1.45; color: var(--blanc); }
+  #view-app .rc-list li::before { position: absolute; left: 0; top: 0; font-weight: 800; }
+  #view-app .rc-list.pos li::before { content: '+'; color: #D4FF3F; }
+  #view-app .rc-list.neg li::before { content: '!'; color: #FFB84D; }
+  #view-app .rc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #view-app .rc-table th { font-size: 11px; font-weight: 600; color: var(--gris); text-align: right; padding: 0 0 6px; }
+  #view-app .rc-table th:first-child { text-align: left; }
+  #view-app .rc-table td { padding: 7px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: right; font-variant-numeric: tabular-nums; }
+  #view-app .rc-table td:first-child { text-align: left; color: var(--blanc); }
+  #view-app .rc-table tr.sub td:first-child { padding-left: 14px; color: var(--gris); }
+  #view-app .rc-details { border-top: 1px solid rgba(255,255,255,0.06); padding: 10px 0; }
+  #view-app .rc-details summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--blanc); list-style: none; }
+  #view-app .rc-details summary::-webkit-details-marker { display: none; }
+  #view-app .rc-details summary::after { content: '+'; float: right; color: var(--gris); }
+  #view-app .rc-details[open] summary::after { content: '–'; }
+  #view-app .rc-why { margin-top: 8px; }
+  #view-app .rc-why-summary { font-size: 12px; color: var(--gris); line-height: 1.5; margin: 8px 0 0; }
+  #view-app .rc-ingredients { font-size: 12px; color: var(--gris); line-height: 1.55; margin: 8px 0 0; }
+  #view-app .rc-meal-btn { margin-top: 14px; }
+  #view-app .rc-meal { margin-top: 14px; background: var(--fond); border: 1px solid rgba(212,255,63,0.25); border-radius: 16px; padding: 16px; }
+  #view-app .rc-meal-loading { font-size: 13px; color: var(--gris); text-align: center; padding: 8px 0; }
+  #view-app .rc-meal-title { font-family: var(--display); font-size: 16px; font-weight: 800; margin: 0 0 4px; }
+  #view-app .rc-meal-why { font-size: 12.5px; color: var(--gris); line-height: 1.5; margin: 0 0 12px; }
+  #view-app .rc-meal ul.rc-meal-ing { list-style: none; margin: 0 0 12px; padding: 0; }
+  #view-app .rc-meal-ing li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+  #view-app .rc-meal-ing li small { color: var(--gris); white-space: nowrap; }
+  #view-app .rc-meal-ing li.main { font-weight: 700; }
+  #view-app .rc-macros { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+  #view-app .rc-meal ol.rc-meal-steps { margin: 0 0 12px; padding-left: 20px; font-size: 13px; line-height: 1.5; color: var(--blanc); }
+  #view-app .rc-meal-steps li { margin-bottom: 4px; }
+  #view-app .rc-meal-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  #view-app .rc-meal-actions .app-cta { flex: 1 1 150px; margin: 0; }
+  #view-app .rc-meal-note { font-size: 11px; color: var(--gris); margin: 10px 0 0; line-height: 1.4; }
   #view-app .history-title { font-family: var(--mono); font-size: 12px; color: var(--gris); text-transform: uppercase; letter-spacing: 0.06em; margin: 24px 0 12px; display: flex; align-items: center; justify-content: space-between; }
   #view-app .history-title .icon-btn { width: 26px; height: 26px; }
   #view-app .history-title .icon-btn svg { width: 13px; height: 13px; }
@@ -4651,9 +4710,49 @@
       </div>
 
       <div class="result-card" id="resultCard">
-        <div class="result-name" id="resultName"></div>
-        <div class="result-score" id="resultScore"></div>
-        <div class="result-justif" id="resultJustif"></div>
+        <div class="rc-head">
+          <div class="rc-img" id="resultImg" aria-hidden="true"></div>
+          <div class="rc-head-text">
+            <div class="result-name" id="resultName"></div>
+            <div class="rc-brand" id="resultBrand"></div>
+          </div>
+        </div>
+
+        <div class="rc-verdict" id="resultVerdict">
+          <div class="rc-score" aria-label="Score personnalisé"><b id="resultScoreNum">0</b><span>/100</span></div>
+          <div class="rc-verdict-body">
+            <div class="rc-verdict-label" id="resultVerdictLabel"></div>
+            <div class="result-justif" id="resultJustif"></div>
+          </div>
+        </div>
+
+        <div class="rc-alert" id="resultAllergy" role="alert" style="display:none;"></div>
+
+        <div class="rc-chips" id="resultChips"></div>
+
+        <div class="rc-block" id="resultProsBlock">
+          <h4 class="rc-h">Points positifs</h4>
+          <ul class="rc-list pos" id="resultPros"></ul>
+        </div>
+        <div class="rc-block" id="resultConsBlock">
+          <h4 class="rc-h">À surveiller</h4>
+          <ul class="rc-list neg" id="resultCons"></ul>
+        </div>
+
+        <div class="rc-block">
+          <h4 class="rc-h">Valeurs nutritionnelles</h4>
+          <table class="rc-table" id="resultNutri"></table>
+        </div>
+
+        <details class="rc-details">
+          <summary>Comment ce score est calculé</summary>
+          <div class="rc-why" id="resultWhy"></div>
+        </details>
+        <details class="rc-details" id="resultIngredientsWrap">
+          <summary>Ingrédients</summary>
+          <p class="rc-ingredients" id="resultIngredients"></p>
+        </details>
+
         <div class="result-add-row">
           <input type="number" id="resultQuantity" min="1" step="1" value="100" aria-label="Quantité en grammes" /> g
           <select id="resultMealSlot" aria-label="Repas">
@@ -4664,6 +4763,9 @@
           </select>
           <button type="button" class="app-cta secondary" id="resultAddToJournalBtn">Ajouter à mon journal</button>
         </div>
+
+        <button type="button" class="app-cta rc-meal-btn" id="resultMealBtn" style="display:none;">Créer un repas avec ce produit</button>
+        <div class="rc-meal" id="resultMeal" style="display:none;" aria-live="polite"></div>
       </div>
 
       <div class="history-title">
@@ -9154,7 +9256,7 @@
   const NUTRISCORE_BASE = { a: 90, b: 75, c: 55, d: 35, e: 15 };
 
   function buildScoreExplanation(product, sportType, objective, finalScore) {
-    const grade = product.nutriscore_grade;
+    const grade = cleanGrade(product.nutriscore_grade);
     const proteins = product.nutriments?.proteins_100g ?? null;
     const carbs = product.nutriments?.carbohydrates_100g ?? null;
     const sugars = product.nutriments?.sugars_100g ?? null;
@@ -9275,6 +9377,257 @@
     return { rows, summary };
   }
 
+  // -------------------------------------------------------------
+  // Fiche résultat détaillée : verdict, points forts / faibles, allergènes,
+  // tableau nutritionnel et explication du score.
+  // -------------------------------------------------------------
+  const NUTRI_GRADES = ['a', 'b', 'c', 'd', 'e'];
+  // OpenFoodFacts renvoie parfois "unknown" ou "not-applicable" : ce n'est pas une note.
+  const cleanGrade = (g) => (NUTRI_GRADES.includes(g) ? g : null);
+
+  const normFr = (s) => String(s || '').toLowerCase().replace(/œ/g, 'oe').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // Terme saisi dans le profil -> tags OpenFoodFacts + mots à chercher dans la liste d'ingrédients.
+  const ALLERGEN_GROUPS = [
+    { terms: ['lait', 'lactose', 'laitier', 'laitage', 'milk', 'dairy'], tags: ['en:milk'] },
+    { terms: ['gluten', 'ble', 'seigle', 'orge', 'avoine'], tags: ['en:gluten'] },
+    { terms: ['arachide', 'cacahuete', 'peanut'], tags: ['en:peanuts'] },
+    { terms: ['fruit a coque', 'fruits a coque', 'noix', 'noisette', 'amande', 'pistache', 'cajou', 'pecan'], tags: ['en:nuts'] },
+    { terms: ['oeuf', 'oeufs', 'egg'], tags: ['en:eggs'] },
+    { terms: ['soja', 'soy'], tags: ['en:soybeans'] },
+    { terms: ['poisson', 'fish'], tags: ['en:fish'] },
+    { terms: ['crustace', 'crevette'], tags: ['en:crustaceans'] },
+    { terms: ['mollusque'], tags: ['en:molluscs'] },
+    { terms: ['celeri'], tags: ['en:celery'] },
+    { terms: ['moutarde'], tags: ['en:mustard'] },
+    { terms: ['sesame'], tags: ['en:sesame-seeds'] },
+    { terms: ['sulfite'], tags: ['en:sulphur-dioxide-and-sulphites'] },
+    { terms: ['lupin'], tags: ['en:lupin'] },
+  ];
+
+  // Compare le champ "allergies / exclusions" du profil au produit.
+  // Retourne [{ label, kind: 'contient' | 'traces' }].
+  function findAllergenHits(allergiesText, product) {
+    const items = String(allergiesText || '')
+      .split(/[,;\n/]+|\bet\b/i)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(raw => ({ raw, key: normFr(raw).replace(/^(sans|pas de|pas d'|no)\s+/, '').trim() }))
+      .filter(it => it.key.length >= 3);
+    if (!items.length) return [];
+
+    const containsTags = normFr((product.allergens_tags || []).join(' '));
+    const tracesTags = normFr((product.traces_tags || []).join(' '));
+    const text = normFr(`${product.ingredients_text_fr || product.ingredients_text || ''} ${product.product_name || ''}`);
+
+    const hits = [];
+    for (const it of items) {
+      const group = ALLERGEN_GROUPS.find(g => g.terms.some(t => it.key.includes(t) || t.includes(it.key)));
+      const tagsOf = group ? group.tags.map(normFr) : [];
+      const words = group ? group.terms : [it.key];
+      const inContains = tagsOf.some(t => containsTags.includes(t)) || words.some(w => text.includes(w))
+        || (!group && containsTags.includes(it.key));
+      const inTraces = tagsOf.some(t => tracesTags.includes(t)) || (!group && tracesTags.includes(it.key));
+      if (inContains) hits.push({ label: it.raw, kind: 'contient' });
+      else if (inTraces) hits.push({ label: it.raw, kind: 'traces' });
+    }
+    return hits;
+  }
+
+  const numOrNull = (v) => (v != null && v !== '' && Number.isFinite(Number(v)) ? Number(v) : null);
+  const fmtNum = (v, d = 1) => (v == null ? '—'
+    : (Math.round(v * 10 ** d) / 10 ** d).toLocaleString('fr-FR', { maximumFractionDigits: d }));
+
+  // Un seul endroit qui décide du verdict, des points forts et des points faibles.
+  // Les seuils sont ceux de computePersonalizedScore : ce qui est écrit ici est
+  // exactement ce qui a fait bouger le score.
+  function analyzeProduct(product, profile) {
+    const n = product.nutriments || {};
+    const sport = profile?.sport_type;
+    const objective = profile?.objective;
+    const score = computePersonalizedScore(product, sport, objective);
+    const grade = cleanGrade(product.nutriscore_grade);
+    const nova = [1, 2, 3, 4].includes(Number(product.nova_group)) ? Number(product.nova_group) : null;
+    const additives = numOrNull(product.additives_n);
+
+    const kj = numOrNull(n['energy_100g']);
+    const v = {
+      kcal: numOrNull(n['energy-kcal_100g']) ?? (kj != null ? kj / 4.184 : null),
+      fat: numOrNull(n.fat_100g),
+      satFat: numOrNull(n['saturated-fat_100g']),
+      carbs: numOrNull(n.carbohydrates_100g),
+      sugars: numOrNull(n.sugars_100g),
+      fiber: numOrNull(n.fiber_100g),
+      proteins: numOrNull(n.proteins_100g),
+      salt: numOrNull(n.salt_100g),
+    };
+
+    const pros = [];
+    const cons = [];
+    const add = (list, short, text) => list.push({ short, text });
+
+    // --- Points faibles
+    if (v.sugars != null && v.sugars > 22.5) add(cons, `très riche en sucres (${fmtNum(v.sugars)} g/100 g)`, `Très riche en sucres : ${fmtNum(v.sugars)} g pour 100 g (au-dessus de 22,5 g, c'est élevé). Malus de 8 points sur ton score.`);
+    else if (v.sugars != null && v.sugars > 12.5) add(cons, `assez sucré (${fmtNum(v.sugars)} g/100 g)`, `Assez sucré : ${fmtNum(v.sugars)} g pour 100 g. Malus de 3 points.`);
+    if (v.satFat != null && v.satFat > 5) add(cons, `riche en graisses saturées (${fmtNum(v.satFat)} g/100 g)`, `Riche en graisses saturées : ${fmtNum(v.satFat)} g pour 100 g (repère : plus de 5 g = élevé). Malus de 6 points.`);
+    if (v.salt != null && v.salt > 1.5) add(cons, `riche en sel (${fmtNum(v.salt, 2)} g/100 g)`, `Riche en sel : ${fmtNum(v.salt, 2)} g pour 100 g (plus de 1,5 g = élevé). Malus de 6 points.`);
+    if (v.kcal != null && objective === 'perte_de_poids' && v.kcal > 300) add(cons, `très calorique (${Math.round(v.kcal)} kcal/100 g)`, `${Math.round(v.kcal)} kcal pour 100 g : dense en énergie, ce qui complique ton objectif de perte de poids. Malus de 8 points.`);
+    else if (v.kcal != null && v.kcal > 450) add(cons, `très calorique (${Math.round(v.kcal)} kcal/100 g)`, `${Math.round(v.kcal)} kcal pour 100 g : très dense en énergie, à doser en petite quantité.`);
+    if (grade === 'd' || grade === 'e') add(cons, `Nutri-score ${grade.toUpperCase()}`, `Nutri-score ${grade.toUpperCase()} : ${NUTRISCORE_LABEL[grade].split('— ')[1]}. C'est la base de ton score.`);
+    if (nova === 4) add(cons, 'ultra-transformé (NOVA 4)', "Produit ultra-transformé (NOVA 4) : recette industrielle avec additifs ou ingrédients qu'on n'utilise pas en cuisine. Ce critère n'entre pas dans le score, mais il est bon à savoir.");
+    if (additives != null && additives >= 4) add(cons, `${additives} additifs`, `${additives} additifs dans la liste d'ingrédients. Information seulement, sans effet sur le score.`);
+    if (sport === 'force' && v.proteins != null && v.proteins < 10) add(cons, 'peu de protéines pour ton objectif Force', `Seulement ${fmtNum(v.proteins)} g de protéines pour 100 g : pas de bonus pour ton objectif Force (seuil : plus de 15 g).`);
+    if (sport === 'endurance' && v.carbs != null && v.carbs < 25) add(cons, "peu de glucides pour l'Endurance", `${fmtNum(v.carbs)} g de glucides pour 100 g : pas de bonus pour ton objectif Endurance (seuil : plus de 40 g).`);
+    if (v.kcal == null && v.sugars == null && v.fat == null) add(cons, 'valeurs nutritionnelles incomplètes', "Les valeurs nutritionnelles de ce produit sont incomplètes sur OpenFoodFacts : le score est moins fiable.");
+
+    // --- Points forts
+    if (grade === 'a' || grade === 'b') add(pros, `Nutri-score ${grade.toUpperCase()}`, `Nutri-score ${grade.toUpperCase()} : ${NUTRISCORE_LABEL[grade].split('— ')[1]}.`);
+    if (sport === 'force' && v.proteins != null && v.proteins > 15) add(pros, `riche en protéines (${fmtNum(v.proteins)} g/100 g)`, `${fmtNum(v.proteins)} g de protéines pour 100 g : bonus de 10 points pour ton objectif Force.`);
+    else if (v.proteins != null && v.proteins >= 10) add(pros, `bonne source de protéines (${fmtNum(v.proteins)} g/100 g)`, `${fmtNum(v.proteins)} g de protéines pour 100 g.`);
+    if (sport === 'endurance' && v.carbs != null && v.carbs > 40) add(pros, `bon apport en glucides (${fmtNum(v.carbs)} g/100 g)`, `${fmtNum(v.carbs)} g de glucides pour 100 g : bonus de 5 points pour ton objectif Endurance.`);
+    if (v.fiber != null && v.fiber >= 3) add(pros, `riche en fibres (${fmtNum(v.fiber)} g/100 g)`, `${fmtNum(v.fiber)} g de fibres pour 100 g.`);
+    if (v.kcal != null && objective === 'perte_de_poids' && v.kcal < 150) add(pros, `léger (${Math.round(v.kcal)} kcal/100 g)`, `${Math.round(v.kcal)} kcal pour 100 g : léger, utile pour ton objectif de perte de poids (bonus de 5 points).`);
+    if (v.sugars != null && v.sugars <= 5) add(pros, 'peu de sucres', `Peu de sucres : ${fmtNum(v.sugars)} g pour 100 g.`);
+    if (v.satFat != null && v.satFat <= 1.5) add(pros, 'peu de graisses saturées', `Peu de graisses saturées : ${fmtNum(v.satFat)} g pour 100 g.`);
+    if (v.salt != null && v.salt <= 0.3) add(pros, 'peu de sel', `Peu de sel : ${fmtNum(v.salt, 2)} g pour 100 g.`);
+    if (nova === 1 || nova === 2) add(pros, `peu transformé (NOVA ${nova})`, `Produit peu transformé (NOVA ${nova}).`);
+    if (additives === 0) add(pros, 'sans additifs', "Aucun additif dans la liste d'ingrédients.");
+
+    const allergenHits = findAllergenHits(profile?.allergies, product);
+
+    let tone = score >= 65 ? 'good' : score >= 40 ? 'mid' : 'bad';
+    if (allergenHits.length) tone = 'danger';
+    const label = { good: 'Bon choix pour toi', mid: 'À consommer avec modération', bad: 'À limiter', danger: 'Déconseillé pour toi' }[tone];
+
+    // Phrase de synthèse : le « pourquoi » en une ligne.
+    const join = (list) => list.slice(0, 2).map(x => x.short).join(' et ');
+    let headline;
+    if (tone === 'danger') {
+      const present = allergenHits.filter(h => h.kind === 'contient').map(h => h.label);
+      const traces = allergenHits.filter(h => h.kind === 'traces').map(h => h.label);
+      const parts = [];
+      if (present.length) parts.push(`Contient ${present.join(', ')}`);
+      if (traces.length) parts.push(`${present.length ? 'peut' : 'Peut'} contenir des traces de ${traces.join(', ')}`);
+      headline = `${parts.join(' et ')} : cela figure dans tes allergies / exclusions.`;
+    } else if (tone === 'good') {
+      headline = pros.length
+        ? `Il coche plusieurs cases pour ton profil : ${join(pros)}.${cons.length ? ` Seul bémol : ${cons[0].short}.` : ''}`
+        : 'Pas de point faible marqué sur ton profil.';
+    } else if (cons.length) {
+      headline = `Ce qui pèse sur la note : ${join(cons)}.${pros.length ? ` Point positif : ${pros[0].short}.` : ''}`;
+    } else {
+      headline = 'Score moyen sans gros point fort ni point faible identifié.';
+    }
+
+    return { score, tone, label, headline, pros: pros.slice(0, 4), cons: cons.slice(0, 4), allergenHits, grade, nova, additives, v };
+  }
+
+  function safeImageUrl(url) {
+    try {
+      const u = new URL(url);
+      return u.protocol === 'https:' && /(^|\.)openfoodfacts\.org$/.test(u.hostname) ? u.href : '';
+    } catch (_) { return ''; }
+  }
+
+  const NUTRI_ROWS = [
+    { label: 'Énergie', key: 'kcal', unit: 'kcal', d: 0 },
+    { label: 'Matières grasses', key: 'fat', unit: 'g' },
+    { label: 'dont saturées', key: 'satFat', unit: 'g', sub: true },
+    { label: 'Glucides', key: 'carbs', unit: 'g' },
+    { label: 'dont sucres', key: 'sugars', unit: 'g', sub: true },
+    { label: 'Fibres', key: 'fiber', unit: 'g' },
+    { label: 'Protéines', key: 'proteins', unit: 'g' },
+    { label: 'Sel', key: 'salt', unit: 'g', d: 2 },
+  ];
+
+  // Recalcule la colonne « pour X g » quand on change la quantité.
+  function updateNutriPortion(qty) {
+    const q = Number(qty) > 0 ? Number(qty) : 100;
+    const qtyEl = document.getElementById('resultPortionQty');
+    if (qtyEl) qtyEl.textContent = fmtNum(q, 0);
+    document.querySelectorAll('#resultNutri td[data-v100]').forEach(td => {
+      const base = Number(td.dataset.v100);
+      td.textContent = `${fmtNum(base * q / 100, Number(td.dataset.d))} ${td.dataset.unit}`;
+    });
+  }
+
+  // Remplit toute la fiche. Appelée après chaque scan réussi.
+  function fillResultCard(product, profile, a) {
+    const $ = (id) => document.getElementById(id);
+    const name = product.product_name || 'Produit sans nom';
+
+    $('resultName').textContent = name;
+    $('resultBrand').textContent = [product.brands?.split(',')[0]?.trim(), product.quantity].filter(Boolean).join(' · ');
+    const img = safeImageUrl(product.image_front_small_url || product.image_front_url || '');
+    $('resultImg').style.backgroundImage = img ? `url("${img}")` : 'none';
+
+    $('resultVerdict').className = `rc-verdict tone-${a.tone}`;
+    $('resultScoreNum').textContent = String(a.score);
+    $('resultVerdictLabel').textContent = a.label;
+    $('resultJustif').textContent = a.headline;
+
+    const allergyEl = $('resultAllergy');
+    if (a.allergenHits.length) {
+      allergyEl.innerHTML = '<b>Attention allergène.</b> ' + a.allergenHits.map(h =>
+        `${escapeHtml(h.label)} : ${h.kind === 'contient' ? 'présent dans ce produit' : 'traces possibles'}`).join(' · ')
+        + '. Vérifie toujours l\'étiquette sur l\'emballage.';
+      allergyEl.style.display = 'block';
+    } else {
+      allergyEl.style.display = 'none';
+    }
+
+    const chips = [];
+    chips.push(a.grade
+      ? `<span class="rc-chip ns-${a.grade}">Nutri-score ${a.grade.toUpperCase()}</span>`
+      : '<span class="rc-chip">Nutri-score non disponible</span>');
+    if (a.nova) chips.push(`<span class="rc-chip">NOVA ${a.nova}</span>`);
+    if (a.additives != null) chips.push(`<span class="rc-chip">${a.additives} additif${a.additives > 1 ? 's' : ''}</span>`);
+    $('resultChips').innerHTML = chips.join('');
+
+    const fillList = (blockId, listId, items) => {
+      $(blockId).style.display = items.length ? 'block' : 'none';
+      $(listId).innerHTML = items.map(x => `<li>${escapeHtml(x.text)}</li>`).join('');
+    };
+    fillList('resultProsBlock', 'resultPros', a.pros);
+    fillList('resultConsBlock', 'resultCons', a.cons);
+
+    $('resultNutri').innerHTML =
+      '<tr><th></th><th>Pour 100 g</th><th>Pour <span id="resultPortionQty">100</span> g</th></tr>'
+      + NUTRI_ROWS.map(r => {
+        const val = a.v[r.key];
+        const d = r.d ?? 1;
+        return `<tr class="${r.sub ? 'sub' : ''}"><td>${r.label}</td>`
+          + `<td>${val == null ? '—' : `${fmtNum(val, d)} ${r.unit}`}</td>`
+          + (val == null ? '<td>—</td>' : `<td data-v100="${val}" data-d="${d}" data-unit="${r.unit}"></td>`)
+          + '</tr>';
+      }).join('');
+    updateNutriPortion(100);
+
+    const { rows, summary } = buildScoreExplanation(product, profile?.sport_type, profile?.objective, a.score);
+    $('resultWhy').innerHTML = rows.map(r => `
+      <div class="history-detail-row">
+        <div>
+          <div class="history-detail-label">${r.label}</div>
+          <span class="history-detail-verdict ${r.verdict}">${r.verdict === 'pos' ? 'Favorable' : r.verdict === 'neg' ? 'Défavorable' : 'Neutre'}</span>
+        </div>
+        <div class="history-detail-reason">${r.reason}</div>
+      </div>`).join('') + `<p class="rc-why-summary">${summary}</p>`;
+
+    const ing = (product.ingredients_text_fr || product.ingredients_text || '').trim();
+    $('resultIngredientsWrap').style.display = ing ? 'block' : 'none';
+    $('resultIngredients').textContent = ing;
+    $('resultIngredientsWrap').open = false;
+    document.querySelectorAll('#resultCard details.rc-details').forEach(d => { d.open = false; });
+
+    // Proposition de repas : seulement si le produit est « bon » ou « correct » pour toi.
+    const mealBtn = $('resultMealBtn');
+    mealBtn.style.display = (a.tone === 'good' || a.tone === 'mid') ? 'block' : 'none';
+    mealBtn.textContent = a.tone === 'good' ? 'Créer un repas avec ce produit' : 'Composer un repas plus équilibré avec ce produit';
+    mealBtn.disabled = false;
+    $('resultMeal').style.display = 'none';
+    $('resultMeal').innerHTML = '';
+  }
+
   function initScanner() {
     if (!scannerBound) {
       const barcodeInput = document.getElementById('barcodeInput');
@@ -9303,6 +9656,7 @@
       const resultQuantity = document.getElementById('resultQuantity');
       const resultMealSlot = document.getElementById('resultMealSlot');
       let lastScannedProduct = null; // référence au produit OpenFoodFacts du dernier scan affiché
+      let lastScan = null; // { barcode, product, profile, analysis } du dernier scan affiché
 
       resultAddToJournalBtn.addEventListener('click', async () => {
         if (!lastScannedProduct) return;
@@ -9329,6 +9683,102 @@
 
         showToast(ok ? 'Ajouté à ton journal du jour.' : "Erreur lors de l'ajout — vérifie ta connexion.", ok ? 'success' : 'error');
       });
+
+      // ---- Quantité : met à jour la colonne « pour X g » du tableau ----
+      resultQuantity.addEventListener('input', () => updateNutriPortion(resultQuantity.value));
+
+      // ---- Créer un repas avec le produit scanné ----
+      const resultMealBtn = document.getElementById('resultMealBtn');
+      const resultMeal = document.getElementById('resultMeal');
+
+      function renderMeal(meal) {
+        const t = meal.totaux;
+        const p = meal.produit;
+        const line = (nom, g, kcal, main) =>
+          `<li class="${main ? 'main' : ''}"><span>${escapeHtml(nom)}</span><small>${fmtNum(g, 0)} g · ${fmtNum(kcal, 0)} kcal</small></li>`;
+
+        resultMeal.innerHTML = `
+          <h4 class="rc-meal-title">${escapeHtml(meal.nom)}</h4>
+          <p class="rc-meal-why">${escapeHtml(meal.justification || '')}</p>
+          <ul class="rc-meal-ing">
+            ${line(p.nom, p.quantite_g, p.kcal, true)}
+            ${meal.complements.map(c => line(c.nom, c.quantite_g, c.kcal, false)).join('')}
+          </ul>
+          <div class="rc-macros">
+            <span class="rc-chip">${fmtNum(t.kcal, 0)} kcal</span>
+            <span class="rc-chip">${fmtNum(t.proteines_g)} g protéines</span>
+            <span class="rc-chip">${fmtNum(t.glucides_g)} g glucides</span>
+            <span class="rc-chip">${fmtNum(t.lipides_g)} g lipides</span>
+          </div>
+          <ol class="rc-meal-steps">${meal.etapes.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ol>
+          <div class="rc-meal-actions">
+            <button type="button" class="app-cta" id="mealAddBtn">Ajouter ce repas à mon journal</button>
+            <button type="button" class="app-cta secondary" id="mealAgainBtn">Autre idée</button>
+          </div>
+          <p class="rc-meal-note">Les valeurs du produit viennent d'OpenFoodFacts. Celles des compléments sont des estimations.${meal.cible ? ` Repère pour ce repas : environ ${fmtNum(meal.cible.kcal, 0)} kcal.` : ''}</p>`;
+
+        document.getElementById('mealAddBtn').addEventListener('click', async (e) => {
+          const btn = e.currentTarget;
+          btn.disabled = true;
+          const ok = await logFoodEntry({
+            mealSlot: resultMealSlot.value,
+            label: meal.nom,
+            quantityG: t.quantite_g,
+            kcal: t.kcal,
+            proteinsG: t.proteines_g,
+            carbsG: t.glucides_g,
+            fatG: t.lipides_g,
+            source: 'estimation',
+          });
+          if (ok) btn.textContent = 'Ajouté ✓';
+          else btn.disabled = false;
+          showToast(ok ? 'Repas ajouté à ton journal du jour.' : "Erreur lors de l'ajout — vérifie ta connexion.", ok ? 'success' : 'error');
+        });
+        document.getElementById('mealAgainBtn').addEventListener('click', () => requestMeal(meal.nom));
+      }
+
+      async function requestMeal(avoidName) {
+        if (!lastScan) return;
+        const quantityG = Math.max(5, Math.min(1000, parseFloat(resultQuantity.value) || 100));
+
+        resultMealBtn.disabled = true;
+        resultMeal.style.display = 'block';
+        resultMeal.innerHTML = '<p class="rc-meal-loading">Je compose ton repas…</p>';
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) throw new Error('Ta session a expiré — reconnecte-toi.');
+
+          let needs = null;
+          try {
+            const full = computeNeeds(lastScan.profile, null);
+            if (full) needs = { kcal_jour: full.kcal_jour, proteines_g: full.proteines_g, glucides_g: full.glucides_g, lipides_g: full.lipides_g };
+          } catch (_) { /* profil incomplet : le serveur propose un repas générique */ }
+
+          const r = await fetch('/api/meal-from-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+            body: JSON.stringify({
+              barcode: lastScan.barcode,
+              quantity_g: quantityG,
+              meal_slot: resultMealSlot.value,
+              needs,
+              avoid: avoidName || '',
+            }),
+          });
+          const data = await r.json().catch(() => ({}));
+          if (!r.ok || !data.meal) throw new Error(data.error || 'Impossible de composer le repas pour le moment.');
+
+          resultMealBtn.style.display = 'none';
+          renderMeal(data.meal);
+        } catch (err) {
+          console.error(err);
+          resultMeal.innerHTML = `<p class="rc-meal-loading">${escapeHtml(err.message || 'Impossible de composer le repas pour le moment.')}</p>`;
+        } finally {
+          resultMealBtn.disabled = false;
+        }
+      }
+
+      resultMealBtn.addEventListener('click', () => requestMeal(''));
 
       let scanInFlight = false;
 
@@ -9372,19 +9822,16 @@
 
           const { data: profile } = await supabase
             .from('profiles')
-            .select('sport_type, objective')
+            .select('sport_type, objective, allergies, weight_kg, height_cm, birth_year, sex, activity_level, calorie_adjust_pct')
             .eq('user_id', user.id)
             .maybeSingle();
 
-          const score = computePersonalizedScore(product, profile?.sport_type, profile?.objective);
+          const analysis = analyzeProduct(product, profile);
+          const score = analysis.score;
+          lastScan = { barcode, product, profile, analysis };
 
           barcodeInput.value = barcode;
-          document.getElementById('resultName').textContent = productName;
-          const scoreEl = document.getElementById('resultScore');
-          scoreEl.textContent = `Score : ${score}/100`;
-          scoreEl.className = 'result-score ' + scoreClass(score);
-          document.getElementById('resultJustif').textContent =
-            `Nutri-score ${product.nutriscore_grade?.toUpperCase() || '?'} ajusté selon ton profil ${profile?.sport_type || 'général'}.`;
+          fillResultCard(product, profile, analysis);
           clearScanError();
           resultCard.style.display = 'block';
           resultCard.classList.remove('card-flash');
