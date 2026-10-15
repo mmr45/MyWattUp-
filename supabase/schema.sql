@@ -5,6 +5,10 @@
 -- de la RLS, des fonctions et des triggers, et à recréer une base vierge.
 -- Ce n'est PAS une migration à rejouer sur la base de production.
 --
+-- Appliqué ensuite en production (à rejouer après ce fichier pour une base
+-- à jour) : migrations/20261015_rls_perf.sql, plus le cron du rappel de
+-- coucher passé à toutes les heures (cron.alter_job(8, '0 * * * *')).
+--
 -- Ordre : tables -> fonctions -> vues -> policies -> triggers -> index.
 
 create extension if not exists "uuid-ossp";
