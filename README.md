@@ -88,7 +88,7 @@ Code-barres lu via Open Food Facts, avec un score recalculé selon ton profil sp
 - **Backend :** Supabase — PostgreSQL, Auth, Row Level Security
 - **Fonctions serveur :** Vercel Serverless Functions (Node)
 - **IA :** Groq (`openai/gpt-oss-120b`) — le générateur de repas détecte automatiquement le fournisseur disponible (Anthropic, OpenAI, OpenRouter, Mistral, Groq, Gemini)
-- **Paiement :** Stripe
+- **Paiement :** Stripe et Whop, via les Edge Functions Supabase (`supabase/functions/`)
 - **Données produits :** Open Food Facts
 
 Aucun bundler, aucun framework. Le front est servi tel quel.
@@ -166,7 +166,9 @@ vercel dev
 > `vercel dev` sert le front **et** les fonctions du dossier `api/`.
 > Ouvrir `index.html` directement dans le navigateur laisse les endpoints hors service.
 
-**Variables requises :** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GROQ_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
+**Variables Vercel requises :** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GROQ_API_KEY` (ou la clé d'un autre fournisseur IA reconnu par `api/_ai.js`). Pour que l'IA marche aussi sur les liens de preview des PR, coche l'environnement « Preview » en plus de « Production ».
+
+Les clés Stripe et Whop (`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `WHOP_WEBHOOK_SECRET`…) ne vont pas sur Vercel : ce sont des secrets des Edge Functions Supabase.
 
 Chaque commit sur `main` déclenche un déploiement Vercel automatique.
 
