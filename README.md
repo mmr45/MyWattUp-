@@ -101,8 +101,12 @@ Aucun bundler, aucun framework. Le front est servi tel quel.
 ├── api/                    # Fonctions serverless
 │   ├── coach-advice.js     # Conseil IA du jour
 │   ├── generate-meals.js   # Génération des 3 repas
-│   └── estimate-food.js    # Estimation kcal + macros
+│   ├── estimate-food.js    # Estimation kcal + macros
+│   ├── recipe.js           # Recette détaillée d'un repas
+│   ├── meal-from-product.js # Repas composé autour d'un produit scanné
+│   ├── _ai.js  _quota.js   # Helpers partagés (fournisseur IA, quotas)
 ├── css/  icons/  js/
+├── supabase/               # Schéma SQL de référence (tables, RLS, quotas)
 ├── index.html              # Application complète
 ├── auth.js                 # Connexion / inscription
 ├── onboarding.js           # Création du profil
@@ -130,7 +134,7 @@ Le suivi calorique et le générateur de repas partagent **la même fonction de 
 
 ## 💳 Offres
 
-|  | Gratuit | **Pro — 9,99 €/mois** |
+|  | Gratuit | **Pro — 6,99 €/mois ou 59,99 €/an** |
 |---|:---:|:---:|
 | Conseil IA | 1 / jour | illimité |
 | Génération de repas | 1 / jour | illimité |
